@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Reports & Analytics | GRIET Library</title>
+  <link rel="stylesheet" href="css/style.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <style>
+  /* GLOBAL */
+  body {
+    margin: 0;
+    background: #f6f8fb;
+    font-family: Arial, sans-serif;
+    color: #111827;
+  }
+
+  .dashboard-layout {
+    display: flex;
+    min-height: 100vh;
+  }
+
+  /* SIDEBAR (same as Members & Fine) */
+ .sidebar {
+      width:260px;
+      background:#fff;
+      border-right:1px solid #e5e7eb;
+      padding:20px;
+    }
+    .sidebar h3 { color:#1f3a5f; margin-bottom:20px; }
+    .sidebar a {
+      display:block;
+      padding:10px 14px;
+      margin-bottom:6px;
+      text-decoration:none;
+      color:#333;
+      border-radius:6px;
+      font-size:14px;
+    }
+    .sidebar a.active,
+    .sidebar a:hover {
+      background:#eef2f6;
+      font-weight:bold;
+    }
+
+  /* MAIN */
+  .main {
+    flex: 1;
+    padding: 30px;
+  }
+
+  .page-title {
+    font-size: 26px;
+    font-weight: bold;
+    margin-bottom: 25px;
+    color: #1f3a5f;
+  }
+
+  /* GRID */
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(420px, 1fr));
+    gap: 25px;
+  }
+
+  /* CARD – SAME AS MEMBERS / FINE */
+  .card {
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 10px;
+    padding: 20px;
+  }
+
+  .card h3 {
+    margin-bottom: 15px;
+    font-size: 16px;
+    font-weight: bold;
+    color: #111827;
+  }
+
+  canvas {
+    margin-top: 10px;
+  }
+</style>
+
+</head>
+
+<body>
+
+<!-- AUTH -->
+<script src="js/auth.js"></script>
+<script>protectDashboard("librarian");</script>
+
+<div class="dashboard-layout">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <h3>📚 Library</h3>
+    <a href="librarian-dashboard.html">Dashboard</a>
+    <a href="book-management.html">Book Management</a>
+    <a href="issue-return.html">Issue & Return</a>
+    <a href="members.html">Members</a>
+    <a class="active">Reports</a>
+    <a href="fine-management.html">Fine Management</a>
+    <a onclick="logout()" style="cursor:pointer;">Logout</a>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="main">
+    <div class="page-title">Reports & Analytics</div>
+
+    <div class="grid">
+
+      <!-- Books by Department -->
+      <div class="card">
+        <h3>Books by Department</h3>
+        <canvas id="deptBar"></canvas>
+      </div>
+
+      <!-- Department Distribution -->
+      <div class="card">
+        <h3>Department Distribution</h3>
+        <canvas id="deptPie"></canvas>
+      </div>
+
+      <!-- Most Borrowed Books -->
+      <div class="card">
+        <h3>Most Borrowed Books</h3>
+        <canvas id="borrowedBar"></canvas>
+      </div>
+
+      <!-- Overdue Trend -->
+      <div class="card">
+        <h3>Overdue Trend</h3>
+        <canvas id="overdueLine"></canvas>
+      </div>
+
+    </div>
+  </main>
+</div>
+
+<script>
+/* BOOKS BY DEPARTMENT */
+new Chart(document.getElementById("deptBar"), {
+  type: "bar",
+  data: {
+    labels: ["CSE","ECE","Mech","Civil","General"],
+    datasets: [{
+      data: [32,24,20,14,16],
+      backgroundColor: "#0f172a"
+    }]
+  },
+  options:{ plugins:{legend:{display:false}} }
+});
+
+/* DEPARTMENT DISTRIBUTION */
+new Chart(document.getElementById("deptPie"), {
+  type: "pie",
+  data: {
+    labels: ["CSE","ECE","Mech","Civil","General"],
+    datasets: [{
+      data: [32,24,20,14,16],
+      backgroundColor: ["#0f172a","#64748b","#f1f5f9","#ef4444","#e2e8f0"]
+    }]
+  }
+});
+
+/* MOST BORROWED BOOKS */
+new Chart(document.getElementById("borrowedBar"), {
+  type: "bar",
+  data: {
+    labels: [
+      "Introduction to Algorithms",
+      "Operating System Concepts",
+      "Digital Design",
+      "Engineering Mechanics",
+      "Data Structures"
+    ],
+    datasets: [{
+      data: [10,9,9,8,8],
+      backgroundColor:"#64748b"
+    }]
+  },
+  options:{
+    indexAxis:"y",
+    plugins:{legend:{display:false}}
+  }
+});
+
+/* OVERDUE TREND */
+new Chart(document.getElementById("overdueLine"), {
+  type:"line",
+  data:{
+    labels:["Oct","Nov","Dec","Jan","Feb"],
+    datasets:[{
+      data:[2,5,3,4,3],
+      borderColor:"#ef4444",
+      tension:0.4,
+      fill:false
+    }]
+  },
+  options:{plugins:{legend:{display:false}}}
+});
+</script>
+
+</body>
+</html>

@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Member Details</title>
+<link rel="stylesheet" href="css/style.css">
+
+<style>
+body{font-family:Arial;background:#f6f8fb;}
+.container{padding:30px;max-width:1000px;margin:auto;}
+
+.member-card{
+  display:flex;
+  gap:30px;
+  background:white;
+  padding:20px;
+  border-radius:10px;
+  border:1px solid #ddd;
+  margin-bottom:20px;
+}
+
+.photo{
+  width:140px;
+  height:160px;
+  background:#e2e8f0;
+  border-radius:10px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:14px;
+  color:#555;
+}
+
+.tabs{
+  display:flex;
+  gap:10px;
+  margin-bottom:20px;
+}
+
+.tab{
+  padding:8px 16px;
+  background:#e2e8f0;
+  border-radius:6px;
+  cursor:pointer;
+}
+
+.tab.active{
+  background:#1f3a5f;
+  color:white;
+}
+
+.card{
+  background:white;
+  padding:20px;
+  border-radius:10px;
+  border:1px solid #ddd;
+}
+
+table{
+  width:100%;
+  border-collapse:collapse;
+}
+
+th,td{
+  padding:10px;
+  border-bottom:1px solid #eee;
+}
+
+.btn{
+  padding:6px 12px;
+  background:#1f3a5f;
+  color:white;
+  border:none;
+  border-radius:6px;
+  cursor:pointer;
+}
+
+.issue-box{
+  margin-top:20px;
+}
+
+.suggestions{
+  border:1px solid #ddd;
+  max-height:120px;
+  overflow-y:auto;
+  background:white;
+  margin-top:5px;
+}
+
+.suggestions div{
+  padding:8px;
+  cursor:pointer;
+}
+
+.suggestions div:hover{
+  background:#f1f5f9;
+}
+</style>
+</head>
+
+<body>
+
+<script src="js/auth.js"></script>
+<script>protectDashboard("librarian");</script>
+
+<div class="container">
+
+<div id="memberSection"></div>
+
+<div class="tabs">
+  <div class="tab active" id="activeTab">Active</div>
+  <div class="tab" id="historyTab">History</div>
+</div>
+
+<div class="card">
+  <table>
+    <thead>
+      <tr>
+        <th>Book</th>
+        <th>Issue Date</th>
+        <th>Due Date</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody id="tableBody"></tbody>
+  </table>
+
+  <!-- OFFLINE ISSUE -->
+  <div class="issue-box" id="issueBox">
+    <h4>Issue Book </h4>
+    <input id="offlineTitle" placeholder="Search Book from Catalogue" onkeyup="searchBook()">
+    <div id="suggestions" class="suggestions"></div>
+    <br>
+    <button class="btn" onclick="issueOffline()">Issue</button>
+  </div>
+</div>
+
+</div>
+
+<script>
+
+document.addEventListener("DOMContentLoaded", function(){
+
+  const member = JSON.parse(localStorage.getItem("selectedMember"));
+  if(!member) return;
+
+  const {userId, userRole} = member;
+
+  const activeTab = document.getElementById("activeTab");
+  const historyTab = document.getElementById("historyTab");
+  const issueBox = document.getElementById("issueBox");
+
+  let branch = userId.includes("CS") ? "CSE" :
+               userId.includes("EC") ? "ECE" :
+               userId.includes("ME") ? "MECH" :
+               "General";
+
+  document.getElementById("memberSection").innerHTML = `
+    <div class="member-card">
+      <div class="photo">Photo</div>
+      <div>
+        <h3>${userId}</h3>
+        <p><b>Role:</b> ${userRole}</p>
+        <p><b>Branch:</b> ${branch}</p>
+      </div>
+    </div>
+  `;
+
+  loadActive();
+
+  activeTab.onclick = function(){
+    activeTab.classList.add("active");
+    historyTab.classList.remove("active");
+    issueBox.style.display = "block";
+    loadActive();
+  };
+
+  historyTab.onclick = function(){
+    historyTab.classList.add("active");
+    activeTab.classList.remove("active");
+    issueBox.style.display = "none";
+    loadHistory();
+  };
+
+});
+
+/* =======================
+   LOAD ACTIVE
+======================= */
+function loadActive(){
+
+  const member = JSON.parse(localStorage.getItem("selectedMember"));
+  const {userId, userRole} = member;
+
+  const tableBody = document.getElementById("tableBody");
+  tableBody.innerHTML = "";
+
+  let books = userRole === "student"
+    ? JSON.parse(localStorage.getItem("studentBooks")) || []
+    : JSON.parse(localStorage.getItem("facultyBooks")) || [];
+
+  const userBooks = books.filter(b => b.userId === userId);
+
+  if(userBooks.length === 0){
+    tableBody.innerHTML = `<tr><td colspan="4">No active books</td></tr>`;
+    return;
+  }
+
+  userBooks.forEach(book=>{
+    tableBody.innerHTML += `
+      <tr>
+        <td>${book.title}</td>
+        <td>${book.issueDate}</td>
+        <td>${book.dueDate}</td>
+        <td>
+          <button class="btn"
+          onclick="returnBook('${book.title}','${userId}','${userRole}')">
+          Return
+          </button>
+        </td>
+      </tr>`;
+  });
+}
+
+/* =======================
+   LOAD HISTORY
+======================= */
+function loadHistory(){
+
+  const member = JSON.parse(localStorage.getItem("selectedMember"));
+  const {userId, userRole} = member;
+
+  const tableBody = document.getElementById("tableBody");
+  tableBody.innerHTML = "";
+
+  let history = userRole === "student"
+    ? JSON.parse(localStorage.getItem("studentHistory")) || []
+    : JSON.parse(localStorage.getItem("facultyHistory")) || [];
+
+  const userHistory = history.filter(b => b.userId === userId);
+
+  if(userHistory.length === 0){
+    tableBody.innerHTML = `<tr><td colspan="4">No history</td></tr>`;
+    return;
+  }
+
+  userHistory.forEach(book=>{
+    tableBody.innerHTML += `
+      <tr>
+        <td>${book.title}</td>
+        <td>${book.issueDate}</td>
+        <td>${book.dueDate}</td>
+        <td>Returned</td>
+      </tr>`;
+  });
+}
+
+/* =======================
+   SEARCH CATALOGUE
+======================= */
+function searchBook(){
+
+  const query = document.getElementById("offlineTitle").value.toLowerCase();
+  const suggestionsBox = document.getElementById("suggestions");
+  suggestionsBox.innerHTML = "";
+
+  let catalogue = JSON.parse(localStorage.getItem("books")) || [];
+
+  const results = catalogue.filter(book =>
+    book.title.toLowerCase().includes(query)
+  );
+
+  results.forEach(book=>{
+    suggestionsBox.innerHTML += `
+      <div onclick="selectBook('${book.title}')">
+        ${book.title}
+      </div>
+    `;
+  });
+}
+
+function selectBook(title){
+  document.getElementById("offlineTitle").value = title;
+  document.getElementById("suggestions").innerHTML = "";
+}
+
+/* =======================
+   ISSUE OFFLINE
+======================= */
+function issueOffline(){
+
+  const member = JSON.parse(localStorage.getItem("selectedMember"));
+  const {userId, userRole} = member;
+
+  const title = document.getElementById("offlineTitle").value.trim();
+  if(!title) return alert("Select book from catalogue");
+
+  const today = new Date();
+  const due = new Date();
+  due.setDate(today.getDate() + 15);
+
+  const bookData = {
+    title,
+    issueDate: today.toISOString().split("T")[0],
+    dueDate: due.toISOString().split("T")[0],
+    userId,
+    userRole
+  };
+
+  if(userRole === "student"){
+    let books = JSON.parse(localStorage.getItem("studentBooks")) || [];
+    books.push(bookData);
+    localStorage.setItem("studentBooks", JSON.stringify(books));
+  }
+
+  if(userRole === "faculty"){
+    let books = JSON.parse(localStorage.getItem("facultyBooks")) || [];
+    books.push(bookData);
+    localStorage.setItem("facultyBooks", JSON.stringify(books));
+  }
+
+  alert("Book issued successfully");
+  document.getElementById("offlineTitle").value = "";
+  loadActive();
+}
+
+/* =======================
+   RETURN BOOK
+======================= */
+function returnBook(title,userId,userRole){
+
+  if(userRole === "student"){
+    let books = JSON.parse(localStorage.getItem("studentBooks")) || [];
+    let history = JSON.parse(localStorage.getItem("studentHistory")) || [];
+
+    const index = books.findIndex(b =>
+      b.title === title && b.userId === userId);
+
+    if(index !== -1){
+      history.push(books[index]);
+      books.splice(index,1);
+    }
+
+    localStorage.setItem("studentBooks", JSON.stringify(books));
+    localStorage.setItem("studentHistory", JSON.stringify(history));
+  }
+
+  if(userRole === "faculty"){
+    let books = JSON.parse(localStorage.getItem("facultyBooks")) || [];
+    let history = JSON.parse(localStorage.getItem("facultyHistory")) || [];
+
+    const index = books.findIndex(b =>
+      b.title === title && b.userId === userId);
+
+    if(index !== -1){
+      history.push(books[index]);
+      books.splice(index,1);
+    }
+
+    localStorage.setItem("facultyBooks", JSON.stringify(books));
+    localStorage.setItem("facultyHistory", JSON.stringify(history));
+  }
+
+  loadActive();
+}
+</script>
+
+</body>
+</html>

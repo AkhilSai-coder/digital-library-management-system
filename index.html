@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>GRIET Central Library</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+
+/* ===== GLOBAL ===== */
+body {
+  margin: 0;
+  font-family: 'Segoe UI', sans-serif;
+  background: #f4f6f9;
+}
+
+.container {
+  width: 90%;
+  margin: auto;
+}
+
+/* ===== TOP BAR ===== */
+.top-bar {
+  background: #0f2d52;
+  color: white;
+  text-align: center;
+  padding: 8px 0;
+  font-size: 14px;
+}
+
+/* ===== HEADER ===== */
+.header {
+  background: white;
+  padding: 15px 0;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+}
+
+.header-flex {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.header nav a {
+  margin-left: 25px;
+  text-decoration: none;
+  color: #0f2d52;
+  font-weight: 500;
+  transition: 0.3s;
+}
+
+.header nav a:hover {
+  color: #0077ff;
+}
+
+/* ===== CAMPUS BANNER ===== */
+.campus-banner {
+  position: relative;
+  height: 420px;
+  background: url("Gokaraju-Rangaraju.jpeg") no-repeat center center/cover;
+}
+
+.campus-overlay {
+  background: rgba(0, 0, 0, 0.65);
+  height: 100%;
+  display: flex;
+  align-items: flex-end;
+}
+
+.campus-content {
+  color: white;
+  padding: 50px;
+}
+
+.campus-content h1 {
+  font-size: 50px;
+  margin-bottom: 10px;
+}
+
+.campus-content p {
+  font-size: 20px;
+  opacity: 0.9;
+}
+
+/* ===== MAIN SECTION WITH SIDEBAR ===== */
+.main-section {
+  display: flex;
+  gap: 30px;
+  padding: 60px 0;
+}
+
+.main-content {
+  flex: 3;
+  background: white;
+  padding: 40px;
+  border-radius: 10px;
+  box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+}
+
+.main-content h2 {
+  font-size: 36px;
+  margin-bottom: 20px;
+  color: #0f2d52;
+}
+
+.main-content p {
+  font-size: 17px;
+  line-height: 1.7;
+  color: #444;
+}
+
+/* ===== SIDEBAR ===== */
+.sidebar {
+  flex: 1.3;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.side-card {
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+}
+
+.side-card h3 {
+  margin-bottom: 15px;
+  color: #0f2d52;
+}
+
+.side-card ul {
+  padding-left: 18px;
+  line-height: 1.8;
+  font-size: 14px;
+}
+
+/* ===== BUTTONS ===== */
+.cta-buttons {
+  margin-top: 25px;
+  display: flex;
+  gap: 15px;
+}
+
+.cta-buttons a {
+  text-decoration: none;
+  padding: 12px 24px;
+  border-radius: 6px;
+  font-weight: bold;
+}
+
+.cta-primary {
+  background: #0f2d52;
+  color: white;
+}
+
+.cta-secondary {
+  background: #e6ecf3;
+  color: #0f2d52;
+}
+
+/* ===== NEW ARRIVALS ===== */
+.new-arrivals {
+  background: #f9fbfd;
+  padding: 70px 0;
+}
+
+.section-title {
+  text-align: center;
+  font-size: 36px;
+  margin-bottom: 40px;
+  color: #0f2d52;
+}
+
+.book-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 30px;
+}
+
+.book-card {
+  background: white;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 6px 25px rgba(0,0,0,0.08);
+  transition: 0.3s ease;
+  text-align: center;
+}
+
+.book-card:hover {
+  transform: translateY(-8px);
+}
+
+.book-card img {
+  width: 100%;
+  height: 250px;
+  object-fit: cover;
+}
+
+.book-info {
+  padding: 15px;
+}
+
+.book-info h4 {
+  margin: 10px 0 5px;
+  color: #0f2d52;
+}
+
+.book-info p {
+  font-size: 14px;
+  color: #555;
+}
+
+/* ===== FEATURES ===== */
+.features {
+  background: #ffffff;
+  padding: 60px 0;
+}
+
+.feature-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 25px;
+}
+
+.feature-card {
+  background: #f4f6f9;
+  padding: 25px;
+  border-radius: 10px;
+  transition: 0.3s;
+}
+
+.feature-card:hover {
+  transform: translateY(-5px);
+}
+
+.feature-card h3 {
+  color: #0f2d52;
+}
+
+/* FOOTER */
+.footer {
+  background: #0f2d52;
+  color: white;
+  text-align: center;
+  padding: 20px 0;
+  margin-top: 40px;
+}
+
+/* RESPONSIVE */
+@media(max-width: 900px) {
+  .main-section {
+    flex-direction: column;
+  }
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="top-bar">
+  GRIET Library | Digital Library Portal
+</div>
+
+<header class="header">
+  <div class="container header-flex">
+    <h2>GRIET Library</h2>
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="catalogue.html">Catalogue</a>
+      <a href="login.html">Login</a>
+    </nav>
+  </div>
+</header>
+
+<section class="campus-banner">
+  <div class="campus-overlay">
+    <div class="campus-content">
+      <h1>GRIET Hyderabad Campus</h1>
+      <p>Empowering Knowledge Through Digital Innovation</p>
+    </div>
+  </div>
+</section>
+
+<div class="container main-section">
+
+  <div class="main-content">
+    <h2>Digital Library Management System</h2>
+    <p>
+      A centralized platform for managing physical library resources
+      with secure role-based access for Students, Faculty, and Librarians.
+    </p>
+
+    <div class="cta-buttons">
+      <a href="login.html" class="cta-primary">Access Library</a>
+      <a href="catalogue.html" class="cta-secondary">View Catalogue</a>
+    </div>
+  </div>
+
+  <div class="sidebar">
+
+    <div class="side-card">
+      <h3>Library Timings</h3>
+      <ul>
+        <li>Mon – Fri: 8:30 AM – 8:00 PM</li>
+        <li>Saturday: 9:00 AM – 5:00 PM</li>
+        <li>Sunday: Closed</li>
+      </ul>
+    </div>
+
+    <div class="side-card">
+      <h3>Rules & Regulations</h3>
+      <ul>
+        <li>Maintain silence inside library</li>
+        <li>ID card mandatory</li>
+        <li>Return books before due date</li>
+        <li>Fine for overdue books</li>
+      </ul>
+    </div>
+
+  </div>
+
+</div>
+
+<!-- NEW ARRIVALS -->
+<section class="new-arrivals">
+  <div class="container">
+    <h2 class="section-title">📚 New Arrivals</h2>
+
+    <div class="book-grid">
+
+      <div class="book-card">
+        <img src="images/book1.jpg" alt="Book">
+        <div class="book-info">
+          <h4>Clean Code</h4>
+          <p>Robert C. Martin</p>
+        </div>
+      </div>
+
+      <div class="book-card">
+        <img src="images/book2.jpg" alt="Book">
+        <div class="book-info">
+          <h4>Java Complete Reference</h4>
+          <p>Herbert Schildt</p>
+        </div>
+      </div>
+
+      <div class="book-card">
+        <img src="images/book3.jpg" alt="Book">
+        <div class="book-info">
+          <h4>Database System Concepts</h4>
+          <p>Silberschatz</p>
+        </div>
+      </div>
+
+      <div class="book-card">
+        <img src="images/book4.jpg" alt="Book">
+        <div class="book-info">
+          <h4>Introduction to Algorithms</h4>
+          <p>Cormen</p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<section class="features">
+  <div class="container feature-grid">
+    <div class="feature-card">
+      <h3>Student Portal</h3>
+      <p>Track issued books and due dates easily.</p>
+    </div>
+    <div class="feature-card">
+      <h3>Faculty Portal</h3>
+      <p>Extended borrowing privileges and tracking.</p>
+    </div>
+    <div class="feature-card">
+      <h3>Librarian Dashboard</h3>
+      <p>Complete control over library operations.</p>
+    </div>
+  </div>
+</section>
+
+<footer class="footer">
+  © 2026 GRIET Central Library | Digital Library Management System
+</footer>
+
+</body>
+</html>

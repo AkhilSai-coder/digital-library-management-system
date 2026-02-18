@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Book Catalog | GRIET Library</title>
+
+
+<style>
+body{
+  margin:0;
+  background:#f6f8fb;
+  font-family: Arial, sans-serif;
+  color:#111827;
+}
+
+.container{
+  padding:30px;
+  max-width:1200px;
+  margin:auto;
+}
+
+h1{
+  font-size:28px;
+  color:#1f3a5f;
+  margin-bottom:20px;
+}
+
+/* FILTER BAR */
+.filters{
+  display:flex;
+  gap:15px;
+  margin-bottom:15px;
+}
+
+.search{
+  flex:1;
+  padding:12px 16px;
+  border-radius:10px;
+  border:1px solid #e5e7eb;
+  font-size:14px;
+}
+
+select{
+  padding:12px 16px;
+  border-radius:10px;
+  border:1px solid #e5e7eb;
+  font-size:14px;
+  background:#fff;
+}
+
+.count{
+  font-size:14px;
+  color:#64748b;
+  margin-bottom:20px;
+}
+
+/* GRID */
+.grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(320px,1fr));
+  gap:20px;
+}
+
+/* CARD */
+.card{
+  background:#fff;
+  border:1px solid #e5e7eb;
+  border-radius:14px;
+  padding:18px;
+  position:relative;
+}
+
+.card h3{
+  font-size:18px;
+  margin-bottom:6px;
+}
+
+.author{
+  color:#475569;
+  margin-bottom:10px;
+  font-size:14px;
+}
+
+.meta{
+  font-size:13px;
+  color:#64748b;
+}
+
+.badge{
+  position:absolute;
+  top:15px;
+  right:15px;
+  padding:4px 12px;
+  border-radius:20px;
+  font-size:12px;
+  background:#f1f5f9;
+}
+
+.unavailable{
+  background:#ef4444;
+  color:#fff;
+}
+
+/* REQUEST BUTTON */
+.request-btn{
+  margin-top:12px;
+  padding:8px 14px;
+  border:none;
+  border-radius:8px;
+  background:#1f3a5f;
+  color:#fff;
+  cursor:pointer;
+  font-size:13px;
+}
+
+.request-btn:disabled{
+  background:#ccc;
+  cursor:not-allowed;
+}
+
+.request-btn:hover{
+  opacity:0.9;
+}
+</style>
+</head>
+
+<body>
+
+<script src="js/auth.js"></script>
+
+<!-- Allow BOTH student and faculty -->
+<script>
+const role = sessionStorage.getItem("userRole");
+if(!role || (role !== "student" && role !== "faculty")){
+  alert("Access denied. Please login.");
+  location.href = "login.html";
+}
+</script>
+
+<div class="container">
+
+<h1>Book Catalog</h1>
+
+<!-- FILTERS -->
+<div class="filters">
+  <input id="searchInput" class="search"
+         placeholder="🔍 Search by title, author...">
+
+  <select id="deptFilter">
+    <option value="all">All Departments</option>
+    <option value="CSE">CSE</option>
+    <option value="ECE">ECE</option>
+  </select>
+
+  <select id="catFilter">
+    <option value="all">All Categories</option>
+    <option value="Algorithms">Algorithms</option>
+    <option value="Operating Systems">Operating Systems</option>
+    <option value="AI/ML">AI/ML</option>
+    <option value="Electronics">Electronics</option>
+  </select>
+</div>
+
+<div class="count" id="bookCount">5 books found</div>
+
+<!-- BOOK GRID -->
+<div class="grid">
+
+<div class="card" data-dept="CSE" data-cat="Algorithms">
+<span class="badge">2 avail.</span>
+<h3>Introduction to Algorithms</h3>
+<div class="author">Thomas H. Cormen</div>
+<div class="meta">CSE • Algorithms • 3rd Ed.</div>
+<button class="request-btn">Request Book</button>
+</div>
+
+<div class="card" data-dept="CSE" data-cat="Operating Systems">
+<span class="badge">1 avail.</span>
+<h3>Operating System Concepts</h3>
+<div class="author">Abraham Silberschatz</div>
+<div class="meta">CSE • Operating Systems • 10th Ed.</div>
+<button class="request-btn">Request Book</button>
+</div>
+
+<div class="card" data-dept="CSE" data-cat="AI/ML">
+<span class="badge">2 avail.</span>
+<h3>Artificial Intelligence</h3>
+<div class="author">Stuart Russell</div>
+<div class="meta">CSE • AI/ML • 4th Ed.</div>
+<button class="request-btn">Request Book</button>
+</div>
+
+<div class="card" data-dept="ECE" data-cat="Electronics">
+<span class="badge">3 avail.</span>
+<h3>Digital Design</h3>
+<div class="author">M. Morris Mano</div>
+<div class="meta">ECE • Electronics • 6th Ed.</div>
+<button class="request-btn">Request Book</button>
+</div>
+
+<div class="card" data-dept="ECE" data-cat="Electronics">
+<span class="badge unavailable">Unavailable</span>
+<h3>Signals and Systems</h3>
+<div class="author">Oppenheim</div>
+<div class="meta">ECE • Electronics • 2nd Ed.</div>
+<button class="request-btn" disabled>Unavailable</button>
+</div>
+
+</div>
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", function(){
+
+  const searchInput = document.getElementById("searchInput");
+  const deptFilter = document.getElementById("deptFilter");
+  const catFilter = document.getElementById("catFilter");
+  const books = document.querySelectorAll(".card");
+  const countText = document.getElementById("bookCount");
+
+  const userRole = sessionStorage.getItem("userRole");
+  const userId = sessionStorage.getItem("userId");
+
+  /* FILTER SYSTEM */
+  function filterBooks(){
+    const searchValue = searchInput.value.toLowerCase();
+    const deptValue = deptFilter.value;
+    const catValue = catFilter.value;
+
+    let visibleCount = 0;
+
+    books.forEach(book => {
+      const text = book.innerText.toLowerCase();
+      const dept = book.dataset.dept;
+      const cat = book.dataset.cat;
+
+      const matchSearch = text.includes(searchValue);
+      const matchDept = deptValue === "all" || dept === deptValue;
+      const matchCat = catValue === "all" || cat === catValue;
+
+      if(matchSearch && matchDept && matchCat){
+        book.style.display = "block";
+        visibleCount++;
+      } else {
+        book.style.display = "none";
+      }
+    });
+
+    countText.innerText = visibleCount + " books found";
+  }
+
+  searchInput.addEventListener("keyup", filterBooks);
+  deptFilter.addEventListener("change", filterBooks);
+  catFilter.addEventListener("change", filterBooks);
+
+  /* REQUEST SYSTEM */
+  document.querySelectorAll(".request-btn").forEach(btn => {
+
+    const card = btn.closest(".card");
+    const title = card.querySelector("h3").innerText;
+
+    let requests = JSON.parse(localStorage.getItem("bookRequests")) || [];
+
+    const alreadyRequested = requests.some(r =>
+      r.title === title &&
+      r.userId === userId &&
+      r.status === "pending"
+    );
+
+    if(alreadyRequested){
+      btn.innerText = "Requested";
+      btn.disabled = true;
+    }
+
+    btn.addEventListener("click", function(){
+
+      let requests = JSON.parse(localStorage.getItem("bookRequests")) || [];
+
+      const exists = requests.some(r =>
+        r.title === title &&
+        r.userId === userId &&
+        r.status === "pending"
+      );
+
+      if(exists){
+        alert("Request already sent!");
+        return;
+      }
+
+      requests.push({
+        title: title,
+        userRole: userRole,
+        userId: userId,
+        requestDate: new Date().toISOString().split("T")[0],
+        status: "pending"
+      });
+
+      localStorage.setItem("bookRequests", JSON.stringify(requests));
+
+      btn.innerText = "Requested";
+      btn.disabled = true;
+
+      alert("Request sent to Librarian!");
+    });
+
+  });
+
+});
+</script>
+
+</body>
+</html>

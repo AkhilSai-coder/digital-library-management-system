@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Recommend Books | Faculty</title>
+<link rel="stylesheet" href="css/style.css">
+
+<style>
+body{
+  margin:0;
+  font-family: Arial, sans-serif;
+  background:#f6f8fb;
+}
+
+/* Layout */
+.dashboard-layout{
+  display:flex;
+  min-height:100vh;
+}
+
+/* Sidebar */
+.sidebar{
+  width:240px;
+  background:#fff;
+  border-right:1px solid #e5e7eb;
+  padding:20px;
+}
+
+.sidebar h3{
+  margin-bottom:20px;
+  color:#1f3a5f;
+}
+
+.sidebar a{
+  display:block;
+  padding:10px 12px;
+  margin-bottom:6px;
+  text-decoration:none;
+  color:#333;
+  border-radius:6px;
+  font-size:14px;
+}
+
+.sidebar a.active,
+.sidebar a:hover{
+  background:#eef2f6;
+  font-weight:bold;
+}
+
+/* Main */
+.main{
+  flex:1;
+  padding:30px;
+}
+
+h2{
+  margin-bottom:20px;
+  color:#1f3a5f;
+}
+
+/* Card */
+.card{
+  background:#fff;
+  border:1px solid #e5e7eb;
+  border-radius:10px;
+  padding:20px;
+  margin-bottom:25px;
+}
+
+.card h3{
+  margin-bottom:20px;
+}
+
+/* Form */
+.form-row{
+  display:flex;
+  gap:20px;
+  margin-bottom:15px;
+}
+
+input, textarea{
+  width:100%;
+  padding:12px;
+  border:1px solid #e5e7eb;
+  border-radius:8px;
+  font-size:14px;
+}
+
+textarea{
+  resize:vertical;
+  height:100px;
+}
+
+button{
+  background:#0f172a;
+  color:#fff;
+  padding:12px 22px;
+  border:none;
+  border-radius:8px;
+  font-size:14px;
+  cursor:pointer;
+}
+
+button:hover{
+  opacity:0.9;
+}
+
+/* Table */
+table{
+  width:100%;
+  border-collapse:collapse;
+}
+
+th, td{
+  padding:14px 10px;
+  border-bottom:1px solid #f1f5f9;
+  text-align:left;
+  font-size:14px;
+}
+
+th{
+  color:#64748b;
+}
+
+.status{
+  padding:4px 12px;
+  border-radius:20px;
+  background:#f1f5f9;
+  font-size:12px;
+}
+
+</style>
+</head>
+
+<body>
+
+<!-- AUTH -->
+<script src="js/auth.js"></script>
+<script>
+protectDashboard("faculty");
+</script>
+
+<div class="dashboard-layout">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <h3>📚 Library</h3>
+    <a href="faculty-dashboard.html">Dashboard</a>
+    <a href="catalogue.html">Book Catalog</a>
+    <a href="faculty-mybook.html">My Books</a>
+    <a href="faculty-fines.html">Fines</a>
+    <a class="active">Recommend Books</a>
+    <a onclick="logout()" style="cursor:pointer;">Logout</a>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="main">
+
+    <h2>Recommend Books</h2>
+
+    <!-- New Recommendation -->
+    <div class="card">
+      <h3>New Recommendation</h3>
+
+      <div class="form-row">
+        <div style="flex:1">
+          <label>Book Title</label>
+          <input type="text" placeholder="Enter book title">
+        </div>
+
+        <div style="flex:1">
+          <label>Author</label>
+          <input type="text" placeholder="Enter author name">
+        </div>
+      </div>
+
+      <div style="margin-bottom:15px;">
+        <label>Reason / Justification</label>
+        <textarea placeholder="Why should the library acquire this book?"></textarea>
+      </div>
+
+      <button>Submit Recommendation</button>
+    </div>
+
+    <!-- Your Recommendations -->
+    <div class="card">
+      <h3>Your Recommendations</h3>
+
+      <table>
+        <tr>
+          <th>Title</th>
+          <th>Author</th>
+          <th>Date</th>
+          <th>Status</th>
+        </tr>
+
+        <tr>
+          <td><b>Deep Learning</b></td>
+          <td>Ian Goodfellow</td>
+          <td>2026-01-20</td>
+          <td><span class="status">pending</span></td>
+        </tr>
+
+      </table>
+    </div>
+
+  </main>
+</div>
+
+</body>
+</html>

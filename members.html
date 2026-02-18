@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Members | GRIET Library</title>
+<link rel="stylesheet" href="css/style.css">
+
+<style>
+body { margin:0; background:#f6f8fb; font-family:Arial; }
+.dashboard-layout { display:flex; min-height:100vh; }
+
+.sidebar {
+  width:260px;
+  background:#fff;
+  border-right:1px solid #e5e7eb;
+  padding:20px;
+}
+.sidebar h3 { color:#1f3a5f; margin-bottom:20px; }
+.sidebar a {
+  display:block;
+  padding:10px 14px;
+  margin-bottom:6px;
+  text-decoration:none;
+  color:#333;
+  border-radius:6px;
+  font-size:14px;
+}
+.sidebar a.active,
+.sidebar a:hover {
+  background:#eef2f6;
+  font-weight:bold;
+}
+
+.main { flex:1; padding:30px; }
+
+.page-title {
+  font-size:26px;
+  color:#1f3a5f;
+  margin-bottom:20px;
+}
+
+.search-box{
+  width:300px;
+  padding:10px;
+  border-radius:8px;
+  border:1px solid #ccc;
+  margin-bottom:20px;
+}
+
+.card {
+  background:#fff;
+  border:1px solid #e5e7eb;
+  border-radius:10px;
+  padding:20px;
+}
+
+table {
+  width:100%;
+  border-collapse:collapse;
+}
+
+th, td {
+  padding:14px;
+  border-bottom:1px solid #eee;
+  text-align:left;
+  font-size:14px;
+}
+
+.role-badge {
+  padding:4px 12px;
+  border-radius:20px;
+  font-size:12px;
+  background:#f1f5f9;
+}
+
+.view-link {
+  color:#1f3a5f;
+  font-weight:bold;
+  cursor:pointer;
+}
+</style>
+</head>
+
+<body>
+
+<script src="js/auth.js"></script>
+<script>protectDashboard("librarian");</script>
+
+<div class="dashboard-layout">
+
+<aside class="sidebar">
+  <h3>📚 Library</h3>
+  <a href="librarian-dashboard.html">Dashboard</a>
+  <a href="book-management.html">Book Management</a>
+  <a href="issue-return.html">Issue & Return</a>
+  <a class="active">Members</a>
+  <a href="reports.html">Reports</a>
+  <a href="fine-management.html">Fine Management</a>
+  <a onclick="logout()" style="cursor:pointer;">Logout</a>
+</aside>
+
+<main class="main">
+
+<div class="page-title">Members</div>
+
+<!-- 🔍 SEARCH BOX ADDED -->
+<input type="text" id="searchInput" class="search-box"
+       placeholder="Search by Roll No / User ID">
+
+<div class="card">
+<table>
+<thead>
+<tr>
+  <th>User ID</th>
+  <th>Role</th>
+  <th>Active Issues</th>
+  <th>History</th>
+  <th>View</th>
+</tr>
+</thead>
+<tbody id="membersTable"></tbody>
+</table>
+</div>
+
+</main>
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", function(){
+
+  const table = document.getElementById("membersTable");
+  const searchInput = document.getElementById("searchInput");
+
+  const studentBooks = JSON.parse(localStorage.getItem("studentBooks")) || [];
+  const facultyBooks = JSON.parse(localStorage.getItem("facultyBooks")) || [];
+  const studentHistory = JSON.parse(localStorage.getItem("studentHistory")) || [];
+  const facultyHistory = JSON.parse(localStorage.getItem("facultyHistory")) || [];
+
+  const users = {};
+
+  studentBooks.forEach(b => users[b.userId] = "student");
+  facultyBooks.forEach(b => users[b.userId] = "faculty");
+  studentHistory.forEach(b => users[b.userId] = "student");
+  facultyHistory.forEach(b => users[b.userId] = "faculty");
+
+  const userIds = Object.keys(users);
+
+  if(userIds.length === 0){
+    table.innerHTML = `<tr><td colspan="5">No members yet</td></tr>`;
+    return;
+  }
+
+  userIds.forEach(userId => {
+
+    const role = users[userId];
+
+    const activeCount = role === "student"
+      ? studentBooks.filter(b => b.userId === userId).length
+      : facultyBooks.filter(b => b.userId === userId).length;
+
+    const historyCount = role === "student"
+      ? studentHistory.filter(b => b.userId === userId).length
+      : facultyHistory.filter(b => b.userId === userId).length;
+
+    table.innerHTML += `
+      <tr>
+        <td>${userId}</td>
+        <td><span class="role-badge">${role}</span></td>
+        <td>${activeCount}</td>
+        <td>${historyCount}</td>
+        <td class="view-link"
+            onclick="openMember('${userId}','${role}')">
+            View
+        </td>
+      </tr>
+    `;
+  });
+
+  /* 🔍 SEARCH FUNCTION */
+  searchInput.addEventListener("keyup", function(){
+
+    const value = searchInput.value.toLowerCase();
+    const rows = table.querySelectorAll("tr");
+
+    rows.forEach(row => {
+      const userId = row.children[0].innerText.toLowerCase();
+
+      if(userId.includes(value)){
+        row.style.display = "";
+      } else {
+        row.style.display = "none";
+      }
+    });
+
+  });
+
+});
+
+function openMember(userId, userRole){
+
+  localStorage.setItem("selectedMember",
+    JSON.stringify({userId, userRole})
+  );
+
+  window.location.href = "member-details.html";
+}
+</script>
+
+</body>
+</html>

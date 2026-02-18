@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Login | GRIET Central Library</title>
+  <link rel="stylesheet" href="css/style.css">
+
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #ffffff;
+    }
+
+    /* HOME BUTTON */
+    .home-btn {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      text-decoration: none;
+      background: #1f3a5f;
+      color: #fff;
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 500;
+      transition: 0.3s ease;
+    }
+
+    .home-btn:hover {
+      background: #0f172a;
+    }
+
+    /* LOGIN PAGE */
+    .login-wrapper {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+    }
+
+    .login-container {
+      max-width: 1000px;
+      width: 100%;
+      padding: 40px 20px;
+    }
+
+    .login-title {
+      font-size: 34px;
+      color: #1f3a5f;
+      margin-bottom: 10px;
+    }
+
+    .login-subtitle {
+      color: #666;
+      margin-bottom: 40px;
+    }
+
+    .role-cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 30px;
+    }
+
+    .role-card {
+      border: 1px solid #e0e0e0;
+      border-radius: 10px;
+      padding: 30px 20px;
+      background: #fff;
+      cursor: pointer;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .role-card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 12px 30px rgba(0,0,0,0.1);
+    }
+
+    .role-icon {
+      font-size: 40px;
+      margin-bottom: 15px;
+      color: #1f3a5f;
+    }
+
+    /* MODAL */
+    .modal {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.5);
+      display: none;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal-box {
+      background: #fff;
+      width: 360px;
+      padding: 25px;
+      border-radius: 10px;
+      text-align: left;
+    }
+
+    .modal-box h3 {
+      margin-bottom: 15px;
+      color: #1f3a5f;
+    }
+
+    .modal-box input {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 12px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+
+    .modal-actions {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 10px;
+    }
+
+    .btn {
+      padding: 8px 16px;
+      background: #1f3a5f;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    .btn-danger {
+      background: #b30000;
+    }
+  </style>
+</head>
+
+<body>
+
+<!-- HOME BUTTON -->
+<a href="index.html" class="home-btn">🏠 Home</a>
+
+<div class="login-wrapper">
+  <div class="login-container">
+
+    <div class="role-icon">📘</div>
+    <h1 class="login-title">Digital Library Management System</h1>
+    <p class="login-subtitle">GRIET Central Library</p>
+
+    <div class="role-cards">
+      <div class="role-card" onclick="openLogin('student')">
+        <div class="role-icon">🎓</div>
+        <h3>Student</h3>
+      </div>
+
+      <div class="role-card" onclick="openLogin('faculty')">
+        <div class="role-icon">👨‍🏫</div>
+        <h3>Faculty</h3>
+      </div>
+
+      <div class="role-card" onclick="openLogin('librarian')">
+        <div class="role-icon">📚</div>
+        <h3>Librarian</h3>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- LOGIN MODAL -->
+<div class="modal" id="loginModal">
+  <div class="modal-box">
+    <h3 id="loginRoleTitle"></h3>
+
+    <input id="userid" placeholder="Roll No / Employee ID">
+    <input id="password" type="password" placeholder="Password">
+
+    <div class="modal-actions">
+      <button class="btn" onclick="doLogin()">Login</button>
+      <button class="btn btn-danger" onclick="closeModal()">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<script src="js/auth.js"></script>
+<script>
+  let selectedRole = "";
+
+  function openLogin(role) {
+    selectedRole = role;
+    document.getElementById("loginRoleTitle").innerText =
+      "Login as " + role.charAt(0).toUpperCase() + role.slice(1);
+    document.getElementById("loginModal").style.display = "flex";
+  }
+
+  function closeModal() {
+    document.getElementById("loginModal").style.display = "none";
+  }
+
+  function doLogin() {
+    const id = document.getElementById("userid").value.trim();
+    const pass = document.getElementById("password").value.trim();
+
+    if (!id || !pass) {
+      alert("Please enter credentials");
+      return;
+    }
+
+    sessionStorage.setItem("userRole", selectedRole);
+    sessionStorage.setItem("userId", id);
+
+    if (selectedRole === "student") location.href = "student-dashboard.html";
+    if (selectedRole === "faculty") location.href = "faculty-dashboard.html";
+    if (selectedRole === "librarian") location.href = "librarian-dashboard.html";
+  }
+</script>
+
+</body>
+</html>
