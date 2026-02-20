@@ -5,254 +5,450 @@
 <title>GRIET Central Library</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+<!-- Google Font -->
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+
 <style>
 
-/* ===== GLOBAL ===== */
-body {
-  margin: 0;
-  font-family: 'Segoe UI', sans-serif;
-  background: #f4f6f9;
+/* ================= GLOBAL ================= */
+
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
 }
 
-.container {
-  width: 90%;
-  margin: auto;
+html{
+  scroll-behavior:smooth;
 }
 
-/* ===== TOP BAR ===== */
-.top-bar {
-  background: #0f2d52;
+body{
+  font-family:'Poppins', sans-serif;
+  background:#f5f7fb;
+  color:#111;
+}
+
+.container{
+  width:90%;
+  max-width:1200px;
+  margin:auto;
+}
+
+a{
+  text-decoration:none;
+  color:inherit;
+}
+
+/* ================= TOP BAR ================= */
+
+.top-bar{
+  background:#0f2d52;
+  color:#fff;
+  font-size:13px;
+  padding:8px 0;
+  text-align:center;
+  letter-spacing:1px;
+}
+
+/* ================= HEADER ================= */
+
+.header{
+  background:#ffffff;
+  position:sticky;
+  top:0;
+  z-index:1000;
+  box-shadow:0 5px 20px rgba(0,0,0,0.05);
+}
+
+.header-flex{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:15px 0;
+}
+
+.logo-section{
+  display:flex;
+  align-items:center;
+  gap:15px;
+}
+
+.logo-section img{
+  width:70px;
+  transition:0.3s;
+}
+
+.logo-section img:hover{
+  transform:scale(1.05);
+}
+
+.main-title{
+  font-size:24px;
+  font-weight:700;
+  color:#0f2d52;
+}
+
+.sub-title{
+  font-size:12px;
+  color:#777;
+}
+
+/* NAVIGATION */
+
+nav a{
+  margin-left:30px;
+  font-weight:600;
+  font-size:14px;
+  position:relative;
+}
+
+nav a::after{
+  content:"";
+  position:absolute;
+  width:0;
+  height:2px;
+  background:#e10600;
+  left:0;
+  bottom:-6px;
+  transition:0.3s;
+}
+
+nav a:hover::after{
+  width:100%;
+}
+
+/* ================= HERO ================= */
+
+.hero{
+  height:550px;
+  background:url("Gokaraju-Rangaraju.jpeg") center/cover no-repeat;
+  position:relative;
+}
+
+.hero-overlay{
+  background:rgba(0,0,0,0.6);
+  height:100%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  color:white;
+}
+
+.hero h1{
+  font-size:52px;
+  margin-bottom:15px;
+  animation:fadeUp 1s ease;
+}
+
+.hero p{
+  font-size:18px;
+  opacity:0.9;
+  animation:fadeUp 1.5s ease;
+}
+
+@keyframes fadeUp{
+  from{opacity:0; transform:translateY(40px);}
+  to{opacity:1; transform:translateY(0);}
+}
+
+/* ================= LIBRARY COLLECTION ================= */
+
+.library-collection-section{
+  background:#ffffff;
+  padding:100px 0;
+  text-align:center;
+}
+
+.collection-title{
+  font-size:46px;
+  font-weight:700;
+  margin-bottom:20px;
+}
+
+.collection-title span{
+  color:#1e3a8a;
+}
+
+.collection-description{
+  max-width:850px;
+  margin:auto;
+  font-size:17px;
+  line-height:1.7;
+  color:#444;
+  margin-bottom:40px;
+}
+
+.collection-search{
+  display:flex;
+  max-width:700px;
+  margin:30px auto;
+  border:2px solid #0f2d52;
+  border-radius:50px;
+  overflow:hidden;
+  transition:0.3s;
+}
+
+.collection-search:hover{
+  box-shadow:0 5px 25px rgba(0,0,0,0.1);
+}
+
+.collection-search input{
+  flex:1;
+  padding:18px;
+  border:none;
+  outline:none;
+}
+
+.collection-search button{
+  width:70px;
+  border:none;
+  background:#0f2d52;
+  color:white;
+  font-size:18px;
+  cursor:pointer;
+}
+
+/* STATS GRID */
+
+.collection-stats{
+  margin-top:60px;
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+  gap:25px;
+}
+
+.stat-box{
+  background:#f4f6f9;
+  padding:40px;
+  border-radius:20px;
+  transition:0.4s;
+}
+
+.stat-box:hover{
+  transform:translateY(-10px);
+  box-shadow:0 20px 40px rgba(0,0,0,0.1);
+}
+
+.stat-box h3{
+  font-size:32px;
+  color:#0f2d52;
+  margin-bottom:10px;
+}
+
+/* ================= LIBRARY RESOURCES ================= */
+
+.library-heading{
+  text-align:center;
+  padding:80px 0 30px;
+}
+
+.library-heading h2{
+  font-size:42px;
+}
+
+.library-heading p{
+  color:#666;
+  margin-top:10px;
+}
+
+/* RESOURCE CARDS */
+
+.quick-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+  gap:30px;
+  margin-bottom:100px;
+}
+
+.quick-card{
+  height:230px;
+  background-size:cover;
+  background-position:center;
+  border-radius:20px;
+  position:relative;
+  overflow:hidden;
+  display:flex;
+  align-items:flex-end;
+  padding:20px;
+  transition:0.4s;
+}
+
+.quick-card::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:rgba(0,0,0,0.55);
+  transition:0.4s;
+}
+
+.quick-card h3{
+  position:relative;
+  color:white;
+  font-size:22px;
+  font-weight:600;
+}
+
+.quick-card:hover{
+  transform:translateY(-12px);
+  box-shadow:0 25px 50px rgba(0,0,0,0.3);
+}
+
+.quick-card:hover::before{
+  background:rgba(0,0,0,0.25);
+}
+
+/* ================= FOOTER ================= */
+
+.footer{
+  background:#0f2d52;
+  color:white;
+  padding:40px 0;
+  text-align:center;
+  font-size:14px;
+}
+
+/* ================= FEATURE + COLLECTION PREMIUM SECTION ================= */
+
+/* ===== FEATURED BOOKS PANEL ===== */
+
+.featured-books {
+  background: linear-gradient(135deg, #0f2d52, #163e6d);
+  padding: 50px 35px;
+  border-radius: 25px;
   color: white;
-  text-align: center;
-  padding: 8px 0;
-  font-size: 14px;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 40px 80px rgba(0,0,0,0.25);
 }
 
-/* ===== HEADER ===== */
-.header {
-  background: white;
-  padding: 15px 0;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+/* Bigger Height */
+.book-slider {
+  height: 650px;   /* 🔥 INCREASED HEIGHT */
+  overflow: hidden;
+  position: relative;
+  border-radius: 20px;
 }
 
-.header-flex {
+/* Track for animation */
+.slider-track {
   display: flex;
-  justify-content: space-between;
+  flex-direction: column;
+  animation: scrollBooks 25s linear infinite;
+}
+
+/* STOP SCROLL ON HOVER */
+.book-slider:hover .slider-track {
+  animation-play-state: paused;
+}
+
+/* Book Images - FULL COVER DISPLAY */
+.book-slider img {
+  width: 100%;
+  height: auto;              /* 🔥 SHOW FULL COVER */
+  object-fit: contain;       /* 🔥 NO CROP */
+  background: white;
+  padding: 10px;
+  margin-bottom: 25px;
+  border-radius: 15px;
+  transition: 0.4s ease;
+}
+
+/* Hover effect on individual image */
+.book-slider img:hover {
+  transform: scale(1.04);
+  box-shadow: 0 20px 50px rgba(0,0,0,0.4);
+}
+
+/* Smooth Vertical Scroll Animation */
+@keyframes scrollBooks {
+  0% { transform: translateY(0); }
+  100% { transform: translateY(-50%); }
+}
+
+
+/* ================= RIGHT - LIBRARY COLLECTION ================= */
+/* ================= FEATURED BOOKS SLIDER ================= */
+
+.feature-resource-wrapper {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr;   /* LEFT SIDE BIGGER */
+  gap: 60px;
   align-items: center;
 }
 
-.header nav a {
-  margin-left: 25px;
-  text-decoration: none;
-  color: #0f2d52;
-  font-weight: 500;
-  transition: 0.3s;
+/* ===== FEATURED BOOKS LEFT SIDE ===== */
+
+.feature-resource-wrapper {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr; /* LEFT BIGGER */
+  gap: 60px;
+  align-items: center;
 }
 
-.header nav a:hover {
-  color: #0077ff;
-}
-
-/* ===== CAMPUS BANNER ===== */
-.campus-banner {
-  position: relative;
-  height: 420px;
-  background: url("Gokaraju-Rangaraju.jpeg") no-repeat center center/cover;
-}
-
-.campus-overlay {
-  background: rgba(0, 0, 0, 0.65);
-  height: 100%;
-  display: flex;
-  align-items: flex-end;
-}
-
-.campus-content {
+/* LEFT PANEL */
+.featured-books {
+  background: linear-gradient(135deg,#0f2d52,#1e3a8a);
+  padding: 20px;
+  border-radius: 25px;
   color: white;
-  padding: 50px;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 30px 60px rgba(0,0,0,0.25);
 }
 
-.campus-content h1 {
-  font-size: 50px;
-  margin-bottom: 10px;
+/* Heading */
+.side-heading {
+  font-size: 30px;
+  margin-bottom: 30px;
+  letter-spacing: 2px;
 }
 
-.campus-content p {
-  font-size: 20px;
-  opacity: 0.9;
+/* SLIDER CONTAINER */
+.book-slider {
+  height: 650px;   /* 🔥 INCREASED HEIGHT */
+  overflow: hidden;
+  position: relative;
+  border-radius: 18px;
 }
 
-/* ===== MAIN SECTION WITH SIDEBAR ===== */
-.main-section {
-  display: flex;
-  gap: 30px;
-  padding: 60px 0;
-}
-
-.main-content {
-  flex: 3;
-  background: white;
-  padding: 40px;
-  border-radius: 10px;
-  box-shadow: 0 5px 20px rgba(0,0,0,0.05);
-}
-
-.main-content h2 {
-  font-size: 36px;
-  margin-bottom: 20px;
-  color: #0f2d52;
-}
-
-.main-content p {
-  font-size: 17px;
-  line-height: 1.7;
-  color: #444;
-}
-
-/* ===== SIDEBAR ===== */
-.sidebar {
-  flex: 1.3;
+/* TRACK */
+.slider-track {
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  animation: scrollBooks 25s linear infinite;
 }
 
-.side-card {
-  background: white;
-  padding: 20px;
-  border-radius: 10px;
-  box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+/* STOP ON HOVER */
+.book-slider:hover .slider-track {
+  animation-play-state: paused;
 }
 
-.side-card h3 {
-  margin-bottom: 15px;
-  color: #0f2d52;
-}
-
-.side-card ul {
-  padding-left: 18px;
-  line-height: 1.8;
-  font-size: 14px;
-}
-
-/* ===== BUTTONS ===== */
-.cta-buttons {
-  margin-top: 25px;
-  display: flex;
-  gap: 15px;
-}
-
-.cta-buttons a {
-  text-decoration: none;
-  padding: 12px 24px;
-  border-radius: 6px;
-  font-weight: bold;
-}
-
-.cta-primary {
-  background: #0f2d52;
-  color: white;
-}
-
-.cta-secondary {
-  background: #e6ecf3;
-  color: #0f2d52;
-}
-
-/* ===== NEW ARRIVALS ===== */
-.new-arrivals {
-  background: #f9fbfd;
-  padding: 70px 0;
-}
-
-.section-title {
-  text-align: center;
-  font-size: 36px;
-  margin-bottom: 40px;
-  color: #0f2d52;
-}
-
-.book-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-  gap: 30px;
-}
-
-.book-card {
-  background: white;
-  border-radius: 12px;
-  overflow: hidden;
-  box-shadow: 0 6px 25px rgba(0,0,0,0.08);
-  transition: 0.3s ease;
-  text-align: center;
-}
-
-.book-card:hover {
-  transform: translateY(-8px);
-}
-
-.book-card img {
+/* BOOK IMAGES */
+.book-slider img {
   width: 100%;
-  height: 250px;
-  object-fit: cover;
+  height: auto;          /* 🔥 SHOW FULL COVER */
+  object-fit: contain;   /* 🔥 NO CROP */
+  margin-bottom: 30px;
+  border-radius: 15px;
+  background: white;
+  padding: 10px;
+  transition: 0.4s ease;
 }
 
-.book-info {
-  padding: 15px;
+/* Hover Effect */
+.book-slider img:hover {
+  transform: scale(1.05);
+  box-shadow: 0 20px 40px rgba(0,0,0,0.5);
 }
 
-.book-info h4 {
-  margin: 10px 0 5px;
-  color: #0f2d52;
+/* Animation */
+@keyframes scrollBooks {
+  0% { transform: translateY(0); }
+  100% { transform: translateY(-50%); }
 }
 
-.book-info p {
-  font-size: 14px;
-  color: #555;
-}
 
-/* ===== FEATURES ===== */
-.features {
-  background: #ffffff;
-  padding: 60px 0;
-}
-
-.feature-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-  gap: 25px;
-}
-
-.feature-card {
-  background: #f4f6f9;
-  padding: 25px;
-  border-radius: 10px;
-  transition: 0.3s;
-}
-
-.feature-card:hover {
-  transform: translateY(-5px);
-}
-
-.feature-card h3 {
-  color: #0f2d52;
-}
-
-/* FOOTER */
-.footer {
-  background: #0f2d52;
-  color: white;
-  text-align: center;
-  padding: 20px 0;
-  margin-top: 40px;
-}
-
-/* RESPONSIVE */
-@media(max-width: 900px) {
-  .main-section {
-    flex-direction: column;
-  }
-}
 
 </style>
 </head>
@@ -260,131 +456,134 @@ body {
 <body>
 
 <div class="top-bar">
-  GRIET Library | Digital Library Portal
+GRIET Central Library | Excellence in Knowledge & Research
 </div>
 
 <header class="header">
-  <div class="container header-flex">
-    <h2>GRIET Library</h2>
-    <nav>
-      <a href="index.html">Home</a>
-      <a href="catalogue.html">Catalogue</a>
-      <a href="login.html">Login</a>
-    </nav>
-  </div>
+<div class="container header-flex">
+
+<div class="logo-section">
+<img src="griet_logo.webp">
+<div>
+<div class="main-title">GRIET Library</div>
+<div class="sub-title">Central Knowledge Hub</div>
+</div>
+</div>
+
+<nav>
+<a href="#">Home</a>
+<a href="#">About</a>
+<a href="#">Services</a>
+<a href="login.html">Login</a>
+</nav>
+
+</div>
 </header>
 
-<section class="campus-banner">
-  <div class="campus-overlay">
-    <div class="campus-content">
-      <h1>GRIET Hyderabad Campus</h1>
-      <p>Empowering Knowledge Through Digital Innovation</p>
-    </div>
-  </div>
+<section class="hero">
+<div class="hero-overlay">
+<div>
+<h1>GRIET Central Library</h1>
+<p>Empowering Research • Innovation • Academic Excellence</p>
+</div>
+</div>
 </section>
 
-<div class="container main-section">
+<!-- ===== TOP BOOKS VERTICAL SLIDER ===== -->
 
-  <div class="main-content">
-    <h2>Digital Library Management System</h2>
-    <p>
-      A centralized platform for managing physical library resources
-      with secure role-based access for Students, Faculty, and Librarians.
-    </p>
+<section class="feature-resource-section">
+  <div class="container feature-resource-wrapper">
 
-    <div class="cta-buttons">
-      <a href="login.html" class="cta-primary">Access Library</a>
-      <a href="catalogue.html" class="cta-secondary">View Catalogue</a>
-    </div>
+    <!-- LEFT SIDE - FEATURED BOOKS -->
+    <!-- LEFT SIDE - FEATURED BOOKS -->
+<div class="featured-books">
+
+  <h3 class="side-heading">FEATURED BOOKS</h3>
+
+  <div class="book-slider">
+    <div class="book-slider">
+  <div class="slider-track">
+    <img src="image/image1.jpg" alt="Book 1">
+    <img src="image/image2.jpg" alt="Book 2">
+    <img src="image/image3.jpg" alt="Book 3">
+    <img src="image/image4.jpg" alt="Book 4">
+    <img src="image/image5.jpg" alt="Book 5">
+
+    <!-- Duplicate for smooth infinite loop -->
+    <img src="image/image1.jpg" alt="Book 1">
+    <img src="image/image2.jpg" alt="Book 2">
+    <img src="image/image3.jpg" alt="Book 3">
+    <img src="image/image4.jpg" alt="Book 4">
+    <img src="image/image5.jpg" alt="Book 5">
   </div>
-
-  <div class="sidebar">
-
-    <div class="side-card">
-      <h3>Library Timings</h3>
-      <ul>
-        <li>Mon – Fri: 8:30 AM – 8:00 PM</li>
-        <li>Saturday: 9:00 AM – 5:00 PM</li>
-        <li>Sunday: Closed</li>
-      </ul>
-    </div>
-
-    <div class="side-card">
-      <h3>Rules & Regulations</h3>
-      <ul>
-        <li>Maintain silence inside library</li>
-        <li>ID card mandatory</li>
-        <li>Return books before due date</li>
-        <li>Fine for overdue books</li>
-      </ul>
-    </div>
+</div>
 
   </div>
 
 </div>
 
-<!-- NEW ARRIVALS -->
-<section class="new-arrivals">
-  <div class="container">
-    <h2 class="section-title">📚 New Arrivals</h2>
 
-    <div class="book-grid">
+    <!-- RIGHT SIDE - LIBRARY COLLECTION -->
+    <div class="library-collection-modern">
 
-      <div class="book-card">
-        <img src="images/book1.jpg" alt="Book">
-        <div class="book-info">
-          <h4>Clean Code</h4>
-          <p>Robert C. Martin</p>
-        </div>
+      <h2 class="collection-title">
+        LIBRARY <span>COLLECTION</span>
+      </h2>
+
+      <p class="collection-description">
+        The GRIET Library boasts an exceptional fusion of print and electronic resources,
+        encompassing books, journals, databases, technical reports, and standards.
+      </p>
+
+      <div class="collection-search">
+        <input type="text" placeholder="Search Library Catalogue by Keyword">
+        <button>🔍</button>
       </div>
 
-      <div class="book-card">
-        <img src="images/book2.jpg" alt="Book">
-        <div class="book-info">
-          <h4>Java Complete Reference</h4>
-          <p>Herbert Schildt</p>
-        </div>
-      </div>
-
-      <div class="book-card">
-        <img src="images/book3.jpg" alt="Book">
-        <div class="book-info">
-          <h4>Database System Concepts</h4>
-          <p>Silberschatz</p>
-        </div>
-      </div>
-
-      <div class="book-card">
-        <img src="images/book4.jpg" alt="Book">
-        <div class="book-info">
-          <h4>Introduction to Algorithms</h4>
-          <p>Cormen</p>
-        </div>
+      <div class="collection-stats">
+        <div class="stat-box"><h3>289216</h3><p>eBooks</p></div>
+        <div class="stat-box"><h3>207592</h3><p>Print Books</p></div>
+        <div class="stat-box"><h3>40877</h3><p>Bound Volumes</p></div>
+        <div class="stat-box"><h3>15535</h3><p>eJournals</p></div>
       </div>
 
     </div>
+
   </div>
 </section>
 
-<section class="features">
-  <div class="container feature-grid">
-    <div class="feature-card">
-      <h3>Student Portal</h3>
-      <p>Track issued books and due dates easily.</p>
-    </div>
-    <div class="feature-card">
-      <h3>Faculty Portal</h3>
-      <p>Extended borrowing privileges and tracking.</p>
-    </div>
-    <div class="feature-card">
-      <h3>Librarian Dashboard</h3>
-      <p>Complete control over library operations.</p>
-    </div>
-  </div>
+<!-- LIBRARY RESOURCES -->
+<section class="library-heading">
+<div class="container">
+<h2>LIBRARY RESOURCES</h2>
+<p>Access over 2,50,000 resources available only in the GRIET library</p>
+</div>
+</section>
+
+<section class="container">
+<div class="quick-grid">
+
+<a href="#" class="quick-card" style="background-image:url('image/opac.jpg')">
+<h3>OPAC</h3>
+</a>
+
+<a href="catalogue.html" class="quick-card" style="background-image:url('image/catalogue.png')">
+<h3>Catalogue</h3>
+</a>
+
+<a href="#" class="quick-card" style="background-image:url('image/Remote-Access.png')">
+<h3>Remote Access</h3>
+</a>
+
+<a href="#" class="quick-card" style="background-image:url('image/e-commerce.jpg')">
+<h3>E‑Commerce</h3>
+</a>
+
+</div>
 </section>
 
 <footer class="footer">
-  © 2026 GRIET Central Library | Digital Library Management System
+© 2026 GRIET Central Library | All Rights Reserved
 </footer>
 
 </body>
