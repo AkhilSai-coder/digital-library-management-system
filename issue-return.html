@@ -94,7 +94,6 @@
 <body>
 
 <script src="js/auth.js"></script>
-<script>protectDashboard("librarian");</script>
 
 <div class="dashboard-layout">
 
@@ -132,195 +131,154 @@
 </div>
 
 <script>
-document.addEventListener("DOMContentLoaded", function(){
+document.addEventListener("DOMContentLoaded", async function(){
 
-  const requestList = document.getElementById("requestList");
-  const issuedList = document.getElementById("issuedList");
+    const token = localStorage.getItem("token");
 
-  /* =========================
-     LOAD REQUESTS
-  ========================= */
-  function loadRequests(){
-
-    requestList.innerHTML = "";
-
-    let requests = JSON.parse(localStorage.getItem("bookRequests")) || [];
-    const pending = requests.filter(r => r.status === "pending");
-
-    if(pending.length === 0){
-      requestList.innerHTML = "No pending requests";
-      return;
+    if(!token){
+        alert("Login required");
+        window.location.href = "login.html";
+        return;
     }
 
-    pending.forEach((req, index)=>{
+    const requestList = document.getElementById("requestList");
+    const issuedList = document.getElementById("issuedList");
 
-      requestList.innerHTML += `
-        <div class="list-item">
-          <div>
-            <b>${req.title}</b><br>
-            <small>${req.userRole} • ${req.userId} • ${req.requestDate}</small>
-          </div>
-          <div>
-            <button class="btn" onclick="approve('${req.title}','${req.userId}','${req.userRole}')">
-              Approve
-            </button>
-            <button class="btn return" onclick="reject('${req.title}','${req.userId}')">
-              Reject
-            </button>
-          </div>
-        </div>
-      `;
-    });
-  }
+    try {
 
-  /* =========================
-     LOAD ISSUED BOOKS
-  ========================= */
-  function loadIssued(){
+        /* =========================
+           LOAD PENDING REQUESTS
+        ========================= */
 
-    issuedList.innerHTML = "";
+        const requestResponse = await fetch(
+            "http://localhost:8080/request/pending", {
+                headers: {
+                    "Authorization": "Bearer " + token
+                }
+            }
+        );
 
-    let facultyBooks = JSON.parse(localStorage.getItem("facultyBooks")) || [];
-    let studentBooks = JSON.parse(localStorage.getItem("studentBooks")) || [];
+        const requests = requestResponse.ok ? 
+            await requestResponse.json() : [];
 
-    const allBooks = [...facultyBooks, ...studentBooks];
+        requestList.innerHTML = "";
 
-    if(allBooks.length === 0){
-      issuedList.innerHTML = "No issued books";
-      return;
+        if(requests.length === 0){
+            requestList.innerHTML = "No pending requests";
+        }
+
+        requests.forEach(req => {
+
+            requestList.innerHTML += `
+                <div class="list-item">
+                    <div>
+                        <b>${req.book.title}</b><br>
+                        <small>${req.userEmail}</small>
+                    </div>
+                    <div>
+                        <button class="btn"
+                            onclick="approveRequest(${req.id})">
+                            Approve
+                        </button>
+                    </div>
+                </div>
+            `;
+        });
+
+
+        /* =========================
+           LOAD ISSUED BOOKS
+        ========================= */
+
+        const issuedResponse = await fetch(
+            "http://localhost:8080/borrow/all", {
+                headers: {
+                    "Authorization": "Bearer " + token
+                }
+            }
+        );
+
+        const borrows = issuedResponse.ok ? 
+            await issuedResponse.json() : [];
+
+        issuedList.innerHTML = "";
+
+        if(borrows.length === 0){
+            issuedList.innerHTML = "No issued books";
+        }
+
+        borrows.forEach(borrow => {
+
+            issuedList.innerHTML += `
+                <div class="list-item">
+                    <div>
+                        <b>${borrow.book.title}</b><br>
+                        <small>${borrow.user.email} • Due: ${borrow.dueDate}</small>
+                    </div>
+                    <button class="btn return"
+                        onclick="returnBook(${borrow.id})">
+                        Return
+                    </button>
+                </div>
+            `;
+        });
+
+    } catch(error){
+        console.error(error);
+        alert("Server error");
     }
 
-    allBooks.forEach(book => {
-
-      issuedList.innerHTML += `
-        <div class="list-item">
-          <div>
-            <b>${book.title}</b><br>
-            <small>${book.userRole} • ${book.userId} • Due: ${book.dueDate}</small>
-          </div>
-          <button class="btn return"
-            onclick="returnBook('${book.title}','${book.userId}','${book.userRole}')">
-            Return
-          </button>
-        </div>
-      `;
-    });
-  }
-
-  /* =========================
-     APPROVE REQUEST
-  ========================= */
-  window.approve = function(title, userId, userRole){
-
-    let requests = JSON.parse(localStorage.getItem("bookRequests")) || [];
-
-    const requestIndex = requests.findIndex(r =>
-      r.title === title &&
-      r.userId === userId &&
-      r.status === "pending"
-    );
-
-    if(requestIndex === -1) return;
-
-    const today = new Date();
-    const due = new Date();
-    due.setDate(today.getDate() + 15);
-
-    const bookData = {
-      title: title,
-      issueDate: today.toISOString().split("T")[0],
-      dueDate: due.toISOString().split("T")[0],
-      userId: userId,
-      userRole: userRole
-    };
-
-    if(userRole === "faculty"){
-      let facultyBooks = JSON.parse(localStorage.getItem("facultyBooks")) || [];
-      facultyBooks.push(bookData);
-      localStorage.setItem("facultyBooks", JSON.stringify(facultyBooks));
-    }
-
-    if(userRole === "student"){
-      let studentBooks = JSON.parse(localStorage.getItem("studentBooks")) || [];
-      studentBooks.push(bookData);
-      localStorage.setItem("studentBooks", JSON.stringify(studentBooks));
-    }
-
-    requests[requestIndex].status = "approved";
-    localStorage.setItem("bookRequests", JSON.stringify(requests));
-
-    loadRequests();
-    loadIssued();
-  };
-
-  /* =========================
-     REJECT REQUEST
-  ========================= */
-  window.reject = function(title, userId){
-
-    let requests = JSON.parse(localStorage.getItem("bookRequests")) || [];
-
-    const requestIndex = requests.findIndex(r =>
-      r.title === title &&
-      r.userId === userId &&
-      r.status === "pending"
-    );
-
-    if(requestIndex !== -1){
-      requests[requestIndex].status = "rejected";
-      localStorage.setItem("bookRequests", JSON.stringify(requests));
-    }
-
-    loadRequests();
-  };
-
-  /* =========================
-     RETURN BOOK (FIXED)
-  ========================= */
-  window.returnBook = function(title, userId, userRole){
-
-    if(userRole === "faculty"){
-
-      let facultyBooks = JSON.parse(localStorage.getItem("facultyBooks")) || [];
-      let facultyHistory = JSON.parse(localStorage.getItem("facultyHistory")) || [];
-
-      const index = facultyBooks.findIndex(b =>
-        b.title === title && b.userId === userId
-      );
-
-      if(index !== -1){
-        facultyHistory.push(facultyBooks[index]);
-        facultyBooks.splice(index,1);
-      }
-
-      localStorage.setItem("facultyBooks", JSON.stringify(facultyBooks));
-      localStorage.setItem("facultyHistory", JSON.stringify(facultyHistory));
-    }
-
-    if(userRole === "student"){
-
-      let studentBooks = JSON.parse(localStorage.getItem("studentBooks")) || [];
-      let studentHistory = JSON.parse(localStorage.getItem("studentHistory")) || [];
-
-      const index = studentBooks.findIndex(b =>
-        b.title === title && b.userId === userId
-      );
-
-      if(index !== -1){
-        studentHistory.push(studentBooks[index]);
-        studentBooks.splice(index,1);
-      }
-
-      localStorage.setItem("studentBooks", JSON.stringify(studentBooks));
-      localStorage.setItem("studentHistory", JSON.stringify(studentHistory));
-    }
-
-    loadIssued();
-  };
-
-  loadRequests();
-  loadIssued();
 });
+
+
+/* =========================
+   APPROVE REQUEST
+========================= */
+async function approveRequest(id){
+
+    const token = localStorage.getItem("token");
+
+    const response = await fetch(
+        `http://localhost:8080/request/approve/${id}`, {
+            method: "POST",
+            headers: {
+                "Authorization": "Bearer " + token
+            }
+        }
+    );
+
+    if(response.ok){
+        alert("Request Approved");
+        location.reload();
+    } else {
+        alert("Failed to approve");
+    }
+}
+
+
+/* =========================
+   RETURN BOOK
+========================= */
+async function returnBook(borrowId){
+
+    const token = localStorage.getItem("token");
+
+    const response = await fetch(
+        `http://localhost:8080/borrow/return/${borrowId}`, {
+            method: "POST",
+            headers: {
+                "Authorization": "Bearer " + token
+            }
+        }
+    );
+
+    if(response.ok){
+        alert("Book Returned");
+        location.reload();
+    } else {
+        alert("Return failed");
+    }
+}
 </script>
 
 </body>

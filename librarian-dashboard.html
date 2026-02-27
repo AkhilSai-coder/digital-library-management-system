@@ -170,7 +170,6 @@ tr:hover{
 <body>
 
 <script src="js/auth.js"></script>
-<script>protectDashboard("librarian");</script>
 
 <div class="dashboard-layout">
 
@@ -288,6 +287,42 @@ document.getElementById("overdueCount").innerText = overdueCount;
 document.getElementById("pendingRequests").innerText = pendingCount;
 
 });
+
+async function loadIssuedBooks() {
+
+    const token = localStorage.getItem("token");
+
+    const response = await fetch(
+        "http://localhost:8080/borrow/all",
+        {
+            headers: {
+                "Authorization": "Bearer " + token
+            }
+        }
+    );
+
+    const borrows = await response.json();
+    const issuedList = document.getElementById("issuedList");
+    issuedList.innerHTML = "";
+
+    borrows.forEach(b => {
+        if (!b.returned) {
+            issuedList.innerHTML += `
+                <div class="list-item">
+                    <div>
+                        <b>${b.book.title}</b><br>
+                        <small>${b.user.email}</small>
+                    </div>
+                </div>
+            `;
+        }
+    });
+}
+
+</script>
+
+<script>
+  checkAuth();
 </script>
 
 </body>

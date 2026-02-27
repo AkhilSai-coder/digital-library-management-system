@@ -136,55 +136,27 @@ th, td {
 </div>
 
 <script>
-document.addEventListener("DOMContentLoaded", function(){
+document.addEventListener("DOMContentLoaded", loadMembers);
 
-  const table = document.getElementById("membersTable");
-  const searchInput = document.getElementById("searchInput");
+async function loadMembers() {
 
-  const studentBooks = JSON.parse(localStorage.getItem("studentBooks")) || [];
-  const facultyBooks = JSON.parse(localStorage.getItem("facultyBooks")) || [];
-  const studentHistory = JSON.parse(localStorage.getItem("studentHistory")) || [];
-  const facultyHistory = JSON.parse(localStorage.getItem("facultyHistory")) || [];
+    const members = await apiFetch("/members");
 
-  const users = {};
+    const table = document.getElementById("membersTable");
+    table.innerHTML = "";
 
-  studentBooks.forEach(b => users[b.userId] = "student");
-  facultyBooks.forEach(b => users[b.userId] = "faculty");
-  studentHistory.forEach(b => users[b.userId] = "student");
-  facultyHistory.forEach(b => users[b.userId] = "faculty");
-
-  const userIds = Object.keys(users);
-
-  if(userIds.length === 0){
-    table.innerHTML = `<tr><td colspan="5">No members yet</td></tr>`;
-    return;
-  }
-
-  userIds.forEach(userId => {
-
-    const role = users[userId];
-
-    const activeCount = role === "student"
-      ? studentBooks.filter(b => b.userId === userId).length
-      : facultyBooks.filter(b => b.userId === userId).length;
-
-    const historyCount = role === "student"
-      ? studentHistory.filter(b => b.userId === userId).length
-      : facultyHistory.filter(b => b.userId === userId).length;
-
-    table.innerHTML += `
-      <tr>
-        <td>${userId}</td>
-        <td><span class="role-badge">${role}</span></td>
-        <td>${activeCount}</td>
-        <td>${historyCount}</td>
-        <td class="view-link"
-            onclick="openMember('${userId}','${role}')">
-            View
-        </td>
-      </tr>
-    `;
-  });
+    members.forEach(m => {
+        table.innerHTML += `
+            <tr>
+                <td>${m.name}</td>
+                <td>${m.email}</td>
+                <td>${m.role}</td>
+                <td>${m.activeBorrows}</td>
+                <td>${m.pendingRequests}</td>
+            </tr>
+        `;
+    });
+}
 
   /* 🔍 SEARCH FUNCTION */
   searchInput.addEventListener("keyup", function(){
@@ -203,8 +175,6 @@ document.addEventListener("DOMContentLoaded", function(){
     });
 
   });
-
-});
 
 function openMember(userId, userRole){
 

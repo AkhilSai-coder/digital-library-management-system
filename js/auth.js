@@ -2,36 +2,58 @@
    SIMPLE DEMO LOGIN
    ========================= */
 
-function login() {
-  const id = document.getElementById("userid").value.trim();
-  const pass = document.getElementById("password").value.trim();
-  const role = document.getElementById("role").value;
+async function login() {
 
-  if (!role) {
-    alert("Please select a role");
+  const email = document.getElementById("userid").value.trim();
+  const password = document.getElementById("password").value.trim();
+
+  if (!email || !password) {
+    alert("Enter email and password");
     return;
   }
 
-  // Store session (no validation)
-  sessionStorage.setItem("userRole", role);
-  sessionStorage.setItem("userId", id || "guest");
+  try {
 
-  // Redirect based on role
-  if (role === "student") location.href = "student-dashboard.html";
-  if (role === "faculty") location.href = "faculty-dashboard.html";
-  if (role === "librarian") location.href = "librarian-dashboard.html";
+    const response = await fetch("http://localhost:8080/auth/login", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        email: email,
+        password: password
+      })
+    });
+
+    if (!response.ok) {
+      alert("Invalid credentials");
+      return;
+    }
+
+    const token = await response.text();  // IMPORTANT (because backend returns String)
+
+    localStorage.setItem("token", token);
+
+    alert("Login success");
+
+    window.location.href = "student-dashboard.html"; // or role based later
+
+  } catch (err) {
+    console.error(err);
+    alert("Server error");
+  }
 }
 
 /* =========================
    DASHBOARD PROTECTION
    ========================= */
+function checkAuth() {
 
-function protectDashboard(requiredRole) {
-  const role = sessionStorage.getItem("userRole");
+  const token = localStorage.getItem("token");
 
-  if (!role || role !== requiredRole) {
+  if (!token) {
     alert("Please login first");
-    location.href = "login.html";
+    window.location.href = "login.html";
   }
 }
 
@@ -40,8 +62,8 @@ function protectDashboard(requiredRole) {
    ========================= */
 
 function logout() {
-  sessionStorage.clear();
-  location.href = "login.html";
+  localStorage.removeItem("token");
+  window.location.href = "login.html";
 }
 
 /* =========================

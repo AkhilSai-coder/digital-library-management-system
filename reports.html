@@ -94,7 +94,20 @@
 
 <!-- AUTH -->
 <script src="js/auth.js"></script>
-<script>protectDashboard("librarian");</script>
+
+<script>
+document.addEventListener("DOMContentLoaded", function(){
+
+    const token = localStorage.getItem("token");
+
+    if(!token){
+        alert("Login required");
+        window.location.href = "login.html";
+        return;
+    }
+
+});
+</script>
 
 <div class="dashboard-layout">
 

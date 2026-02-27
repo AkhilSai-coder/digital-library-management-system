@@ -254,31 +254,75 @@ body::before{
 let selectedRole = "";
 
 function openLogin(role){
-  selectedRole = role;
-  document.getElementById("loginRoleTitle").innerText =
-    "Login as " + role.charAt(0).toUpperCase() + role.slice(1);
-  document.getElementById("loginModal").style.display = "flex";
+    selectedRole = role;
+    document.getElementById("loginRoleTitle").innerText =
+        "Login as " + role.charAt(0).toUpperCase() + role.slice(1);
+    document.getElementById("loginModal").style.display = "flex";
 }
 
 function closeModal(){
-  document.getElementById("loginModal").style.display = "none";
+    document.getElementById("loginModal").style.display = "none";
 }
 
-function doLogin(){
-  const id = document.getElementById("userid").value.trim();
-  const pass = document.getElementById("password").value.trim();
+async function doLogin(){
 
-  if(!id || !pass){
-    alert("Please enter credentials");
-    return;
-  }
+    // ✅ Correct IDs from your HTML
+    const email = document.getElementById("userid").value;
+    const password = document.getElementById("password").value;
 
-  sessionStorage.setItem("userRole", selectedRole);
-  sessionStorage.setItem("userId", id);
+    if(!email || !password){
+        alert("Please enter credentials");
+        return;
+    }
 
-  if(selectedRole==="student") location.href="student-dashboard.html";
-  if(selectedRole==="faculty") location.href="faculty-dashboard.html";
-  if(selectedRole==="librarian") location.href="librarian-dashboard.html";
+    try {
+
+        const response = await fetch(
+            "http://localhost:8080/auth/login", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    email: email,
+                    password: password
+                })
+            }
+        );
+
+        if(!response.ok){
+            alert("Invalid credentials");
+            return;
+        }
+
+        const token = await response.text();
+
+        // ✅ Save token
+        localStorage.setItem("token", token);
+
+        // ✅ Decode token to check role
+        const payload = JSON.parse(atob(token.split('.')[1]));
+        const role = payload.role;
+
+        alert("Login successful");
+
+        closeModal();
+
+        // ✅ Redirect based on role
+        if(role === "ROLE_LIBRARIAN"){
+            window.location.href = "librarian-dashboard.html";
+        }
+        else if(role === "ROLE_FACULTY"){
+            window.location.href = "faculty-dashboard.html";
+        }
+        else{
+            window.location.href = "student-dashboard.html";
+        }
+
+    } catch(error){
+        console.error(error);
+        alert("Server error");
+    }
 }
 
 </script>

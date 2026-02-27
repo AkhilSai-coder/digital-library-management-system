@@ -128,15 +128,6 @@ select{
 
 <script src="js/auth.js"></script>
 
-<!-- Allow BOTH student and faculty -->
-<script>
-const role = sessionStorage.getItem("userRole");
-if(!role || (role !== "student" && role !== "faculty")){
-  alert("Access denied. Please login.");
-  location.href = "login.html";
-}
-</script>
-
 <div class="container">
 
 <h1>Book Catalog</h1>
@@ -161,151 +152,59 @@ if(!role || (role !== "student" && role !== "faculty")){
   </select>
 </div>
 
-<div class="count" id="bookCount">5 books found</div>
-
-<!-- BOOK GRID -->
-<div class="grid">
-
-<div class="card" data-dept="CSE" data-cat="Algorithms">
-<span class="badge">2 avail.</span>
-<h3>Introduction to Algorithms</h3>
-<div class="author">Thomas H. Cormen</div>
-<div class="meta">CSE • Algorithms • 3rd Ed.</div>
-<button class="request-btn">Request Book</button>
-</div>
-
-<div class="card" data-dept="CSE" data-cat="Operating Systems">
-<span class="badge">1 avail.</span>
-<h3>Operating System Concepts</h3>
-<div class="author">Abraham Silberschatz</div>
-<div class="meta">CSE • Operating Systems • 10th Ed.</div>
-<button class="request-btn">Request Book</button>
-</div>
-
-<div class="card" data-dept="CSE" data-cat="AI/ML">
-<span class="badge">2 avail.</span>
-<h3>Artificial Intelligence</h3>
-<div class="author">Stuart Russell</div>
-<div class="meta">CSE • AI/ML • 4th Ed.</div>
-<button class="request-btn">Request Book</button>
-</div>
-
-<div class="card" data-dept="ECE" data-cat="Electronics">
-<span class="badge">3 avail.</span>
-<h3>Digital Design</h3>
-<div class="author">M. Morris Mano</div>
-<div class="meta">ECE • Electronics • 6th Ed.</div>
-<button class="request-btn">Request Book</button>
-</div>
-
-<div class="card" data-dept="ECE" data-cat="Electronics">
-<span class="badge unavailable">Unavailable</span>
-<h3>Signals and Systems</h3>
-<div class="author">Oppenheim</div>
-<div class="meta">ECE • Electronics • 2nd Ed.</div>
-<button class="request-btn" disabled>Unavailable</button>
-</div>
-
-</div>
-</div>
+<div id="bookGrid" class="grid"></div>
 
 <script>
-document.addEventListener("DOMContentLoaded", function(){
+document.addEventListener("DOMContentLoaded", loadBooks);
 
-  const searchInput = document.getElementById("searchInput");
-  const deptFilter = document.getElementById("deptFilter");
-  const catFilter = document.getElementById("catFilter");
-  const books = document.querySelectorAll(".card");
-  const countText = document.getElementById("bookCount");
+async function loadBooks() {
 
-  const userRole = sessionStorage.getItem("userRole");
-  const userId = sessionStorage.getItem("userId");
+    const token = localStorage.getItem("token");
+    const response = await fetch("http://localhost:8080/books", {
+        headers: {
+            "Authorization": "Bearer " + token
+        }
+    });
 
-  /* FILTER SYSTEM */
-  function filterBooks(){
-    const searchValue = searchInput.value.toLowerCase();
-    const deptValue = deptFilter.value;
-    const catValue = catFilter.value;
-
-    let visibleCount = 0;
+    const books = await response.json();
+    const grid = document.getElementById("bookGrid");
+    grid.innerHTML = "";
 
     books.forEach(book => {
-      const text = book.innerText.toLowerCase();
-      const dept = book.dataset.dept;
-      const cat = book.dataset.cat;
 
-      const matchSearch = text.includes(searchValue);
-      const matchDept = deptValue === "all" || dept === deptValue;
-      const matchCat = catValue === "all" || cat === catValue;
+        grid.innerHTML += `
+            <div class="card">
+                <h3>${book.title}</h3>
+                <p>${book.author}</p>
 
-      if(matchSearch && matchDept && matchCat){
-        book.style.display = "block";
-        visibleCount++;
-      } else {
-        book.style.display = "none";
-      }
+                <button onclick="requestBook(${book.id})">
+                    Request
+                </button>
+            </div>
+        `;
     });
+}
 
-    countText.innerText = visibleCount + " books found";
-  }
+async function requestBook(bookId) {
 
-  searchInput.addEventListener("keyup", filterBooks);
-  deptFilter.addEventListener("change", filterBooks);
-  catFilter.addEventListener("change", filterBooks);
+    const token = localStorage.getItem("token");
 
-  /* REQUEST SYSTEM */
-  document.querySelectorAll(".request-btn").forEach(btn => {
-
-    const card = btn.closest(".card");
-    const title = card.querySelector("h3").innerText;
-
-    let requests = JSON.parse(localStorage.getItem("bookRequests")) || [];
-
-    const alreadyRequested = requests.some(r =>
-      r.title === title &&
-      r.userId === userId &&
-      r.status === "pending"
+    const response = await fetch(
+        `http://localhost:8080/request/${bookId}`,
+        {
+            method: "POST",
+            headers: {
+                "Authorization": "Bearer " + token
+            }
+        }
     );
 
-    if(alreadyRequested){
-      btn.innerText = "Requested";
-      btn.disabled = true;
+    if (response.ok) {
+        alert("Request sent to Librarian!");
+    } else {
+        alert("Request failed");
     }
-
-    btn.addEventListener("click", function(){
-
-      let requests = JSON.parse(localStorage.getItem("bookRequests")) || [];
-
-      const exists = requests.some(r =>
-        r.title === title &&
-        r.userId === userId &&
-        r.status === "pending"
-      );
-
-      if(exists){
-        alert("Request already sent!");
-        return;
-      }
-
-      requests.push({
-        title: title,
-        userRole: userRole,
-        userId: userId,
-        requestDate: new Date().toISOString().split("T")[0],
-        status: "pending"
-      });
-
-      localStorage.setItem("bookRequests", JSON.stringify(requests));
-
-      btn.innerText = "Requested";
-      btn.disabled = true;
-
-      alert("Request sent to Librarian!");
-    });
-
-  });
-
-});
+}
 </script>
 
 </body>

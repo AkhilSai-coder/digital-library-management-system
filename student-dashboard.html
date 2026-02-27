@@ -131,117 +131,6 @@
 
 <body>
 
-<!-- ROLE PROTECTION -->
-<script src="js/auth.js"></script>
-<script>
-document.addEventListener("DOMContentLoaded", function(){
-
-  const userId = sessionStorage.getItem("userId");
-
-  const issuedCountEl = document.querySelector(".cards .card:nth-child(1) .value");
-  const overdueCountEl = document.querySelector(".cards .card:nth-child(2) .value");
-  const reservationCountEl = document.querySelector(".cards .card:nth-child(4) .value");
-
-  const notificationBox = document.querySelector(".box:nth-of-type(1)");
-  const tableBody = document.querySelector("table");
-
-  let studentBooks = JSON.parse(localStorage.getItem("studentBooks")) || [];
-  let bookRequests = JSON.parse(localStorage.getItem("bookRequests")) || [];
-
-  const today = new Date();
-
-  const userBooks = studentBooks.filter(book => book.userId === userId);
-
-  let issuedCount = 0;
-  let overdueCount = 0;
-
-  // =============================
-  // CLEAR OLD TABLE ROWS
-  // =============================
-
-  tableBody.innerHTML = `
-    <tr>
-      <th>Book</th>
-      <th>Issue Date</th>
-      <th>Due Date</th>
-      <th>Status</th>
-    </tr>
-  `;
-
-  // =============================
-  // LOAD BOOKS
-  // =============================
-
-  userBooks.forEach(book => {
-
-    issuedCount++;
-
-    const dueDate = new Date(book.dueDate);
-    let status = "active";
-
-    if(today > dueDate){
-      status = "overdue";
-      overdueCount++;
-    }
-
-    tableBody.innerHTML += `
-      <tr>
-        <td>${book.title}</td>
-        <td>${book.issueDate}</td>
-        <td>${book.dueDate}</td>
-        <td>
-          <span class="status" 
-            style="background:${status === "overdue" ? "#d32f2f" : "#1f3a5f"}">
-            ${status}
-          </span>
-        </td>
-      </tr>
-    `;
-  });
-
-  // =============================
-  // UPDATE CARDS
-  // =============================
-
-  issuedCountEl.innerText = issuedCount;
-  overdueCountEl.innerText = overdueCount;
-
-  // Reservations = Pending Requests
-  const pendingRequests = bookRequests.filter(r => 
-    r.userId === userId && r.status === "pending"
-  );
-
-  reservationCountEl.innerText = pendingRequests.length;
-
-  // =============================
-  // NOTIFICATIONS
-  // =============================
-
-  notificationBox.innerHTML = "<h3>Notifications</h3>";
-
-  if(overdueCount === 0){
-    notificationBox.innerHTML += `
-      <div class="alert" style="background:#eef2f6;color:#1f3a5f;">
-        No overdue books 🎉
-      </div>
-    `;
-  } else {
-    userBooks.forEach(book=>{
-      const dueDate = new Date(book.dueDate);
-      if(today > dueDate){
-        notificationBox.innerHTML += `
-          <div class="alert">
-            Your book <b>${book.title}</b> is overdue.
-          </div>
-        `;
-      }
-    });
-  }
-
-});
-</script>
-
-
 <div class="dashboard-layout">
 
   <!-- SIDEBAR -->
@@ -277,7 +166,7 @@ document.addEventListener("DOMContentLoaded", function(){
 
       <div class="card">
         <h4>Pending Fines</h4>
-        <div class="value">₹60</div>
+        <div class="value">₹0</div>
       </div>
 
       <div class="card">
@@ -286,45 +175,110 @@ document.addEventListener("DOMContentLoaded", function(){
       </div>
     </div>
 
-    <!-- NOTIFICATIONS -->
-    <div class="box">
-      <h3>Notifications</h3>
-      <div class="alert">
-        Your book <b>Introduction to Algorithms</b> is overdue. Please return it immediately.
-      </div>
-      <div class="alert">
-        Your book <b>Operating System Concepts</b> is overdue.
-      </div>
-    </div>
-
     <!-- ISSUED BOOKS TABLE -->
     <div class="box">
       <h3>Currently Issued Books</h3>
-      <table>
-        <tr>
-          <th>Book</th>
-          <th>Issue Date</th>
-          <th>Due Date</th>
-          <th>Status</th>
-        </tr>
-        <tr>
-          <td>Introduction to Algorithms</td>
-          <td>2026-01-15</td>
-          <td>2026-02-01</td>
-          <td><span class="status">overdue</span></td>
-        </tr>
-        <tr>
-          <td>Operating System Concepts</td>
-          <td>2026-01-20</td>
-          <td>2026-02-05</td>
-          <td><span class="status">overdue</span></td>
-        </tr>
+      <table id="issuedBooksTable">
       </table>
     </div>
 
   </main>
 </div>
 
+<script>
+document.addEventListener("DOMContentLoaded", async function(){
+
+    const token = localStorage.getItem("token");
+
+    if(!token){
+        alert("Login required");
+        window.location.href = "login.html";
+        return;
+    }
+
+    const table = document.getElementById("issuedBooksTable");
+    const issuedCountEl = document.querySelector(".cards .card:nth-child(1) .value");
+    const overdueCountEl = document.querySelector(".cards .card:nth-child(2) .value");
+    const reservationCountEl = document.querySelector(".cards .card:nth-child(4) .value");
+
+    try {
+
+        /* ============================= */
+        /* FETCH BORROWED BOOKS         */
+        /* ============================= */
+
+        const borrowResponse = await fetch("http://localhost:8080/borrow/my", {
+        headers: {
+        "Authorization": "Bearer " + token
+    }
+});
+
+        const borrows = borrowResponse.ok ? await borrowResponse.json() : [];
+
+        let overdueCount = 0;
+
+        table.innerHTML = `
+            <tr>
+                <th>Book</th>
+                <th>Issue Date</th>
+                <th>Due Date</th>
+                <th>Status</th>
+            </tr>
+        `;
+
+        const today = new Date();
+
+        borrows.forEach(borrow => {
+
+            const dueDate = new Date(borrow.dueDate);
+            let status = "Active";
+
+            if(today > dueDate){
+                status = "Overdue";
+                overdueCount++;
+            }
+
+            table.innerHTML += `
+                <tr>
+                    <td>${borrow.book.title}</td>
+                    <td>${borrow.issueDate}</td>
+                    <td>${borrow.dueDate}</td>
+                    <td>${status}</td>
+                </tr>
+            `;
+        });
+
+        issuedCountEl.innerText = borrows.length;
+        overdueCountEl.innerText = overdueCount;
+
+
+        /* ============================= */
+        /* FETCH MY REQUESTS            */
+        /* ============================= */
+
+        const requestResponse = await fetch("http://localhost:8080/request/my", {
+            headers: { "Authorization": "Bearer " + token }
+        });
+
+        const requests = requestResponse.ok ? await requestResponse.json() : [];
+
+        // Count only pending requests
+        const pendingRequests = requests.filter(r => r.status === "PENDING");
+
+        reservationCountEl.innerText = pendingRequests.length;
+
+    } catch(error){
+        console.error(error);
+        alert("Server error");
+    }
+
+});
+
+function logout(){
+    localStorage.removeItem("token");
+    window.location.href = "login.html";
+}
+</script>
 
 </body>
 </html>

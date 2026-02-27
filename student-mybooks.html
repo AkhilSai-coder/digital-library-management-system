@@ -129,9 +129,6 @@ th{
 <body>
 
 <script src="js/auth.js"></script>
-<script>
-protectDashboard("student");
-</script>
 
 <div class="dashboard-layout">
 
@@ -171,89 +168,46 @@ protectDashboard("student");
 </div>
 
 <script>
-document.addEventListener("DOMContentLoaded", function(){
+document.addEventListener("DOMContentLoaded", loadMyBooks);
 
-  const activeTab = document.getElementById("activeTab");
-  const historyTab = document.getElementById("historyTab");
-  const tableBody = document.getElementById("studentBooksTable");
+async function loadMyBooks() {
 
-  const userId = sessionStorage.getItem("userId");
+    const token = localStorage.getItem("token");
 
-  let studentBooks = JSON.parse(localStorage.getItem("studentBooks")) || [];
-  let studentHistory = JSON.parse(localStorage.getItem("studentHistory")) || [];
-
-  function loadActive(){
-    tableBody.innerHTML = "";
-    const today = new Date();
-    let count = 0;
-
-    studentBooks.forEach(book=>{
-      if(book.userId === userId){
-
-        count++;
-
-        const dueDate = new Date(book.dueDate);
-        let status = today > dueDate ? "overdue" : "active";
-
-        tableBody.innerHTML += `
-        <tr>
-          <td><b>${book.title}</b></td>
-          <td>${book.issueDate}</td>
-          <td>${book.dueDate}</td>
-          <td><span class="status-${status}">${status}</span></td>
-        </tr>`;
-      }
-    });
-
-    if(count === 0){
-      tableBody.innerHTML = `<tr><td colspan="4">No active books</td></tr>`;
+const response = await fetch("http://localhost:8080/borrow/my", {
+    headers: {
+        "Authorization": "Bearer " + token
     }
-
-    activeTab.innerText = "Active (" + count + ")";
-  }
-
-  function loadHistory(){
-    tableBody.innerHTML = "";
-    let count = 0;
-
-    studentHistory.forEach(book=>{
-      if(book.userId === userId){
-
-        count++;
-
-        tableBody.innerHTML += `
-        <tr>
-          <td><b>${book.title}</b></td>
-          <td>${book.issueDate}</td>
-          <td>${book.dueDate}</td>
-          <td><span class="status-returned">returned</span></td>
-        </tr>`;
-      }
-    });
-
-    if(count === 0){
-      tableBody.innerHTML = `<tr><td colspan="4">No history available</td></tr>`;
-    }
-
-    historyTab.innerText = "History (" + count + ")";
-  }
-
-  activeTab.addEventListener("click", function(){
-    activeTab.classList.add("active");
-    historyTab.classList.remove("active");
-    loadActive();
-  });
-
-  historyTab.addEventListener("click", function(){
-    historyTab.classList.add("active");
-    activeTab.classList.remove("active");
-    loadHistory();
-  });
-
-  // ✅ IMPORTANT: Only load Active on first open
-  loadActive();
-
 });
+
+const borrows = response.ok ? await response.json() : [];
+
+    const table = document.getElementById("myBooksTable");
+    table.innerHTML = "";
+
+    borrows.forEach(b => {
+
+        table.innerHTML += `
+            <tr>
+                <td>${b.book.title}</td>
+                <td>${b.issueDate}</td>
+                <td>${b.dueDate}</td>
+                <td>${b.returned ? "Returned" : 
+                    `<button onclick="returnBook(${b.id})">Return</button>`}
+                </td>
+            </tr>
+        `;
+    });
+}
+
+async function returnBook(id) {
+    await apiFetch(`/borrow/return/${id}`, {
+        method: "POST"
+    });
+
+    alert("Book Returned");
+    loadMyBooks();
+}
 </script>
 
 

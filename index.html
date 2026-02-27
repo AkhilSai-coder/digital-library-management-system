@@ -10,6 +10,137 @@
 
 <style>
 
+/* AI BUTTON */
+.ai-button{
+  position:fixed;
+  bottom:25px;
+  right:25px;
+  width:65px;
+  height:65px;
+  background:linear-gradient(45deg,#e10600,#1e3a8a);
+  color:white;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  border-radius:50%;
+  font-size:28px;
+  cursor:pointer;
+  box-shadow:0 10px 30px rgba(0,0,0,0.3);
+  z-index:9999;
+}
+
+/* AI PANEL */
+.ai-panel{
+  position:fixed;
+  bottom:110px;
+  right:25px;
+  width:380px;
+  height:500px;
+  background:rgba(255,255,255,0.95);
+  backdrop-filter:blur(15px);
+  border-radius:20px;
+  box-shadow:0 20px 50px rgba(0,0,0,0.3);
+  display:none;
+  flex-direction:column;
+  overflow:hidden;
+  z-index:9999;
+}
+
+.ai-header{
+  background:#0f2d52;
+  color:white;
+  padding:15px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  font-weight:600;
+}
+
+.ai-messages{
+  flex:1;
+  padding:15px;
+  overflow-y:auto;
+  font-size:14px;
+}
+
+.ai-input-area{
+  display:flex;
+  border-top:1px solid #ddd;
+}
+
+.ai-input-area input{
+  flex:1;
+  padding:10px;
+  border:none;
+  outline:none;
+}
+
+.ai-input-area button{
+  background:#0f2d52;
+  color:white;
+  border:none;
+  padding:10px 15px;
+  cursor:pointer;
+}
+
+.user-msg{
+  text-align:right;
+  margin-bottom:10px;
+}
+
+.bot-msg{
+  background:#f4f6f9;
+  padding:8px 12px;
+  border-radius:10px;
+  margin-bottom:10px;
+}
+
+/* ================= E‑RESOURCES CARD ================= */
+
+/* Fix Parent */
+/* FIXED E‑Resources Dropdown */
+
+.eresource-card{
+  position: relative;
+  overflow: hidden;
+}
+
+.eresource-options{
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  background:black;
+  padding: 20px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+
+  transform: translateY(100%);
+  transition: transform 0.4s ease;
+  z-index: 5;
+}
+
+.eresource-card:hover .eresource-options{
+  transform: translateY(0%);
+}
+
+.eresource-column h4{
+  font-size: 16px;
+  margin-bottom: 10px;
+  color: #0f2d52;
+}
+
+.eresource-column a{
+  display: block;
+  padding: 6px 0;
+  color: #444;
+  font-weight: 500;
+}
+
+.eresource-column a:hover{
+  color: #e10600;
+}
 /* ================= VISION & MISSION ================= */
 
 .vision-section{
@@ -1571,9 +1702,32 @@ GRIET Central Library | Excellence in Knowledge & Research
 <h3>Remote Access</h3>
 </a>
 
-<a href="#" class="quick-card" style="background-image:url('image/e-commerce.jpg')">
-<h3>E‑Resources</h3>
-</a>
+<div class="quick-card eresource-card"
+     style="background-image:url('image/e-commerce.jpg')">
+
+  <h3>E‑Resources ▾</h3>
+
+  <div class="eresource-options">
+
+    <!-- LEFT COLUMN -->
+    <div class="eresource-column">
+      <h4>🛒 E‑Commerce</h4>
+      <a href="https://griet.bestbookbuddies.com/" target="_blank">Best Book Buddies</a>
+      <a href="https://www.amazon.in/" target="_blank">Amazon Academic</a>
+      <a href="https://www.flipkart.com/" target="_blank">Flipkart Education</a>
+    </div>
+
+    <!-- RIGHT COLUMN -->
+    <div class="eresource-column">
+      <h4>📚 E‑Journals</h4>
+      <a href="https://ieeexplore.ieee.org/" target="_blank">IEEE Xplore</a>
+      <a href="https://link.springer.com/" target="_blank">Springer Link</a>
+      <a href="https://www.sciencedirect.com/" target="_blank">ScienceDirect</a>
+    </div>
+
+  </div>
+
+</div>
 
 </div>
 </section>
@@ -1915,8 +2069,26 @@ window.onscroll = function() {
 };
 </script>
 
-<div class="chat-button" onclick="alert('Library Support Coming Soon!')">
-💬
+<!-- Smart Research AI Button -->
+<div class="ai-button" onclick="openAI()">
+  🤖
+</div>
+
+<!-- AI Chat Panel -->
+<div id="aiPanel" class="ai-panel">
+
+  <div class="ai-header">
+    <span>GRIET Smart Research AI</span>
+    <button onclick="closeAI()">✖</button>
+  </div>
+
+  <div id="aiMessages" class="ai-messages"></div>
+
+  <div class="ai-input-area">
+    <input type="text" id="aiInput" placeholder="Ask about journals, faculty, IEEE access..." onkeydown="handleKey(event)">
+    <button onclick="sendMessage()">Send</button>
+  </div>
+
 </div>
 
 <button id="topBtn">⬆</button>
@@ -2100,6 +2272,84 @@ prev.addEventListener("click", prevSlide);
 
 /* Auto Slide */
 setInterval(nextSlide, 4000);
+</script>
+
+<script>
+
+function openAI(){
+  document.getElementById("aiPanel").style.display="flex";
+}
+
+function closeAI(){
+  document.getElementById("aiPanel").style.display="none";
+}
+
+function handleKey(e){
+  if(e.key==="Enter"){
+    sendMessage();
+  }
+}
+
+function sendMessage(){
+  let input=document.getElementById("aiInput");
+  let message=input.value.trim();
+  if(message==="") return;
+
+  addMessage(message,"user-msg");
+  let response=getAIResponse(message.toLowerCase());
+  setTimeout(()=>addMessage(response,"bot-msg"),500);
+
+  input.value="";
+}
+
+function addMessage(text,className){
+  let msgDiv=document.createElement("div");
+  msgDiv.className=className;
+  msgDiv.innerHTML=text;
+  document.getElementById("aiMessages").appendChild(msgDiv);
+  document.getElementById("aiMessages").scrollTop=9999;
+}
+
+function getAIResponse(msg){
+
+  if(msg.includes("journal") && msg.includes("ai")){
+    return `
+    📚 <b>Top AI Journals:</b><br>
+    • IEEE Transactions on Neural Networks<br>
+    • Machine Learning Journal<br>
+    • Pattern Recognition<br>
+    • IEEE Access
+    `;
+  }
+
+  if(msg.includes("faculty") || msg.includes("ml")){
+    return `
+    👨‍🏫 <b>Top ML Faculty:</b><br>
+    • Dr. R. Kumar – 42 Publications<br>
+    • Dr. S. Priya – 35 Publications<br>
+    • Dr. A. Reddy – 28 Publications
+    `;
+  }
+
+  if(msg.includes("ieee")){
+    return `
+    🔐 <b>How to Access IEEE:</b><br>
+    1. Login to Remote Access (Knimbus)<br>
+    2. Use Institutional Credentials<br>
+    3. Access IEEE Xplore Database
+    `;
+  }
+
+  if(msg.includes("citation")){
+    return `
+    📝 <b>Citation Example (IEEE Format):</b><br>
+    Author, "Book Title," Publisher, Year.
+    `;
+  }
+
+  return "🤖 I’m your GRIET Research Assistant. Ask about journals, faculty, IEEE access, or citations.";
+}
+
 </script>
 
 </body>
