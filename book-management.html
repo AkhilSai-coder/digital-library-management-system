@@ -3,422 +3,67 @@
 <head>
 <meta charset="UTF-8">
 <title>Book Management | GRIET Library</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="stylesheet" href="css/style.css">
-
-<style>
-
-/* ================= LAYOUT ================= */
-
-.dashboard-layout{
-  display:flex;
-  min-height:100vh;
-  background:#f4f6fb;
-}
-
-/* ================= SIDEBAR ================= */
-
-.sidebar{
-  width:260px;
-  background:linear-gradient(180deg,#0f2d52,#0b1f3a);
-  color:#fff;
-  padding:25px 20px;
-}
-
-.sidebar h3{
-  font-size:18px;
-  margin-bottom:30px;
-  font-weight:600;
-}
-
-.sidebar a{
-  display:block;
-  padding:12px 15px;
-  margin-bottom:8px;
-  text-decoration:none;
-  color:#dbeafe;
-  border-radius:8px;
-  font-size:14px;
-  transition:0.2s ease;
-}
-
-.sidebar a:hover,
-.sidebar a.active{
-    background:#b30000;
-    color:#fff;
-    transform:translateX(5px);
-}
-
-/* ================= MAIN ================= */
-
-.main{
-  flex:1;
-  padding:40px;
-}
-
-.page-header{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  margin-bottom:30px;
-}
-
-.page-title{
-  font-size:24px;
-  font-weight:600;
-  color:#0f2d52;
-}
-
-/* ================= BUTTON ================= */
-
-.btn-primary{
-  background:#1f3a5f;
-  color:#fff;
-  border:none;
-  padding:10px 18px;
-  border-radius:8px;
-  font-size:14px;
-  cursor:pointer;
-  transition:0.2s;
-}
-
-.btn-primary:hover{
-  background:#163047;
-}
-
-/* ================= SEARCH ================= */
-
-.search-bar{
-  margin-bottom:20px;
-}
-
-.search-bar input{
-  width:100%;
-  padding:12px;
-  border-radius:8px;
-  border:1px solid #e5e7eb;
-  font-size:14px;
-}
-
-.search-bar input:focus{
-  outline:none;
-  border-color:#1f3a5f;
-}
-
-/* ================= TABLE CARD ================= */
-
-.card{
-  background:#ffffff;
-  border-radius:12px;
-  box-shadow:0 4px 20px rgba(0,0,0,0.05);
-  overflow:hidden;
-}
-
-table{
-  width:100%;
-  border-collapse:collapse;
-}
-
-th{
-  background:#f1f5f9;
-  padding:15px;
-  font-size:14px;
-  text-align:left;
-  color:#475569;
-  font-weight:600;
-}
-
-td{
-  padding:15px;
-  font-size:14px;
-  border-top:1px solid #f1f5f9;
-}
-
-tr:hover{
-  background:#f9fafb;
-}
-
-/* ================= BADGE ================= */
-
-.dept-badge{
-  background:#e0f2fe;
-  color:#0369a1;
-  padding:4px 12px;
-  border-radius:20px;
-  font-size:12px;
-  font-weight:500;
-}
-
-/* ================= ACTION ================= */
-
-.action-btn{
-  cursor:pointer;
-  font-size:16px;
-  transition:0.2s;
-}
-
-.action-btn:hover{
-  transform:scale(1.2);
-}
-
-/* ================= EMPTY STATE ================= */
-
-.empty{
-  padding:25px;
-  text-align:center;
-  color:#64748b;
-  font-size:14px;
-}
-
-/* ================= MODAL ================= */
-
-.modal{
-  position:fixed;
-  inset:0;
-  background:rgba(0,0,0,0.5);
-  display:none;
-  align-items:center;
-  justify-content:center;
-}
-
-.modal-box{
-  background:#fff;
-  width:450px;
-  padding:30px;
-  border-radius:14px;
-  box-shadow:0 25px 50px rgba(0,0,0,0.2);
-}
-
-.modal-box h3{
-  margin-bottom:20px;
-  font-size:18px;
-  color:#1f3a5f;
-}
-
-.modal-box input,
-.modal-box select,
-.modal-box textarea{
-  width:100%;
-  padding:10px;
-  margin-bottom:15px;
-  border-radius:8px;
-  border:1px solid #e5e7eb;
-  font-size:14px;
-}
-
-.modal-box input:focus,
-.modal-box select:focus,
-.modal-box textarea:focus{
-  outline:none;
-  border-color:#1f3a5f;
-}
-
-.modal-actions{
-  display:flex;
-  gap:10px;
-}
-
-.btn-secondary{
-  flex:1;
-  padding:10px;
-  border-radius:8px;
-  border:1px solid #ccc;
-  background:#f8fafc;
-  cursor:pointer;
-}
-
-.btn-save{
-  flex:1;
-  background:#1f3a5f;
-  color:#fff;
-  border:none;
-  border-radius:8px;
-  cursor:pointer;
-}
-
-.btn-save:hover{
-  background:#163047;
-}
-
-</style>
 </head>
-
 <body>
-
+<script src="js/auth.js"></script>
+<script>protectDashboard("librarian");</script>
 <div class="dashboard-layout">
-
-<!-- SIDEBAR -->
 <aside class="sidebar">
-  <h3>📚 Library</h3>
-  <a href="librarian-dashboard.html">Dashboard</a>
-  <a href="book-management.html" class="active">Book Management</a>
-  <a href="issue-return.html">Issue & Return</a>
-  <a href="members.html">Members</a>
-  <a href="reports.html">Reports</a>
-  <a href="fine-management.html">Fine Management</a>
-  <a onclick="logout()" style="cursor:pointer;">Logout</a>
+  <div class="sidebar-brand"><div class="brand-icon">📚</div><div><h3>GRIET Library</h3><small>Management Portal</small></div></div>
+  <span class="nav-label">Main</span>
+  <a href="librarian-dashboard.html"><span class="nav-icon">🏠</span> Dashboard</a>
+  <a class="active"><span class="nav-icon">📖</span> Book Management</a>
+  <a href="issue-return.html"><span class="nav-icon">🔄</span> Issue & Return</a>
+  <a href="members.html"><span class="nav-icon">👥</span> Members</a>
+  <span class="nav-label">Reports</span>
+  <a href="reports.html"><span class="nav-icon">📊</span> Reports</a>
+  <a href="fine-management.html"><span class="nav-icon">💰</span> Fine Management</a>
+  <div class="sidebar-footer"><a onclick="logout()"><span class="nav-icon">🚪</span> Logout</a></div>
 </aside>
-
-<!-- MAIN -->
 <main class="main">
-
-<div class="page-header">
-  <div class="page-title">Book Management</div>
-  <button class="btn-primary" onclick="openModal()">+ Add Book</button>
-</div>
-
-<div class="search-bar">
-  <input type="text" id="searchInput" placeholder="Search books by title or author...">
-</div>
-
-<div class="card">
-  <table id="bookTable">
-    <tr>
-      <th>Title</th>
-      <th>Author</th>
-      <th>Department</th>
-      <th>Available</th>
-      <th>Shelf</th>
-      <th>Action</th>
-    </tr>
-  </table>
-</div>
-
-</main>
-</div>
-
-<!-- MODAL -->
-<div class="modal" id="modal">
-  <div class="modal-box">
-    <h3>Add New Book</h3>
-
-    <input id="title" placeholder="Book Title">
-    <input id="author" placeholder="Author Name">
-
-    <select id="dept">
-      <option value="">Select Department</option>
-      <option>CSE</option>
-      <option>ECE</option>
-      <option>Mech</option>
-      <option>Civil</option>
-      <option>General</option>
-    </select>
-
-    <input id="total" type="number" placeholder="Total Copies">
-    <input id="shelf" placeholder="Shelf Number (A1-01)">
-    <textarea id="desc" placeholder="Book Description"></textarea>
-
-    <div class="modal-actions">
-      <button class="btn-secondary" onclick="closeModal()">Cancel</button>
-      <button class="btn-save" onclick="saveBook()">Save</button>
+  <div class="page-header">
+    <div><div class="page-title">Book Management</div><div class="page-subtitle">Add, view and manage library books</div></div>
+    <button class="btn btn-primary" onclick="openModal()">+ Add Book</button>
+  </div>
+  <div class="card">
+    <div class="card-header">
+      <h3>All Books</h3>
+      <div class="search-bar" style="margin:0;width:280px;"><span class="search-icon">🔍</span><input type="text" id="searchInput" placeholder="Search books..."></div>
+    </div>
+    <div class="table-wrap">
+      <table><thead><tr><th>Title</th><th>Author</th><th>Department</th><th>Available</th><th>Shelf</th><th>Action</th></tr></thead>
+      <tbody id="bookBody"></tbody></table>
     </div>
   </div>
+</main>
 </div>
-
+<div class="modal" id="modal">
+  <div class="modal-box">
+    <div class="modal-header"><h3>Add New Book</h3><button class="modal-close" onclick="closeModal()">✕</button></div>
+    <div class="modal-body">
+      <div class="form-group"><label class="form-label">Book Title *</label><input class="form-control" id="title" placeholder="Enter book title"></div>
+      <div class="form-group"><label class="form-label">Author *</label><input class="form-control" id="author" placeholder="Author name"></div>
+      <div class="form-group"><label class="form-label">Department *</label><select class="form-control" id="dept"><option value="">Select Department</option><option>CSE</option><option>ECE</option><option>Mech</option><option>Civil</option><option>General</option></select></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+        <div class="form-group"><label class="form-label">Total Copies *</label><input class="form-control" id="total" type="number" min="1" placeholder="e.g. 5"></div>
+        <div class="form-group"><label class="form-label">Shelf Number</label><input class="form-control" id="shelf" placeholder="e.g. A1-01"></div>
+      </div>
+      <div class="form-group"><label class="form-label">Description</label><textarea class="form-control" id="desc" rows="3" placeholder="Optional description"></textarea></div>
+    </div>
+    <div class="modal-footer"><button class="btn btn-ghost" onclick="closeModal()">Cancel</button><button class="btn btn-primary" onclick="saveBook()">Save Book</button></div>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
 <script>
-
-document.addEventListener("DOMContentLoaded", loadBooks);
-document.getElementById("searchInput").addEventListener("keyup", filterBooks);
-
-/* ================= LOAD BOOKS ================= */
-function loadBooks(){
-  const table = document.getElementById("bookTable");
-  let books = JSON.parse(localStorage.getItem("libraryBooks")) || [];
-
-  table.innerHTML = `
-    <tr>
-      <th>Title</th>
-      <th>Author</th>
-      <th>Department</th>
-      <th>Available</th>
-      <th>Shelf</th>
-      <th>Action</th>
-    </tr>
-  `;
-
-  if(books.length === 0){
-    table.innerHTML += `<tr><td colspan="6" class="empty">No books available</td></tr>`;
-    return;
-  }
-
-  books.forEach((book,index)=>{
-    table.innerHTML += `
-      <tr>
-        <td><strong>${book.title}</strong></td>
-        <td>${book.author}</td>
-        <td><span class="dept-badge">${book.dept}</span></td>
-        <td>${book.available}/${book.total}</td>
-        <td>${book.shelf || "-"}</td>
-        <td><span class="action-btn" onclick="deleteBook(${index})">🗑️</span></td>
-      </tr>
-    `;
-  });
-}
-
-/* ================= SAVE BOOK ================= */
-function saveBook(){
-  const title = document.getElementById("title").value.trim();
-  const author = document.getElementById("author").value.trim();
-  const dept = document.getElementById("dept").value;
-  const total = document.getElementById("total").value;
-
-  if(!title || !author || !dept || !total){
-    alert("Please fill required fields");
-    return;
-  }
-
-  let books = JSON.parse(localStorage.getItem("libraryBooks")) || [];
-
-  books.push({
-    title,
-    author,
-    dept,
-    total: parseInt(total),
-    available: parseInt(total),
-    shelf: document.getElementById("shelf").value
-  });
-
-  localStorage.setItem("libraryBooks", JSON.stringify(books));
-
-  closeModal();
-  loadBooks();
-}
-
-/* ================= DELETE BOOK ================= */
-function deleteBook(index){
-  let books = JSON.parse(localStorage.getItem("libraryBooks")) || [];
-  books.splice(index,1);
-  localStorage.setItem("libraryBooks", JSON.stringify(books));
-  loadBooks();
-}
-
-/* ================= MODAL ================= */
-function openModal(){
-  document.getElementById("modal").style.display="flex";
-}
-
-function closeModal(){
-  document.getElementById("modal").style.display="none";
-}
-
-/* ================= SEARCH ================= */
-function filterBooks(){
-  const search = document.getElementById("searchInput").value.toLowerCase();
-  const rows = document.querySelectorAll("#bookTable tr");
-
-  rows.forEach((row,index)=>{
-    if(index === 0) return;
-    const text = row.innerText.toLowerCase();
-    row.style.display = text.includes(search) ? "" : "none";
-  });
-}
-
-/* ================= LOGOUT ================= */
-function logout(){
-    sessionStorage.clear();
-    window.location.href = "login.html";
-}
-
+document.addEventListener("DOMContentLoaded",function(){loadBooks();document.getElementById("searchInput").addEventListener("keyup",function(){const q=this.value.toLowerCase();document.querySelectorAll("#bookBody tr").forEach(row=>{row.style.display=row.innerText.toLowerCase().includes(q)?"":"none";});});});
+function loadBooks(){const body=document.getElementById("bookBody");const books=JSON.parse(localStorage.getItem("libraryBooks"))||[];body.innerHTML="";if(books.length===0){body.innerHTML=`<tr class="empty-row"><td colspan="6">No books added yet. Click "+ Add Book" to get started.</td></tr>`;return;}books.forEach((book,i)=>{const isLow=book.available<=1&&book.available>0;const isNone=book.available===0;const bc=isNone?"badge-red":isLow?"badge-amber":"badge-green";body.innerHTML+=`<tr><td><strong>${book.title}</strong></td><td>${book.author}</td><td><span class="badge badge-slate">${book.dept}</span></td><td><span class="badge ${bc}">${book.available}/${book.total}</span></td><td>${book.shelf||"—"}</td><td><button class="btn btn-danger btn-sm" onclick="deleteBook(${i})">🗑 Delete</button></td></tr>`;});}
+function saveBook(){const title=document.getElementById("title").value.trim();const author=document.getElementById("author").value.trim();const dept=document.getElementById("dept").value;const total=parseInt(document.getElementById("total").value);const shelf=document.getElementById("shelf").value.trim();if(!title||!author||!dept||!total){showToast("Please fill all required fields","error");return;}const books=JSON.parse(localStorage.getItem("libraryBooks"))||[];books.push({title,author,dept,total,available:total,shelf});localStorage.setItem("libraryBooks",JSON.stringify(books));closeModal();loadBooks();showToast(`"${title}" added successfully!`,"success");}
+function deleteBook(index){if(!confirm("Delete this book?"))return;const books=JSON.parse(localStorage.getItem("libraryBooks"))||[];const removed=books.splice(index,1)[0];localStorage.setItem("libraryBooks",JSON.stringify(books));loadBooks();showToast(`"${removed.title}" deleted`,"info");}
+function openModal(){document.getElementById("modal").classList.add("open");["title","author","dept","total","shelf","desc"].forEach(id=>{const el=document.getElementById(id);if(el)el.value="";});}
+function closeModal(){document.getElementById("modal").classList.remove("open");}
+function showToast(msg,type="success"){const t=document.getElementById("toast");t.innerText=msg;t.className=`toast ${type} show`;setTimeout(()=>t.classList.remove("show"),3000);}
 </script>
-
 </body>
 </html>
