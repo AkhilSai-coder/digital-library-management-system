@@ -239,7 +239,57 @@ tr:hover{
   background:#163047;
 }
 
+/* ================= RESPONSIVE ================= */
+
+@media (max-width: 992px){
+
+  .dashboard-layout{
+    flex-direction: column;
+  }
+
+  .sidebar{
+    width: 100%;
+    text-align: center;
+  }
+
+  .sidebar a{
+    display: inline-block;
+    margin: 5px;
+  }
+
+  .main{
+    padding: 20px;
+  }
+
+  .page-header{
+    flex-direction: column;
+    gap: 15px;
+    align-items: flex-start;
+  }
+
+}
+
+/* ================= MOBILE ================= */
+
+@media (max-width: 768px){
+
+  table{
+    font-size: 12px;
+  }
+
+  th, td{
+    padding: 10px;
+  }
+
+  .modal-box{
+    width: 95%;
+  }
+
+}
+
 </style>
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
 </head>
 
 <body>
@@ -271,16 +321,18 @@ tr:hover{
 </div>
 
 <div class="card">
-  <table id="bookTable">
+  <div style="overflow-x:auto;">
+    <table id="bookTable">
     <tr>
-      <th>Title</th>
-      <th>Author</th>
-      <th>Department</th>
-      <th>Available</th>
-      <th>Shelf</th>
-      <th>Action</th>
-    </tr>
-  </table>
+    <th>Title</th>
+    <th>Author</th>
+    <th>Price</th>
+    <th>Department</th>
+    <th>Shelf</th>
+    <th>Action</th>
+</tr>
+      </table>
+  </div>
 </div>
 
 </main>
@@ -303,8 +355,8 @@ tr:hover{
       <option>General</option>
     </select>
 
-    <input id="total" type="number" placeholder="Total Copies">
     <input id="shelf" placeholder="Shelf Number (A1-01)">
+    <input id="price" type="number" step="0.01" placeholder="Book Price">
     <textarea id="desc" placeholder="Book Description"></textarea>
 
     <div class="modal-actions">
@@ -319,106 +371,128 @@ tr:hover{
 document.addEventListener("DOMContentLoaded", loadBooks);
 document.getElementById("searchInput").addEventListener("keyup", filterBooks);
 
-/* ================= LOAD BOOKS ================= */
-function loadBooks(){
-  const table = document.getElementById("bookTable");
-  let books = JSON.parse(localStorage.getItem("libraryBooks")) || [];
+/* ================= LOAD BOOKS FROM DATABASE ================= */
+async function loadBooks(){
 
-  table.innerHTML = `
-    <tr>
-      <th>Title</th>
-      <th>Author</th>
-      <th>Department</th>
-      <th>Available</th>
-      <th>Shelf</th>
-      <th>Action</th>
-    </tr>
-  `;
+    const token = localStorage.getItem("token");
 
-  if(books.length === 0){
-    table.innerHTML += `<tr><td colspan="6" class="empty">No books available</td></tr>`;
-    return;
-  }
+    const response = await fetch("http://localhost:8080/books", {
+        headers: {
+            "Authorization": "Bearer " + token
+        }
+    });
 
-  books.forEach((book,index)=>{
-    table.innerHTML += `
-      <tr>
-        <td><strong>${book.title}</strong></td>
-        <td>${book.author}</td>
-        <td><span class="dept-badge">${book.dept}</span></td>
-        <td>${book.available}/${book.total}</td>
-        <td>${book.shelf || "-"}</td>
-        <td><span class="action-btn" onclick="deleteBook(${index})">🗑️</span></td>
-      </tr>
+    const books = response.ok ? await response.json() : [];
+    const table = document.getElementById("bookTable");
+
+    table.innerHTML = `
+        <tr>
+            <th>Title</th>
+            <th>Author</th>
+            <th>Price</th>
+            <th>Department</th>
+            <th>Shelf</th>
+            <th>Action</th>
+        </tr>
     `;
-  });
+
+    if(books.length === 0){
+        table.innerHTML += `
+            <tr>
+                <td colspan="6" class="empty">
+                    No books available
+                </td>
+            </tr>
+        `;
+        return;
+    }
+
+    books.forEach(book => {
+
+        table.innerHTML += `
+            <tr>
+                <td><strong>${book.title}</strong></td>
+                <td>${book.author}</td>
+                <td>${book.price}</td>
+                <td>${book.dept || "-"}</td>
+                <td>${book.shelf || "-"}</td>
+                <td>
+                    <button onclick="deleteBook(${book.id})">
+                        Delete
+                    </button>
+                </td>
+            </tr>
+        `;
+    });
+}
+async function saveBook(){
+
+    const token = localStorage.getItem("token");
+
+    const title = document.getElementById("title").value.trim();
+    const author = document.getElementById("author").value.trim();
+    const price = document.getElementById("price").value;
+    const dept = document.getElementById("dept").value;
+    const shelf = document.getElementById("shelf").value;
+
+    if(!title || !author || !price){
+        alert("Please fill required fields");
+        return;
+    }
+
+    const response = await fetch("http://localhost:8080/books", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": "Bearer " + token
+        },
+        body: JSON.stringify({
+            title,
+            author,
+            price: parseFloat(price),
+            dept,
+            shelf
+        })
+    });
+
+    if(response.ok){
+        closeModal();
+        loadBooks();
+    } else {
+        alert("Failed to save book");
+    }
 }
 
-/* ================= SAVE BOOK ================= */
-function saveBook(){
-  const title = document.getElementById("title").value.trim();
-  const author = document.getElementById("author").value.trim();
-  const dept = document.getElementById("dept").value;
-  const total = document.getElementById("total").value;
+async function deleteBook(id){
 
-  if(!title || !author || !dept || !total){
-    alert("Please fill required fields");
-    return;
-  }
+    const token = localStorage.getItem("token");
 
-  let books = JSON.parse(localStorage.getItem("libraryBooks")) || [];
+    await fetch(`http://localhost:8080/books/${id}`, {
+        method: "DELETE",
+        headers: {
+            "Authorization": "Bearer " + token
+        }
+    });
 
-  books.push({
-    title,
-    author,
-    dept,
-    total: parseInt(total),
-    available: parseInt(total),
-    shelf: document.getElementById("shelf").value
-  });
-
-  localStorage.setItem("libraryBooks", JSON.stringify(books));
-
-  closeModal();
-  loadBooks();
+    loadBooks();
 }
 
-/* ================= DELETE BOOK ================= */
-function deleteBook(index){
-  let books = JSON.parse(localStorage.getItem("libraryBooks")) || [];
-  books.splice(index,1);
-  localStorage.setItem("libraryBooks", JSON.stringify(books));
-  loadBooks();
-}
-
-/* ================= MODAL ================= */
 function openModal(){
-  document.getElementById("modal").style.display="flex";
+    document.getElementById("modal").style.display = "flex";
 }
 
 function closeModal(){
-  document.getElementById("modal").style.display="none";
+    document.getElementById("modal").style.display = "none";
 }
 
-/* ================= SEARCH ================= */
-function filterBooks(){
-  const search = document.getElementById("searchInput").value.toLowerCase();
-  const rows = document.querySelectorAll("#bookTable tr");
-
-  rows.forEach((row,index)=>{
-    if(index === 0) return;
-    const text = row.innerText.toLowerCase();
-    row.style.display = text.includes(search) ? "" : "none";
-  });
-}
-
-/* ================= LOGOUT ================= */
 function logout(){
-    sessionStorage.clear();
-    window.location.href = "login.html";
+    localStorage.removeItem("token");   // remove JWT
+    sessionStorage.clear();             // optional
+    window.location.href = "login.html"; // redirect to login
 }
 
 </script>
+
 
 </body>
 </html>

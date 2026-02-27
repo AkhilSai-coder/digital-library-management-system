@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Faculty Dashboard | GRIET Library</title>
 <link rel="stylesheet" href="css/style.css">
 
@@ -107,6 +108,58 @@ th, td{
   padding:20px;
   color:#64748b;
 }
+
+/* ================= RESPONSIVE ================= */
+
+@media (max-width: 992px){
+
+  .dashboard-layout{
+    flex-direction: column;
+  }
+
+  .sidebar{
+    width: 100%;
+    text-align: center;
+  }
+
+  .sidebar a{
+    display: inline-block;
+    margin: 5px;
+  }
+
+  .main{
+    padding: 20px;
+  }
+
+  .top-bar{
+    flex-direction: column;
+    gap: 10px;
+    align-items: flex-start;
+  }
+
+}
+
+/* ================= MOBILE ================= */
+
+@media (max-width: 768px){
+
+  .cards{
+    grid-template-columns: 1fr;
+  }
+
+  table{
+    font-size: 12px;
+  }
+
+  th, td{
+    padding: 8px;
+  }
+
+  h2{
+    font-size: 20px;
+  }
+
+}
 </style>
 </head>
 
@@ -160,7 +213,8 @@ th, td{
 <!-- CURRENT BOOKS -->
 <div class="box">
   <h3>Currently Issued Books</h3>
-  <table>
+  <div style="overflow-x:auto;">
+    <table>
     <thead>
       <tr>
         <th>Book</th>
@@ -170,72 +224,108 @@ th, td{
       </tr>
     </thead>
     <tbody id="facultyTable"></tbody>
-  </table>
+      </table>
+  </div>
 </div>
 
 </main>
 </div>
 
 <script>
-document.addEventListener("DOMContentLoaded", function(){
+document.addEventListener("DOMContentLoaded", async function(){
 
-  const userId = sessionStorage.getItem("userId");
+  const token = localStorage.getItem("token");
 
-  let facultyBooks = JSON.parse(localStorage.getItem("facultyBooks")) || [];
-  let facultyHistory = JSON.parse(localStorage.getItem("facultyHistory")) || [];
-  let requests = JSON.parse(localStorage.getItem("bookRequests")) || [];
+  if(!token){
+      alert("Login required");
+      window.location.href = "login.html";
+      return;
+  }
 
   const table = document.getElementById("facultyTable");
-
   const issuedCount = document.getElementById("issuedCount");
   const overdueCount = document.getElementById("overdueCount");
   const historyCount = document.getElementById("historyCount");
   const requestCount = document.getElementById("requestCount");
 
-  const today = new Date();
+  try {
 
-  // Filter books of current faculty
-  const myBooks = facultyBooks.filter(book => book.userId === userId);
-  const myHistory = facultyHistory.filter(book => book.userId === userId);
-  const myRequests = requests.filter(r =>
-      r.userId === userId && r.status === "pending"
-  );
+      /* ============================= */
+      /* FETCH BORROWED BOOKS         */
+      /* ============================= */
 
-  issuedCount.innerText = myBooks.length;
-  historyCount.innerText = myHistory.length;
-  requestCount.innerText = myRequests.length;
+      const borrowResponse = await fetch("http://localhost:8080/borrow/my", {
+          headers: {
+              "Authorization": "Bearer " + token
+          }
+      });
 
-  let overdue = 0;
+      const borrows = borrowResponse.ok ? await borrowResponse.json() : [];
 
-  if(myBooks.length === 0){
-    table.innerHTML = `<tr><td colspan="4" class="empty">No books issued</td></tr>`;
-  } else {
-    myBooks.forEach(book => {
+      table.innerHTML = "";
+      let overdue = 0;
 
-      const dueDate = new Date(book.dueDate);
-      let status = "active";
+      const today = new Date();
 
-      if(today > dueDate){
-        status = "overdue";
-        overdue++;
+      if(borrows.length === 0){
+          table.innerHTML = `<tr><td colspan="4" class="empty">No books issued</td></tr>`;
+      } else {
+          borrows
+  .filter(b => !b.returned)
+  .forEach(b => {
+              const dueDate = new Date(b.dueDate);
+              let status = "active";
+
+              if(today > dueDate && !b.returned){
+                  status = "overdue";
+                  overdue++;
+              }
+
+              if(b.returned){
+                  status = "returned";
+              }
+
+              table.innerHTML += `
+                <tr>
+                  <td><b>${b.book.title}</b></td>
+                  <td>${b.issueDate}</td>
+                  <td>${b.dueDate}</td>
+                  <td>
+                    <span class="status-${status}">
+                      ${status}
+                    </span>
+                  </td>
+                </tr>
+              `;
+          });
       }
 
-      table.innerHTML += `
-        <tr>
-          <td><b>${book.title}</b></td>
-          <td>${book.issueDate}</td>
-          <td>${book.dueDate}</td>
-          <td>
-            <span class="status-${status}">
-              ${status}
-            </span>
-          </td>
-        </tr>
-      `;
-    });
-  }
+     const activeBooks = borrows.filter(b => !b.returned);
+     const returnedBooks = borrows.filter(b => b.returned);
 
-  overdueCount.innerText = overdue;
+issuedCount.innerText = activeBooks.length;
+historyCount.innerText = returnedBooks.length;
+overdueCount.innerText = overdue;
+
+      /* ============================= */
+      /* FETCH REQUESTS               */
+      /* ============================= */
+
+      const requestResponse = await fetch("http://localhost:8080/request/my", {
+          headers: {
+              "Authorization": "Bearer " + token
+          }
+      });
+
+      const requests = requestResponse.ok ? await requestResponse.json() : [];
+      const pending = requests.filter(r => r.status === "PENDING");
+
+      requestCount.innerText = pending.length;
+
+  } catch(error){
+      console.error(error);
+      alert("Server error");
+  }
 
 });
 </script>

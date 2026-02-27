@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>My Books | Student | GRIET Library</title>
 <link rel="stylesheet" href="css/style.css">
 
@@ -123,6 +124,64 @@ th{
   border-radius:20px;
   font-size:12px;
 }
+
+/* ================= TABLET ================= */
+
+@media (max-width: 992px){
+
+  table{
+    display:block;
+    overflow-x:auto;
+    white-space:nowrap;
+  }
+
+}
+
+/* ================= MOBILE ================= */
+
+@media (max-width: 768px){
+
+  .dashboard-layout{
+    flex-direction: column;
+  }
+
+  .sidebar{
+    width:100%;
+    display:flex;
+    overflow-x:auto;
+    padding:15px;
+  }
+
+  .sidebar a{
+    margin-right:10px;
+    white-space:nowrap;
+  }
+
+  .main{
+    padding:15px;
+  }
+
+  h2{
+    font-size:20px;
+  }
+
+  .tabs{
+    flex-wrap:wrap;
+    width:100%;
+  }
+
+  .tab{
+    flex:1;
+    text-align:center;
+    font-size:13px;
+  }
+
+  th, td{
+    font-size:13px;
+    padding:10px;
+  }
+
+}
 </style>
 </head>
 
@@ -170,44 +229,97 @@ th{
 <script>
 document.addEventListener("DOMContentLoaded", loadMyBooks);
 
+let allBorrows = [];
+
 async function loadMyBooks() {
 
     const token = localStorage.getItem("token");
 
-const response = await fetch("http://localhost:8080/borrow/my", {
-    headers: {
-        "Authorization": "Bearer " + token
-    }
-});
+    const response = await fetch("http://localhost:8080/borrow/my", {
+        headers: {
+            "Authorization": "Bearer " + token
+        }
+    });
 
-const borrows = response.ok ? await response.json() : [];
+    allBorrows = response.ok ? await response.json() : [];
 
-    const table = document.getElementById("myBooksTable");
+    updateCounts();
+    showActive(); // default tab
+}
+
+/* ============================= */
+/* SHOW ACTIVE BOOKS */
+/* ============================= */
+function showActive() {
+
+    document.getElementById("activeTab").classList.add("active");
+    document.getElementById("historyTab").classList.remove("active");
+
+    const table = document.getElementById("studentBooksTable");
     table.innerHTML = "";
 
-    borrows.forEach(b => {
+    const activeBooks = allBorrows.filter(b => !b.returned);
+
+    activeBooks.forEach(b => {
 
         table.innerHTML += `
             <tr>
                 <td>${b.book.title}</td>
                 <td>${b.issueDate}</td>
                 <td>${b.dueDate}</td>
-                <td>${b.returned ? "Returned" : 
-                    `<button onclick="returnBook(${b.id})">Return</button>`}
+                <td>
+                    <span class="status-active">Active</span>
                 </td>
             </tr>
         `;
     });
 }
 
-async function returnBook(id) {
-    await apiFetch(`/borrow/return/${id}`, {
-        method: "POST"
-    });
+/* ============================= */
+/* SHOW HISTORY */
+/* ============================= */
+function showHistory() {
 
-    alert("Book Returned");
-    loadMyBooks();
+    document.getElementById("historyTab").classList.add("active");
+    document.getElementById("activeTab").classList.remove("active");
+
+    const table = document.getElementById("studentBooksTable");
+    table.innerHTML = "";
+
+    const historyBooks = allBorrows.filter(b => b.returned);
+
+    historyBooks.forEach(b => {
+
+        table.innerHTML += `
+            <tr>
+                <td>${b.book.title}</td>
+                <td>${b.issueDate}</td>
+                <td>${b.dueDate}</td>
+                <td>
+                    <span class="status-returned">Returned</span>
+                </td>
+            </tr>
+        `;
+    });
 }
+
+/* ============================= */
+/* UPDATE TAB COUNTS */
+/* ============================= */
+function updateCounts() {
+
+    const activeCount = allBorrows.filter(b => !b.returned).length;
+    const historyCount = allBorrows.filter(b => b.returned).length;
+
+    document.getElementById("activeTab").innerText = `Active (${activeCount})`;
+    document.getElementById("historyTab").innerText = `History (${historyCount})`;
+}
+
+/* ============================= */
+/* TAB CLICK EVENTS */
+/* ============================= */
+document.getElementById("activeTab").onclick = showActive;
+document.getElementById("historyTab").onclick = showHistory;
 </script>
 
 

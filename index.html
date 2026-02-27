@@ -1492,6 +1492,110 @@ nav a:hover::after{
 .dots span.active{
   background:#e10600;
 }
+
+/* ================= EXTRA RESPONSIVE FIX ================= */
+
+@media (max-width: 992px){
+
+  /* Feature section stack */
+  .feature-resource-wrapper{
+    grid-template-columns: 1fr;
+    gap: 40px;
+  }
+
+  .book-slider{
+    height: 450px;
+  }
+
+  /* Hero text smaller */
+  .hero h1{
+    font-size: 38px;
+  }
+
+  .hero p{
+    font-size: 16px;
+  }
+
+}
+
+/* ================= MOBILE ================= */
+
+@media (max-width: 768px){
+
+  /* Header fix */
+  .header-flex{
+    flex-direction: column;
+    gap: 15px;
+    text-align: center;
+  }
+
+  nav a{
+    margin: 0 10px;
+  }
+
+  /* Hero smaller */
+  .hero{
+    height: 420px;
+  }
+
+  .hero h1{
+    font-size: 28px;
+  }
+
+  .hero p{
+    font-size: 14px;
+  }
+
+  /* AI Panel Full Width */
+  .ai-panel{
+    width: 95%;
+    right: 2.5%;
+    height: 80vh;
+  }
+
+  /* Featured books height */
+  .book-slider{
+    height: 350px;
+  }
+
+  /* Timeline fix */
+  .growth-timeline::before{
+    left: 20px;
+  }
+
+  .growth-item{
+    width: 100% !important;
+    left: 0 !important;
+    text-align: left !important;
+  }
+
+  .growth-year{
+    left: -40px !important;
+  }
+
+}
+
+/* ================= SMALL MOBILE ================= */
+
+@media (max-width: 576px){
+
+  .collection-title{
+    font-size: 30px;
+  }
+
+  .section-title{
+    font-size: 28px;
+  }
+
+  .pub-title{
+    font-size: 30px;
+  }
+
+  .infra-slider img{
+    height: 300px;
+  }
+
+}
 </style>
 
 <!-- Bootstrap CSS -->

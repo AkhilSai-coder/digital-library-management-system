@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+
 <title>Login | GRIET Central Library</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="stylesheet" href="css/style.css">
@@ -18,7 +19,6 @@ body{
   align-items:center;
   justify-content:center;
   min-height:100vh;
-  overflow:hidden;
 }
 
 /* Animated Background Glow */
@@ -200,6 +200,63 @@ body::before{
   }
 }
 
+/* ================= RESPONSIVE FIX ================= */
+
+@media (max-width: 768px){
+
+  body{
+    padding:20px;
+  }
+
+  .login-wrapper{
+    padding:20px;
+  }
+
+  .login-title{
+    font-size:28px;
+  }
+
+  .login-subtitle{
+    font-size:14px;
+    margin-bottom:30px;
+  }
+
+  .role-cards{
+    grid-template-columns:1fr;   /* stack vertically */
+    gap:20px;
+  }
+
+  .modal-box{
+    width:100%;
+    max-width:320px;
+    padding:25px;
+  }
+
+  .home-btn{
+    top:15px;
+    left:15px;
+    font-size:12px;
+    padding:6px 14px;
+  }
+
+  @media (max-width: 480px){
+
+  .modal-box{
+    width:90%;
+  }
+
+  .modal-actions{
+    flex-direction:column;
+    gap:10px;
+  }
+
+  .btn{
+    width:100%;
+  }
+
+}
+
+}
 </style>
 </head>
 

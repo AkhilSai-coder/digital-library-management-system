@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Book Catalog | GRIET Library</title>
 <link rel="stylesheet" href="css/style.css">
 
@@ -120,6 +121,51 @@ select{
 
 .request-btn:hover{
   opacity:0.9;
+}
+
+/* ================= RESPONSIVE ================= */
+
+@media (max-width: 992px){
+
+  .container{
+    padding:20px;
+  }
+
+  .filters{
+    flex-wrap: wrap;
+  }
+
+  select{
+    flex:1;
+  }
+
+}
+
+/* ================= MOBILE ================= */
+
+@media (max-width: 768px){
+
+  h1{
+    font-size:22px;
+  }
+
+  .filters{
+    flex-direction: column;
+  }
+
+  .search,
+  select{
+    width:100%;
+  }
+
+  .grid{
+    grid-template-columns: 1fr;
+  }
+
+  .card{
+    padding:15px;
+  }
+
 }
 </style>
 </head>

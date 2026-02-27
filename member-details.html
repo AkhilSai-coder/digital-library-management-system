@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Member Details</title>
 <link rel="stylesheet" href="css/style.css">
 
@@ -94,13 +95,68 @@ th,td{
 .suggestions div:hover{
   background:#f1f5f9;
 }
+
+/* ================= RESPONSIVE ================= */
+
+@media (max-width: 992px){
+
+  .member-card{
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .photo{
+    width:120px;
+    height:140px;
+  }
+
+}
+
+/* ================= MOBILE ================= */
+
+@media (max-width: 768px){
+
+  .container{
+    padding:15px;
+  }
+
+  .tabs{
+    flex-direction: column;
+  }
+
+  .tab{
+    text-align:center;
+  }
+
+  table{
+    display:block;
+    overflow-x:auto;   /* horizontal scroll on small screens */
+  }
+
+  th, td{
+    font-size:13px;
+    padding:8px;
+  }
+
+  .issue-box input{
+    width:100%;
+    padding:10px;
+  }
+
+  .btn{
+    width:100%;
+    margin-top:10px;
+  }
+
+}
+
 </style>
 </head>
 
 <body>
 
 <script src="js/auth.js"></script>
-<script>protectDashboard("librarian");</script>
 
 <div class="container">
 
@@ -186,179 +242,204 @@ document.addEventListener("DOMContentLoaded", function(){
 /* =======================
    LOAD ACTIVE
 ======================= */
-function loadActive(){
+async function loadActive(){
 
   const member = JSON.parse(localStorage.getItem("selectedMember"));
-  const {userId, userRole} = member;
+  const {userId} = member;
+
+  const token = localStorage.getItem("token");
+
+  const response = await fetch("http://localhost:8080/borrow/all", {
+    headers: {
+      "Authorization": "Bearer " + token
+    }
+  });
+
+  const borrows = response.ok ? await response.json() : [];
 
   const tableBody = document.getElementById("tableBody");
   tableBody.innerHTML = "";
 
-  let books = userRole === "student"
-    ? JSON.parse(localStorage.getItem("studentBooks")) || []
-    : JSON.parse(localStorage.getItem("facultyBooks")) || [];
+  const activeBooks = borrows.filter(b =>
+      b.user.email === userId && !b.returned
+  );
 
-  const userBooks = books.filter(b => b.userId === userId);
-
-  if(userBooks.length === 0){
-    tableBody.innerHTML = `<tr><td colspan="4">No active books</td></tr>`;
+  if(activeBooks.length === 0){
+    tableBody.innerHTML =
+      `<tr><td colspan="4">No active books</td></tr>`;
     return;
   }
 
-  userBooks.forEach(book=>{
+  activeBooks.forEach(b => {
     tableBody.innerHTML += `
       <tr>
-        <td>${book.title}</td>
-        <td>${book.issueDate}</td>
-        <td>${book.dueDate}</td>
+        <td>${b.book.title}</td>
+        <td>${b.issueDate}</td>
+        <td>${b.dueDate}</td>
         <td>
           <button class="btn"
-          onclick="returnBook('${book.title}','${userId}','${userRole}')">
-          Return
+            onclick="returnBook(${b.id})">
+            Return
           </button>
         </td>
-      </tr>`;
+      </tr>
+    `;
   });
 }
 
 /* =======================
    LOAD HISTORY
 ======================= */
-function loadHistory(){
+async function loadHistory(){
 
   const member = JSON.parse(localStorage.getItem("selectedMember"));
-  const {userId, userRole} = member;
+  const {userId} = member;
+
+  const token = localStorage.getItem("token");
+
+  const response = await fetch("http://localhost:8080/borrow/all", {
+    headers: {
+      "Authorization": "Bearer " + token
+    }
+  });
+
+  const borrows = response.ok ? await response.json() : [];
 
   const tableBody = document.getElementById("tableBody");
   tableBody.innerHTML = "";
 
-  let history = userRole === "student"
-    ? JSON.parse(localStorage.getItem("studentHistory")) || []
-    : JSON.parse(localStorage.getItem("facultyHistory")) || [];
+  const historyBooks = borrows.filter(b =>
+      b.user.email === userId && b.returned
+  );
 
-  const userHistory = history.filter(b => b.userId === userId);
-
-  if(userHistory.length === 0){
-    tableBody.innerHTML = `<tr><td colspan="4">No history</td></tr>`;
+  if(historyBooks.length === 0){
+    tableBody.innerHTML =
+      `<tr><td colspan="4">No history</td></tr>`;
     return;
   }
 
-  userHistory.forEach(book=>{
+  historyBooks.forEach(b => {
     tableBody.innerHTML += `
       <tr>
-        <td>${book.title}</td>
-        <td>${book.issueDate}</td>
-        <td>${book.dueDate}</td>
+        <td>${b.book.title}</td>
+        <td>${b.issueDate}</td>
+        <td>${b.dueDate}</td>
         <td>Returned</td>
-      </tr>`;
+      </tr>
+    `;
   });
 }
-
 /* =======================
    SEARCH CATALOGUE
 ======================= */
-function searchBook(){
+async function searchBook(){
 
-  const query = document.getElementById("offlineTitle").value.toLowerCase();
+  const query = document
+      .getElementById("offlineTitle")
+      .value
+      .toLowerCase();
+
   const suggestionsBox = document.getElementById("suggestions");
   suggestionsBox.innerHTML = "";
 
-  let catalogue = JSON.parse(localStorage.getItem("books")) || [];
+  if(query.length < 1) return;
 
-  const results = catalogue.filter(book =>
-    book.title.toLowerCase().includes(query)
+  const token = localStorage.getItem("token");
+
+  const response = await fetch(
+      "http://localhost:8080/books",
+      {
+        headers: {
+          "Authorization": "Bearer " + token
+        }
+      }
+  );
+
+  const books = response.ok ? await response.json() : [];
+
+  const results = books.filter(book =>
+      book.title.toLowerCase().includes(query)
   );
 
   results.forEach(book=>{
     suggestionsBox.innerHTML += `
-      <div onclick="selectBook('${book.title}')">
+      <div onclick="selectBook('${book.title}', ${book.id})">
         ${book.title}
       </div>
     `;
   });
 }
 
-function selectBook(title){
-  document.getElementById("offlineTitle").value = title;
+function selectBook(title, id){
+
+  const input = document.getElementById("offlineTitle");
+
+  input.value = title;
+
+  // 🔥 store book id properly
+  input.dataset.bookId = id;
+
   document.getElementById("suggestions").innerHTML = "";
 }
 
 /* =======================
    ISSUE OFFLINE
 ======================= */
-function issueOffline(){
+async function issueOffline(){
 
   const member = JSON.parse(localStorage.getItem("selectedMember"));
-  const {userId, userRole} = member;
+  const {userId} = member;
 
-  const title = document.getElementById("offlineTitle").value.trim();
-  if(!title) return alert("Select book from catalogue");
+  const input = document.getElementById("offlineTitle");
+  const bookId = input.dataset.bookId;
 
-  const today = new Date();
-  const due = new Date();
-  due.setDate(today.getDate() + 15);
-
-  const bookData = {
-    title,
-    issueDate: today.toISOString().split("T")[0],
-    dueDate: due.toISOString().split("T")[0],
-    userId,
-    userRole
-  };
-
-  if(userRole === "student"){
-    let books = JSON.parse(localStorage.getItem("studentBooks")) || [];
-    books.push(bookData);
-    localStorage.setItem("studentBooks", JSON.stringify(books));
+  if(!bookId){
+    alert("⚠ Please select book from suggestions list");
+    return;
   }
 
-  if(userRole === "faculty"){
-    let books = JSON.parse(localStorage.getItem("facultyBooks")) || [];
-    books.push(bookData);
-    localStorage.setItem("facultyBooks", JSON.stringify(books));
-  }
+  const token = localStorage.getItem("token");
 
-  alert("Book issued successfully");
-  document.getElementById("offlineTitle").value = "";
-  loadActive();
+  const response = await fetch(
+    `http://localhost:8080/borrow/issue/${bookId}/${userId}`,
+    {
+      method: "POST",
+      headers: {
+        "Authorization": "Bearer " + token
+      }
+    }
+  );
+
+  if(response.ok){
+    alert("Book issued successfully");
+
+    input.value = "";
+    input.dataset.bookId = "";
+
+    loadActive();
+  } else {
+    const msg = await response.text();
+    alert("Issue failed: " + msg);
+  }
 }
-
 /* =======================
    RETURN BOOK
 ======================= */
-function returnBook(title,userId,userRole){
+async function returnBook(borrowId){
 
-  if(userRole === "student"){
-    let books = JSON.parse(localStorage.getItem("studentBooks")) || [];
-    let history = JSON.parse(localStorage.getItem("studentHistory")) || [];
+  const token = localStorage.getItem("token");
 
-    const index = books.findIndex(b =>
-      b.title === title && b.userId === userId);
-
-    if(index !== -1){
-      history.push(books[index]);
-      books.splice(index,1);
+  await fetch(
+    `http://localhost:8080/borrow/return/${borrowId}`,
+    {
+      method: "POST",
+      headers: {
+        "Authorization": "Bearer " + token
+      }
     }
+  );
 
-    localStorage.setItem("studentBooks", JSON.stringify(books));
-    localStorage.setItem("studentHistory", JSON.stringify(history));
-  }
-
-  if(userRole === "faculty"){
-    let books = JSON.parse(localStorage.getItem("facultyBooks")) || [];
-    let history = JSON.parse(localStorage.getItem("facultyHistory")) || [];
-
-    const index = books.findIndex(b =>
-      b.title === title && b.userId === userId);
-
-    if(index !== -1){
-      history.push(books[index]);
-      books.splice(index,1);
-    }
-
-    localStorage.setItem("facultyBooks", JSON.stringify(books));
-    localStorage.setItem("facultyHistory", JSON.stringify(history));
-  }
+  alert("Book returned successfully");
 
   loadActive();
 }

@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Reports & Analytics | GRIET Library</title>
   <link rel="stylesheet" href="css/style.css">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -86,6 +87,55 @@
   canvas {
     margin-top: 10px;
   }
+
+  /* ================= TABLET ================= */
+
+@media (max-width: 992px){
+
+  .grid{
+    grid-template-columns: 1fr;  /* stack charts */
+  }
+
+  .card{
+    padding:15px;
+  }
+
+}
+
+/* ================= MOBILE ================= */
+
+@media (max-width: 768px){
+
+  .dashboard-layout{
+    flex-direction: column;
+  }
+
+  .sidebar{
+    width:100%;
+    display:flex;
+    overflow-x:auto;
+    padding:15px;
+  }
+
+  .sidebar a{
+    margin-right:10px;
+    white-space:nowrap;
+  }
+
+  .main{
+    padding:15px;
+  }
+
+  .page-title{
+    font-size:20px;
+  }
+
+  canvas{
+    max-width:100% !important;
+    height:auto !important;
+  }
+
+}
 </style>
 
 </head>

@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Fine Management | GRIET Library</title>
   <link rel="stylesheet" href="css/style.css">
 
@@ -138,6 +139,63 @@
       background:#fff;
       cursor:pointer;
     }
+
+    /* ================= RESPONSIVE ================= */
+
+@media (max-width: 992px){
+
+  .dashboard-layout{
+    flex-direction: column;
+  }
+
+  .sidebar{
+    width: 100%;
+    text-align: center;
+  }
+
+  .sidebar a{
+    display: inline-block;
+    margin: 5px;
+  }
+
+  .main{
+    padding: 20px;
+  }
+
+  .top-bar{
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+}
+
+/* ================= MOBILE ================= */
+
+@media (max-width: 768px){
+
+  .page-title{
+    font-size: 20px;
+  }
+
+  .fine-amount{
+    font-size: 24px;
+  }
+
+  table{
+    font-size: 12px;
+  }
+
+  th, td{
+    padding: 8px;
+  }
+
+  .btn-clear{
+    padding: 4px 8px;
+    font-size: 12px;
+  }
+
+}
   </style>
 </head>
 
@@ -145,7 +203,6 @@
 
 <!-- AUTH -->
 <script src="js/auth.js"></script>
-<script>protectDashboard("librarian");</script>
 
 <div class="dashboard-layout">
 
@@ -172,16 +229,17 @@
 
     <!-- TOTAL FINES -->
     <div class="summary-card">
-      <h3>Total Pending Fines</h3>
-      <div class="fine-amount">₹90</div>
-      <small>3 pending fine(s)</small>
-    </div>
+  <h3>Total Pending Fines</h3>
+  <div class="fine-amount">₹0</div>
+  <small>0 pending fine(s)</small>
+</div>
 
     <!-- FINES TABLE -->
     <div class="card">
-      <h3 style="margin-bottom:15px;">All Fines</h3>
+  <h3 style="margin-bottom:15px;">All Fines</h3>
 
-      <table>
+  <div style="overflow-x:auto;">
+    <table>
         <tr>
           <th>Member</th>
           <th>Book</th>
@@ -191,62 +249,108 @@
           <th>Action</th>
         </tr>
 
-        <tr>
-          <td>Aarav Sharma</td>
-          <td>Introduction to Algorithms</td>
-          <td>Overdue - 8 days late</td>
-          <td>₹40</td>
-          <td><span class="status-pending">pending</span></td>
-          <td>
-            <button class="btn-clear"
-              onclick="confirm('Clear this fine?') && alert('Fine cleared')">
-              Clear
-            </button>
-          </td>
-        </tr>
-
-        <tr>
-          <td>Aarav Sharma</td>
-          <td>Operating System Concepts</td>
-          <td>Overdue - 4 days late</td>
-          <td>₹20</td>
-          <td><span class="status-pending">pending</span></td>
-          <td>
-            <button class="btn-clear"
-              onclick="confirm('Clear this fine?') && alert('Fine cleared')">
-              Clear
-            </button>
-          </td>
-        </tr>
-
-        <tr>
-          <td>Priya Patel</td>
-          <td>Computer Networks</td>
-          <td>Overdue - 2 days late</td>
-          <td>₹10</td>
-          <td><span class="status-paid">paid</span></td>
-          <td>-</td>
-        </tr>
-
-        <tr>
-          <td>Rahul Verma</td>
-          <td>Thermodynamics: An Engineering Approach</td>
-          <td>Overdue - 6 days late</td>
-          <td>₹30</td>
-          <td><span class="status-pending">pending</span></td>
-          <td>
-            <button class="btn-clear"
-              onclick="confirm('Clear this fine?') && alert('Fine cleared')">
-              Clear
-            </button>
-          </td>
-        </tr>
-
-      </table>
-    </div>
+          </table>
+  </div>
+</div>
 
   </main>
 </div>
+
+
+<script>
+document.addEventListener("DOMContentLoaded", loadFines);
+
+async function loadFines(){
+
+  const token = localStorage.getItem("token");
+
+  const response = await fetch("http://localhost:8080/borrow/all", {
+    headers: {
+      "Authorization": "Bearer " + token
+    }
+  });
+
+  const borrows = response.ok ? await response.json() : [];
+
+  const table = document.querySelector("table");
+  const amountDiv = document.querySelector(".fine-amount");
+  const summaryText = document.querySelector(".summary-card small");
+
+  let totalPending = 0;
+  let pendingCount = 0;
+
+  table.innerHTML = `
+    <tr>
+      <th>Member</th>
+      <th>Book</th>
+      <th>Reason</th>
+      <th>Amount</th>
+      <th>Status</th>
+      <th>Action</th>
+    </tr>
+  `;
+
+  borrows.forEach(b => {
+
+    if(Number(b.fine) > 0){
+
+      totalPending += b.fine;
+      pendingCount++;
+
+      table.innerHTML += `
+        <tr>
+          <td>${b.user.email}</td>
+          <td>${b.book.title}</td>
+          <td>Overdue Fine</td>
+          <td>₹${b.fine}</td>
+          <td><span class="status-pending">pending</span></td>
+          <td>
+            <button class="btn-clear"
+              onclick="clearFine(${b.id})">
+              Clear
+            </button>
+          </td>
+        </tr>
+      `;
+    }
+  });
+
+  amountDiv.innerText = "₹" + totalPending;
+  summaryText.innerText = pendingCount + " pending fine(s)";
+
+  if(pendingCount === 0){
+    table.innerHTML += `
+      <tr>
+        <td colspan="6" style="text-align:center;padding:25px;">
+          No pending fines
+        </td>
+      </tr>
+    `;
+  }
+}
+
+/* CLEAR FINE */
+async function clearFine(borrowId){
+
+  if(!confirm("Clear this fine?")) return;
+
+  const token = localStorage.getItem("token");
+
+  await fetch(
+    `http://localhost:8080/fine/clear/${borrowId}`,
+    {
+      method: "POST",
+      headers: {
+        "Authorization": "Bearer " + token
+      }
+    }
+  );
+
+  alert("Fine cleared");
+
+  loadFines();
+}
+</script>
 
 </body>
 </html>

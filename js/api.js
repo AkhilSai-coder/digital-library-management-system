@@ -10,22 +10,16 @@ function getToken() {
     return token;
 }
 
-async function apiFetch(endpoint, options = {}) {
-    const token = getToken();
-    if (!token) return;
+async function apiFetch(url, options = {}) {
 
-    const response = await fetch(API_BASE + endpoint, {
+    const token = localStorage.getItem("token");
+
+    return fetch("http://localhost:8080" + url, {
         ...options,
         headers: {
-            "Authorization": "Bearer " + token,
             "Content-Type": "application/json",
+            "Authorization": "Bearer " + token,
             ...(options.headers || {})
         }
-    });
-
-    if (!response.ok) {
-        throw new Error("Request failed");
-    }
-
-    return response.json().catch(() => null);
+    }).then(res => res.json());
 }

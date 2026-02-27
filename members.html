@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Members | GRIET Library</title>
 <link rel="stylesheet" href="css/style.css">
 
@@ -88,6 +89,58 @@ th, td {
   font-weight:bold;
   cursor:pointer;
 }
+
+/* ================= TABLE SCROLL ================= */
+
+@media (max-width: 992px){
+
+  .search-box{
+    width:100%;
+  }
+
+  table{
+    display:block;
+    overflow-x:auto;   /* horizontal scroll on tablet */
+    white-space:nowrap;
+  }
+
+}
+
+/* ================= MOBILE ================= */
+
+@media (max-width: 768px){
+
+  .dashboard-layout{
+    flex-direction:column;
+  }
+
+  .sidebar{
+    width:100%;
+    display:flex;
+    overflow-x:auto;
+    padding:15px;
+  }
+
+  .sidebar a{
+    margin-right:10px;
+    white-space:nowrap;
+  }
+
+  .main{
+    padding:15px;
+  }
+
+  .page-title{
+    font-size:20px;
+  }
+
+  th, td{
+    padding:10px;
+    font-size:13px;
+  }
+
+}
+
 </style>
 </head>
 
@@ -140,7 +193,15 @@ document.addEventListener("DOMContentLoaded", loadMembers);
 
 async function loadMembers() {
 
-    const members = await apiFetch("/members");
+    const token = localStorage.getItem("token");
+
+const response = await fetch("http://localhost:8080/members", {
+    headers: {
+        "Authorization": "Bearer " + token
+    }
+});
+
+const members = response.ok ? await response.json() : [];
 
     const table = document.getElementById("membersTable");
     table.innerHTML = "";
@@ -148,33 +209,37 @@ async function loadMembers() {
     members.forEach(m => {
         table.innerHTML += `
             <tr>
-                <td>${m.name}</td>
-                <td>${m.email}</td>
-                <td>${m.role}</td>
-                <td>${m.activeBorrows}</td>
-                <td>${m.pendingRequests}</td>
+                <td>${m.userId}</td>
+                <td>
+                    <span class="role-badge">${m.role}</span>
+                </td>
+                <td>${m.activeCount}</td>
+                <td>${m.historyCount}</td>
+                <td>
+                    <span class="view-link"
+                        onclick="openMember('${m.userId}', '${m.role}')">
+                        View
+                    </span>
+                </td>
             </tr>
         `;
     });
 }
 
   /* 🔍 SEARCH FUNCTION */
-  searchInput.addEventListener("keyup", function(){
+  const searchInput = document.getElementById("searchInput");
+
+searchInput.addEventListener("keyup", function(){
 
     const value = searchInput.value.toLowerCase();
-    const rows = table.querySelectorAll("tr");
+    const rows = document.querySelectorAll("#membersTable tr");
 
     rows.forEach(row => {
-      const userId = row.children[0].innerText.toLowerCase();
-
-      if(userId.includes(value)){
-        row.style.display = "";
-      } else {
-        row.style.display = "none";
-      }
+        const userId = row.children[0].innerText.toLowerCase();
+        row.style.display = userId.includes(value) ? "" : "none";
     });
 
-  });
+});
 
 function openMember(userId, userRole){
 

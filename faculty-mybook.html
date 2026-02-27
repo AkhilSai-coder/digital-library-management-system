@@ -180,89 +180,114 @@ th{
 </div>
 
 <script>
-document.addEventListener("DOMContentLoaded", function(){
+document.addEventListener("DOMContentLoaded", loadMyBooks);
 
-  const activeTab = document.getElementById("activeTab");
-  const historyTab = document.getElementById("historyTab");
-  const tableBody = document.getElementById("facultyBooksTable");
+let allBorrows = [];
 
-  const userId = sessionStorage.getItem("userId");
+async function loadMyBooks(){
 
-  let facultyBooks = JSON.parse(localStorage.getItem("facultyBooks")) || [];
-  let facultyHistory = JSON.parse(localStorage.getItem("facultyHistory")) || [];
+    const token = localStorage.getItem("token");
 
-  function loadActive(){
+    const response = await fetch("http://localhost:8080/borrow/my", {
+        headers: {
+            "Authorization": "Bearer " + token
+        }
+    });
 
-    tableBody.innerHTML = "";
+    allBorrows = response.ok ? await response.json() : [];
+
+    updateCounts();
+    showActive();
+}
+
+/* ========================= */
+/* SHOW ACTIVE BOOKS */
+/* ========================= */
+function showActive(){
+
+    document.getElementById("activeTab").classList.add("active");
+    document.getElementById("historyTab").classList.remove("active");
+
+    const table = document.getElementById("facultyBooksTable");
+    table.innerHTML = "";
+
+    const activeBooks = allBorrows.filter(b => !b.returned);
+
+    if(activeBooks.length === 0){
+        table.innerHTML = `<tr><td colspan="4" class="empty">No active books</td></tr>`;
+        return;
+    }
+
     const today = new Date();
 
-    const userBooks = facultyBooks.filter(book => book.userId === userId);
+    activeBooks.forEach(b => {
 
-    if(userBooks.length === 0){
-      tableBody.innerHTML = `<tr><td colspan="4" class="empty">No active books</td></tr>`;
+        const dueDate = new Date(b.dueDate);
+        let status = "active";
+
+        if(today > dueDate){
+            status = "overdue";
+        }
+
+        table.innerHTML += `
+            <tr>
+                <td><b>${b.book.title}</b></td>
+                <td>${b.issueDate}</td>
+                <td>${b.dueDate}</td>
+                <td><span class="status-${status}">${status}</span></td>
+            </tr>
+        `;
+    });
+}
+
+/* ========================= */
+/* SHOW HISTORY */
+/* ========================= */
+function showHistory(){
+
+    document.getElementById("historyTab").classList.add("active");
+    document.getElementById("activeTab").classList.remove("active");
+
+    const table = document.getElementById("facultyBooksTable");
+    table.innerHTML = "";
+
+    const historyBooks = allBorrows.filter(b => b.returned);
+
+    if(historyBooks.length === 0){
+        table.innerHTML = `<tr><td colspan="4" class="empty">No history yet</td></tr>`;
+        return;
     }
 
-    let activeCount = 0;
+    historyBooks.forEach(b => {
 
-    userBooks.forEach(book => {
-
-      const dueDate = new Date(book.dueDate);
-      let status = today > dueDate ? "overdue" : "active";
-
-      if(status === "active") activeCount++;
-
-      tableBody.innerHTML += `
-      <tr>
-        <td><b>${book.title}</b></td>
-        <td>${book.issueDate}</td>
-        <td>${book.dueDate}</td>
-        <td><span class="status-${status}">${status}</span></td>
-      </tr>`;
+        table.innerHTML += `
+            <tr>
+                <td><b>${b.book.title}</b></td>
+                <td>${b.issueDate}</td>
+                <td>${b.dueDate}</td>
+                <td><span class="status-returned">returned</span></td>
+            </tr>
+        `;
     });
+}
 
-    activeTab.innerText = "Active (" + userBooks.length + ")";
-    historyTab.innerText = "History (" + facultyHistory.filter(b=>b.userId===userId).length + ")";
-  }
+/* ========================= */
+/* UPDATE COUNTS */
+/* ========================= */
+function updateCounts(){
 
-  function loadHistory(){
+    const activeCount = allBorrows.filter(b => !b.returned).length;
+    const historyCount = allBorrows.filter(b => b.returned).length;
 
-    tableBody.innerHTML = "";
+    document.getElementById("activeTab").innerText = `Active (${activeCount})`;
+    document.getElementById("historyTab").innerText = `History (${historyCount})`;
+}
 
-    const userHistory = facultyHistory.filter(book => book.userId === userId);
-
-    if(userHistory.length === 0){
-      tableBody.innerHTML = `<tr><td colspan="4" class="empty">No history yet</td></tr>`;
-    }
-
-    userHistory.forEach(book => {
-
-      tableBody.innerHTML += `
-      <tr>
-        <td><b>${book.title}</b></td>
-        <td>${book.issueDate}</td>
-        <td>${book.dueDate}</td>
-        <td><span class="status-returned">returned</span></td>
-      </tr>`;
-    });
-
-    activeTab.innerText = "Active (" + facultyBooks.filter(b=>b.userId===userId).length + ")";
-    historyTab.innerText = "History (" + userHistory.length + ")";
-  }
-
-  activeTab.addEventListener("click", function(){
-    activeTab.classList.add("active");
-    historyTab.classList.remove("active");
-    loadActive();
-  });
-
-  historyTab.addEventListener("click", function(){
-    historyTab.classList.add("active");
-    activeTab.classList.remove("active");
-    loadHistory();
-  });
-
-  loadActive();
-});
+/* ========================= */
+/* TAB EVENTS */
+/* ========================= */
+document.getElementById("activeTab").onclick = showActive;
+document.getElementById("historyTab").onclick = showHistory;
 </script>
 
 </body>

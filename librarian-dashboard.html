@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Librarian Dashboard | GRIET Library</title>
 <link rel="stylesheet" href="css/style.css">
 
@@ -164,6 +165,59 @@ tr:hover{
     font-weight:600;
 }
 
+/* ================= RESPONSIVE ================= */
+
+@media (max-width: 992px){
+
+  .dashboard-layout{
+    flex-direction: column;
+  }
+
+  .sidebar{
+    width: 100%;
+    text-align: center;
+  }
+
+  .sidebar a{
+    display: inline-block;
+    margin: 5px;
+  }
+
+  .main{
+    padding: 20px;
+  }
+
+  .top-bar{
+    flex-direction: column;
+    gap: 10px;
+    text-align: center;
+  }
+
+}
+
+/* ================= MOBILE ================= */
+
+@media (max-width: 768px){
+
+  .cards{
+    grid-template-columns: 1fr;   /* stack cards */
+  }
+
+  .card .value{
+    font-size: 24px;
+  }
+
+  .box{
+    padding: 15px;
+  }
+
+  table{
+    display: block;
+    overflow-x: auto;   /* horizontal scroll on mobile */
+  }
+
+}
+
 </style>
 </head>
 
@@ -240,85 +294,111 @@ tr:hover{
 </div>
 
 <script>
-document.addEventListener("DOMContentLoaded", function(){
+document.addEventListener("DOMContentLoaded", loadDashboard);
 
-let studentBooks = JSON.parse(localStorage.getItem("studentBooks")) || [];
-let facultyBooks = JSON.parse(localStorage.getItem("facultyBooks")) || [];
-let requests = JSON.parse(localStorage.getItem("bookRequests")) || [];
-
-let allBooks = [...studentBooks, ...facultyBooks];
-
-let today = new Date().toISOString().split("T")[0];
-
-let totalIssued = allBooks.length;
-let issuedToday = 0;
-let overdueCount = 0;
-let pendingCount = requests.filter(r => r.status === "pending").length;
-
-const overdueTable = document.getElementById("overdueTable");
-
-allBooks.forEach(book => {
-
-    if(book.issueDate === today){
-        issuedToday++;
-    }
-
-    if(new Date(book.dueDate) < new Date()){
-        overdueCount++;
-
-        overdueTable.innerHTML += `
-        <tr>
-            <td>${book.userId}</td>
-            <td>${book.title}</td>
-            <td>${book.dueDate}</td>
-            <td><span class="status-overdue">Overdue</span></td>
-        </tr>
-        `;
-    }
-});
-
-if(overdueCount === 0){
-    overdueTable.innerHTML = "<tr><td colspan='4'>No overdue books</td></tr>";
-}
-
-document.getElementById("totalIssued").innerText = totalIssued;
-document.getElementById("issuedToday").innerText = issuedToday;
-document.getElementById("overdueCount").innerText = overdueCount;
-document.getElementById("pendingRequests").innerText = pendingCount;
-
-});
-
-async function loadIssuedBooks() {
+async function loadDashboard(){
 
     const token = localStorage.getItem("token");
 
-    const response = await fetch(
-        "http://localhost:8080/borrow/all",
-        {
-            headers: {
-                "Authorization": "Bearer " + token
+    if(!token){
+        alert("Login required");
+        window.location.href = "login.html";
+        return;
+    }
+
+    const totalIssuedEl = document.getElementById("totalIssued");
+    const issuedTodayEl = document.getElementById("issuedToday");
+    const overdueEl = document.getElementById("overdueCount");
+    const pendingEl = document.getElementById("pendingRequests");
+    const overdueTable = document.getElementById("overdueTable");
+
+    try {
+
+        /* ============================= */
+        /* FETCH ALL BORROWS            */
+        /* ============================= */
+
+        const borrowResponse = await fetch(
+            "http://localhost:8080/borrow/all",
+            {
+                headers: {
+                    "Authorization": "Bearer " + token
+                }
             }
-        }
-    );
+        );
 
-    const borrows = await response.json();
-    const issuedList = document.getElementById("issuedList");
-    issuedList.innerHTML = "";
+        const borrows = borrowResponse.ok ? await borrowResponse.json() : [];
 
-    borrows.forEach(b => {
-        if (!b.returned) {
-            issuedList.innerHTML += `
-                <div class="list-item">
-                    <div>
-                        <b>${b.book.title}</b><br>
-                        <small>${b.user.email}</small>
-                    </div>
-                </div>
-            `;
+        const today = new Date();
+        const todayStr = today.toISOString().split("T")[0];
+
+        let totalIssued = 0;
+        let issuedToday = 0;
+        let overdueCount = 0;
+
+        overdueTable.innerHTML = "";
+
+        borrows.forEach(b => {
+
+            if(!b.returned){
+                totalIssued++;
+
+                if(b.issueDate === todayStr){
+                    issuedToday++;
+                }
+
+                const dueDate = new Date(b.dueDate);
+
+                if(dueDate < today){
+                    overdueCount++;
+
+                    overdueTable.innerHTML += `
+                        <tr>
+                            <td>${b.user.email}</td>
+                            <td>${b.book.title}</td>
+                            <td>${b.dueDate}</td>
+                            <td>
+                                <span class="status-overdue">
+                                    Overdue
+                                </span>
+                            </td>
+                        </tr>
+                    `;
+                }
+            }
+        });
+
+        if(overdueCount === 0){
+            overdueTable.innerHTML =
+                "<tr><td colspan='4'>No overdue books</td></tr>";
         }
-    });
+
+        totalIssuedEl.innerText = totalIssued;
+        issuedTodayEl.innerText = issuedToday;
+        overdueEl.innerText = overdueCount;
+
+        /* ============================= */
+        /* FETCH PENDING REQUESTS       */
+        /* ============================= */
+
+        const requestResponse = await fetch(
+            "http://localhost:8080/request/pending",
+            {
+                headers: {
+                    "Authorization": "Bearer " + token
+                }
+            }
+        );
+
+        const requests = requestResponse.ok ? await requestResponse.json() : [];
+
+        pendingEl.innerText = requests.length;
+
+    } catch(error){
+        console.error(error);
+        alert("Server error");
+    }
 }
-
 </script>
 
 <script>

@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Fines | Faculty | GRIET Library</title>
 <link rel="stylesheet" href="css/style.css">
 
@@ -102,6 +103,53 @@ th{
   padding:30px;
   color:#64748b;
 }
+
+/* ================= RESPONSIVE ================= */
+
+@media (max-width: 992px){
+
+  .dashboard-layout{
+    flex-direction: column;
+  }
+
+  .sidebar{
+    width: 100%;
+    text-align: center;
+  }
+
+  .sidebar a{
+    display: inline-block;
+    margin: 5px;
+  }
+
+  .main{
+    padding: 20px;
+  }
+
+}
+
+/* ================= MOBILE ================= */
+
+@media (max-width: 768px){
+
+  h2{
+    font-size: 20px;
+  }
+
+  .amount{
+    font-size: 30px;
+  }
+
+  table{
+    font-size: 12px;
+  }
+
+  th, td{
+    padding: 8px;
+  }
+
+}
+
 </style>
 </head>
 
@@ -110,7 +158,67 @@ th{
 <!-- AUTH -->
 <script src="js/auth.js"></script>
 <script>
-protectDashboard("faculty");
+document.addEventListener("DOMContentLoaded", loadFines);
+
+async function loadFines(){
+
+  const token = localStorage.getItem("token");
+
+  const response = await fetch("http://localhost:8080/borrow/my", {
+    headers: {
+      "Authorization": "Bearer " + token
+    }
+  });
+
+  const borrows = response.ok ? await response.json() : [];
+
+  const table = document.querySelector("table");
+  const amountDiv = document.querySelector(".amount");
+  const subText = document.querySelector(".subtext");
+
+  let totalFine = 0;
+  let fineCount = 0;
+
+  table.innerHTML = `
+    <tr>
+      <th>Book</th>
+      <th>Reason</th>
+      <th>Amount</th>
+      <th>Date</th>
+      <th>Status</th>
+    </tr>
+  `;
+
+  borrows.forEach(b => {
+
+    if(b.fine && b.fine > 0){
+
+      totalFine += b.fine;
+      fineCount++;
+
+      table.innerHTML += `
+        <tr>
+          <td><b>${b.book.title}</b></td>
+          <td>Overdue Fine</td>
+          <td>₹${b.fine}</td>
+          <td>${b.dueDate}</td>
+          <td>Pending</td>
+        </tr>
+      `;
+    }
+  });
+
+  amountDiv.innerText = "₹" + totalFine;
+  subText.innerText = fineCount + " pending fine(s)";
+
+  if(fineCount === 0){
+    table.innerHTML += `
+      <tr>
+        <td colspan="5" class="no-data">No fines</td>
+      </tr>
+    `;
+  }
+}
 </script>
 
 <div class="dashboard-layout">
@@ -140,9 +248,10 @@ protectDashboard("faculty");
 
     <!-- Fine History -->
     <div class="card">
-      <h3>Fine History</h3>
+  <h3>Fine History</h3>
 
-      <table>
+  <div style="overflow-x:auto;">
+    <table>
         <tr>
           <th>Book</th>
           <th>Reason</th>
@@ -155,8 +264,9 @@ protectDashboard("faculty");
           <td colspan="5" class="no-data">No fines</td>
         </tr>
 
-      </table>
-    </div>
+          </table>
+  </div>
+</div>
 
   </main>
 </div>

@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Recommend Books | Faculty</title>
 <link rel="stylesheet" href="css/style.css">
 
@@ -129,6 +130,57 @@ th{
   font-size:12px;
 }
 
+/* ================= RESPONSIVE ================= */
+
+@media (max-width: 992px){
+
+  .dashboard-layout{
+    flex-direction: column;
+  }
+
+  .sidebar{
+    width: 100%;
+    text-align: center;
+  }
+
+  .sidebar a{
+    display: inline-block;
+    margin: 5px;
+  }
+
+  .main{
+    padding: 20px;
+  }
+
+}
+
+/* ================= MOBILE ================= */
+
+@media (max-width: 768px){
+
+  .form-row{
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  h2{
+    font-size: 20px;
+  }
+
+  table{
+    font-size: 12px;
+  }
+
+  th, td{
+    padding: 8px;
+  }
+
+  button{
+    width: 100%;
+  }
+
+}
+
 </style>
 </head>
 
@@ -184,9 +236,10 @@ protectDashboard("faculty");
 
     <!-- Your Recommendations -->
     <div class="card">
-      <h3>Your Recommendations</h3>
+  <h3>Your Recommendations</h3>
 
-      <table>
+  <div style="overflow-x:auto;">
+    <table>
         <tr>
           <th>Title</th>
           <th>Author</th>
@@ -201,8 +254,9 @@ protectDashboard("faculty");
           <td><span class="status">pending</span></td>
         </tr>
 
-      </table>
-    </div>
+          </table>
+  </div>
+</div>
 
   </main>
 </div>

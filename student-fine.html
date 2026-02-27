@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Fines | Student | GRIET Library</title>
 <link rel="stylesheet" href="css/style.css">
 
@@ -106,6 +107,57 @@ th{
   font-weight:bold;
 }
 
+/* ================= TABLET ================= */
+
+@media (max-width: 992px){
+
+  table{
+    display:block;
+    overflow-x:auto;
+    white-space:nowrap;
+  }
+
+}
+
+/* ================= MOBILE ================= */
+
+@media (max-width: 768px){
+
+  .dashboard-layout{
+    flex-direction: column;
+  }
+
+  .sidebar{
+    width:100%;
+    display:flex;
+    overflow-x:auto;
+    padding:15px;
+  }
+
+  .sidebar a{
+    margin-right:10px;
+    white-space:nowrap;
+  }
+
+  .main{
+    padding:15px;
+  }
+
+  h2{
+    font-size:20px;
+  }
+
+  .amount{
+    font-size:28px;
+  }
+
+  th, td{
+    font-size:13px;
+    padding:10px;
+  }
+
+}
+
 </style>
 </head>
 
@@ -114,7 +166,71 @@ th{
 <!-- AUTH -->
 <script src="js/auth.js"></script>
 <script>
-protectDashboard("student");
+document.addEventListener("DOMContentLoaded", loadFines);
+
+async function loadFines(){
+
+  const token = localStorage.getItem("token");
+
+  const response = await fetch("http://localhost:8080/borrow/my", {
+    headers: {
+      "Authorization": "Bearer " + token
+    }
+  });
+
+  const borrows = response.ok ? await response.json() : [];
+
+  const table = document.querySelector("table");
+  const amountDiv = document.querySelector(".amount");
+  const subText = document.querySelector(".subtext");
+
+  let totalFine = 0;
+  let fineCount = 0;
+
+  table.innerHTML = `
+    <tr>
+      <th>Book</th>
+      <th>Reason</th>
+      <th>Amount</th>
+      <th>Date</th>
+      <th>Status</th>
+    </tr>
+  `;
+
+  borrows.forEach(b => {
+
+    if(b.fine > 0){
+
+      totalFine += b.fine;
+      fineCount++;
+
+      const overdueDays = Math.floor(
+        (new Date(b.issueDate) - new Date(b.dueDate))
+      );
+
+      table.innerHTML += `
+        <tr>
+          <td><b>${b.book.title}</b></td>
+          <td>Overdue Fine</td>
+          <td>₹${b.fine}</td>
+          <td>${b.dueDate}</td>
+          <td><span class="status-pending">pending</span></td>
+        </tr>
+      `;
+    }
+  });
+
+  amountDiv.innerText = "₹" + totalFine;
+  subText.innerText = fineCount + " pending fine(s)";
+
+  if(fineCount === 0){
+    table.innerHTML += `
+      <tr>
+        <td colspan="5">No fines</td>
+      </tr>
+    `;
+  }
+}
 </script>
 
 <div class="dashboard-layout">

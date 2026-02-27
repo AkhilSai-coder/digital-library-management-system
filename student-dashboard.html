@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Student Dashboard | GRIET Library</title>
   <link rel="stylesheet" href="css/style.css">
 
@@ -126,6 +127,63 @@
       color: #fff;
       background: #d32f2f;
     }
+
+    /* ================= TABLET ================= */
+
+@media (max-width: 992px){
+
+  .cards{
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  }
+
+}
+
+/* ================= MOBILE ================= */
+
+@media (max-width: 768px){
+
+  .dashboard-layout{
+    flex-direction: column;
+  }
+
+  .sidebar{
+    width:100%;
+    display:flex;
+    overflow-x:auto;
+    padding:15px;
+  }
+
+  .sidebar a{
+    margin-right:10px;
+    white-space:nowrap;
+  }
+
+  .main{
+    padding:15px;
+  }
+
+  .top-bar{
+    flex-direction: column;
+    align-items:flex-start;
+    gap:10px;
+  }
+
+  .cards{
+    grid-template-columns: 1fr;
+  }
+
+  table{
+    display:block;
+    overflow-x:auto;
+    white-space:nowrap;
+  }
+
+  th, td{
+    font-size:13px;
+    padding:8px;
+  }
+
+}
   </style>
 </head>
 
@@ -230,23 +288,25 @@ document.addEventListener("DOMContentLoaded", async function(){
 
         borrows.forEach(borrow => {
 
-            const dueDate = new Date(borrow.dueDate);
-            let status = "Active";
+    if (borrow.returned) return; // 🔥 Skip returned books
 
-            if(today > dueDate){
-                status = "Overdue";
-                overdueCount++;
-            }
+    const dueDate = new Date(borrow.dueDate);
+    let status = "Active";
 
-            table.innerHTML += `
-                <tr>
-                    <td>${borrow.book.title}</td>
-                    <td>${borrow.issueDate}</td>
-                    <td>${borrow.dueDate}</td>
-                    <td>${status}</td>
-                </tr>
-            `;
-        });
+    if(today > dueDate && !borrow.returned){
+        status = "Overdue";
+        overdueCount++;
+    }
+
+    table.innerHTML += `
+        <tr>
+            <td>${borrow.book.title}</td>
+            <td>${borrow.issueDate}</td>
+            <td>${borrow.dueDate}</td>
+            <td>${status}</td>
+        </tr>
+    `;
+});
 
         issuedCountEl.innerText = borrows.length;
         overdueCountEl.innerText = overdueCount;
@@ -265,7 +325,8 @@ document.addEventListener("DOMContentLoaded", async function(){
         // Count only pending requests
         const pendingRequests = requests.filter(r => r.status === "PENDING");
 
-        reservationCountEl.innerText = pendingRequests.length;
+        const activeBooks = borrows.filter(b => !b.returned);
+issuedCountEl.innerText = activeBooks.length;
 
     } catch(error){
         console.error(error);

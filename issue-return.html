@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Issue & Return | GRIET Library</title>
 <link rel="stylesheet" href="css/style.css">
 
@@ -88,6 +89,55 @@
   font-weight:bold;
   margin-bottom:15px;
 }
+
+/* ================= RESPONSIVE ================= */
+
+@media (max-width: 992px){
+
+  .dashboard-layout{
+    flex-direction: column;
+  }
+
+  .sidebar{
+    width: 100%;
+    text-align: center;
+  }
+
+  .sidebar a{
+    display: inline-block;
+    margin: 5px;
+  }
+
+  .main{
+    padding: 20px;
+  }
+
+  .grid{
+    grid-template-columns: 1fr;   /* stack cards */
+  }
+
+}
+
+/* ================= MOBILE ================= */
+
+@media (max-width: 768px){
+
+  .page-title{
+    font-size: 20px;
+  }
+
+  .list-item{
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .btn{
+    width: 100%;
+  }
+
+}
+
 </style>
 </head>
 
@@ -207,21 +257,25 @@ document.addEventListener("DOMContentLoaded", async function(){
             issuedList.innerHTML = "No issued books";
         }
 
-        borrows.forEach(borrow => {
+        borrows
+  .filter(b => !b.returned)
+  .forEach(b => {
 
-            issuedList.innerHTML += `
-                <div class="list-item">
-                    <div>
-                        <b>${borrow.book.title}</b><br>
-                        <small>${borrow.user.email} • Due: ${borrow.dueDate}</small>
-                    </div>
-                    <button class="btn return"
-                        onclick="returnBook(${borrow.id})">
-                        Return
-                    </button>
-                </div>
-            `;
-        });
+      issuedList.innerHTML += `
+          <div class="list-item">
+              <div>
+                  <b>${b.book.title}</b><br>
+                  <small>${b.user.email} • Due: ${b.dueDate}</small>
+              </div>
+              <div>
+                  <button class="btn return"
+                      onclick="returnBook(${b.id})">
+                      Return
+                  </button>
+              </div>
+          </div>
+      `;
+});
 
     } catch(error){
         console.error(error);
@@ -259,25 +313,21 @@ async function approveRequest(id){
 /* =========================
    RETURN BOOK
 ========================= */
-async function returnBook(borrowId){
+async function returnBook(id) {
 
     const token = localStorage.getItem("token");
 
-    const response = await fetch(
-        `http://localhost:8080/borrow/return/${borrowId}`, {
-            method: "POST",
-            headers: {
-                "Authorization": "Bearer " + token
-            }
+    await fetch(`http://localhost:8080/borrow/return/${id}`, {
+        method: "POST",
+        headers: {
+            "Authorization": "Bearer " + token
         }
-    );
+    });
 
-    if(response.ok){
-        alert("Book Returned");
-        location.reload();
-    } else {
-        alert("Return failed");
-    }
+    alert("Book Returned Successfully");
+
+    // 🔥 RELOAD DATA FROM BACKEND
+    location.reload();
 }
 </script>
 
