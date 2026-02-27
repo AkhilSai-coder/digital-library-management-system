@@ -5,65 +5,354 @@
 <title>Book Management | GRIET Library</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="stylesheet" href="css/style.css">
+<style>
+.field-grid-2 { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+.field-grid-3 { display:grid; grid-template-columns:1fr 1fr 1fr; gap:14px; }
+@media(max-width:600px){
+  .field-grid-2,.field-grid-3 { grid-template-columns:1fr; }
+}
+.section-divider {
+  font-size:11px; font-weight:700; letter-spacing:1px;
+  text-transform:uppercase; color:var(--text-soft);
+  padding:12px 0 8px; border-top:1px solid var(--border-soft);
+  margin-top:4px;
+}
+</style>
 </head>
 <body>
 <script src="js/auth.js"></script>
 <script>protectDashboard("librarian");</script>
+
 <div class="dashboard-layout">
-<aside class="sidebar">
-  <div class="sidebar-brand"><div class="brand-icon">📚</div><div><h3>GRIET Library</h3><small>Management Portal</small></div></div>
-  <span class="nav-label">Main</span>
-  <a href="librarian-dashboard.html"><span class="nav-icon">🏠</span> Dashboard</a>
-  <a class="active"><span class="nav-icon">📖</span> Book Management</a>
-  <a href="issue-return.html"><span class="nav-icon">🔄</span> Issue & Return</a>
-  <a href="members.html"><span class="nav-icon">👥</span> Members</a>
-  <span class="nav-label">Reports</span>
-  <a href="reports.html"><span class="nav-icon">📊</span> Reports</a>
-  <a href="fine-management.html"><span class="nav-icon">💰</span> Fine Management</a>
-  <div class="sidebar-footer"><a onclick="logout()"><span class="nav-icon">🚪</span> Logout</a></div>
-</aside>
-<main class="main">
-  <div class="page-header">
-    <div><div class="page-title">Book Management</div><div class="page-subtitle">Add, view and manage library books</div></div>
-    <button class="btn btn-primary" onclick="openModal()">+ Add Book</button>
-  </div>
-  <div class="card">
-    <div class="card-header">
-      <h3>All Books</h3>
-      <div class="search-bar" style="margin:0;width:280px;"><span class="search-icon">🔍</span><input type="text" id="searchInput" placeholder="Search books..."></div>
+
+  <aside class="sidebar">
+    <div class="sidebar-brand">
+      <div class="brand-icon">📚</div>
+      <div><h3>GRIET Library</h3><small>Management Portal</small></div>
     </div>
-    <div class="table-wrap">
-      <table><thead><tr><th>Title</th><th>Author</th><th>Department</th><th>Available</th><th>Shelf</th><th>Action</th></tr></thead>
-      <tbody id="bookBody"></tbody></table>
+    <span class="nav-label">Main</span>
+    <a href="librarian-dashboard.html"><span class="nav-icon">🏠</span> Dashboard</a>
+    <a href="book-management.html" class="active"><span class="nav-icon">📖</span> Book Management</a>
+    <a href="issue-return.html"><span class="nav-icon">🔄</span> Issue & Return</a>
+    <a href="members.html"><span class="nav-icon">👥</span> Members</a>
+    <span class="nav-label">Reports</span>
+    <a href="reports.html"><span class="nav-icon">📊</span> Reports</a>
+    <a href="fine-management.html"><span class="nav-icon">💰</span> Fine Management</a>
+    <span class="nav-label">Account</span>
+    <a href="settings.html"><span class="nav-icon">⚙️</span> Settings</a>
+    <div class="sidebar-footer">
+      <a onclick="logout()"><span class="nav-icon">🚪</span> Logout</a>
     </div>
-  </div>
-</main>
+  </aside>
+
+  <main class="main">
+
+    <div class="page-header">
+      <div>
+        <div class="page-title">Book Management</div>
+        <div class="page-subtitle">Add, view and manage library books</div>
+      </div>
+      <button class="btn btn-primary" onclick="openModal()">+ Add Book</button>
+    </div>
+
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-icon blue">📚</div>
+        <div class="stat-info"><h4>Total Books</h4><div class="stat-value" id="totalBooks">0</div></div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon green">✅</div>
+        <div class="stat-info"><h4>Available Copies</h4><div class="stat-value green" id="totalAvail">0</div></div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon amber">📤</div>
+        <div class="stat-info"><h4>Issued Out</h4><div class="stat-value amber" id="totalIssued">0</div></div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon red">🚫</div>
+        <div class="stat-info"><h4>Unavailable Titles</h4><div class="stat-value red" id="unavailCount">0</div></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <h3>All Books</h3>
+        <div class="search-bar" style="margin:0;width:280px;">
+          <span class="search-icon">🔍</span>
+          <input type="text" id="searchInput" placeholder="Search title, author, ISBN…">
+        </div>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Title / Author</th>
+              <th>Dept</th>
+              <th>ISBN</th>
+              <th>Edition</th>
+              <th>Available</th>
+              <th>Shelf</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody id="bookBody"></tbody>
+        </table>
+      </div>
+    </div>
+
+  </main>
 </div>
+
+<!-- ── ADD BOOK MODAL (13 fields) ─── -->
 <div class="modal" id="modal">
   <div class="modal-box">
-    <div class="modal-header"><h3>Add New Book</h3><button class="modal-close" onclick="closeModal()">✕</button></div>
-    <div class="modal-body">
-      <div class="form-group"><label class="form-label">Book Title *</label><input class="form-control" id="title" placeholder="Enter book title"></div>
-      <div class="form-group"><label class="form-label">Author *</label><input class="form-control" id="author" placeholder="Author name"></div>
-      <div class="form-group"><label class="form-label">Department *</label><select class="form-control" id="dept"><option value="">Select Department</option><option>CSE</option><option>ECE</option><option>Mech</option><option>Civil</option><option>General</option></select></div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
-        <div class="form-group"><label class="form-label">Total Copies *</label><input class="form-control" id="total" type="number" min="1" placeholder="e.g. 5"></div>
-        <div class="form-group"><label class="form-label">Shelf Number</label><input class="form-control" id="shelf" placeholder="e.g. A1-01"></div>
-      </div>
-      <div class="form-group"><label class="form-label">Description</label><textarea class="form-control" id="desc" rows="3" placeholder="Optional description"></textarea></div>
+    <div class="modal-header">
+      <h3>Add New Book</h3>
+      <button class="modal-close" onclick="closeModal()">✕</button>
     </div>
-    <div class="modal-footer"><button class="btn btn-ghost" onclick="closeModal()">Cancel</button><button class="btn btn-primary" onclick="saveBook()">Save Book</button></div>
+    <div class="modal-body">
+
+      <!-- Section 1: Basic Info -->
+      <div class="section-divider">📖 Basic Information</div>
+
+      <div class="form-group">
+        <label class="form-label">Book Title *</label>
+        <input class="form-control" id="f_title" placeholder="e.g. Introduction to Algorithms">
+      </div>
+
+      <div class="field-grid-2">
+        <div class="form-group">
+          <label class="form-label">Author(s) *</label>
+          <input class="form-control" id="f_author" placeholder="e.g. Thomas H. Cormen">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Publisher *</label>
+          <input class="form-control" id="f_publisher" placeholder="e.g. MIT Press">
+        </div>
+      </div>
+
+      <div class="field-grid-3">
+        <div class="form-group">
+          <label class="form-label">Edition</label>
+          <input class="form-control" id="f_edition" placeholder="e.g. 3rd">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Year of Publication</label>
+          <input class="form-control" id="f_year" type="number" placeholder="e.g. 2022" min="1900" max="2030">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Language</label>
+          <select class="form-control" id="f_lang">
+            <option value="English">English</option>
+            <option value="Telugu">Telugu</option>
+            <option value="Hindi">Hindi</option>
+            <option value="Other">Other</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Section 2: Classification -->
+      <div class="section-divider">🏷️ Classification</div>
+
+      <div class="field-grid-2">
+        <div class="form-group">
+          <label class="form-label">ISBN *</label>
+          <input class="form-control" id="f_isbn" placeholder="e.g. 978-0-262-04630-5">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Department *</label>
+          <select class="form-control" id="f_dept">
+            <option value="">Select Department</option>
+            <option>CSE</option><option>ECE</option>
+            <option>Mech</option><option>Civil</option>
+            <option>EEE</option><option>IT</option>
+            <option>General</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="field-grid-2">
+        <div class="form-group">
+          <label class="form-label">Subject / Course</label>
+          <input class="form-control" id="f_subject" placeholder="e.g. Data Structures, OS">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Book Category</label>
+          <select class="form-control" id="f_category">
+            <option value="Textbook">Textbook</option>
+            <option value="Reference">Reference</option>
+            <option value="Lab Manual">Lab Manual</option>
+            <option value="Project Report">Project Report</option>
+            <option value="Journal">Journal</option>
+            <option value="Other">Other</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Section 3: Physical Details -->
+      <div class="section-divider">📦 Physical Details</div>
+
+      <div class="field-grid-3">
+        <div class="form-group">
+          <label class="form-label">Total Copies *</label>
+          <input class="form-control" id="f_total" type="number" min="1" placeholder="e.g. 5">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Shelf / Rack No.</label>
+          <input class="form-control" id="f_shelf" placeholder="e.g. A1-01">
+        </div>
+        <div class="form-group">
+          <label class="form-label">No. of Pages</label>
+          <input class="form-control" id="f_pages" type="number" placeholder="e.g. 450" min="1">
+        </div>
+      </div>
+
+      <!-- Section 4: Notes -->
+      <div class="section-divider">📝 Additional Notes</div>
+      <div class="form-group" style="margin-bottom:0;">
+        <label class="form-label">Description / Notes</label>
+        <textarea class="form-control" id="f_notes" rows="2" placeholder="Optional remarks about this book"></textarea>
+      </div>
+
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal()">Cancel</button>
+      <button class="btn btn-primary" onclick="saveBook()">💾 Save Book</button>
+    </div>
   </div>
 </div>
+
 <div class="toast" id="toast"></div>
+
 <script>
-document.addEventListener("DOMContentLoaded",function(){loadBooks();document.getElementById("searchInput").addEventListener("keyup",function(){const q=this.value.toLowerCase();document.querySelectorAll("#bookBody tr").forEach(row=>{row.style.display=row.innerText.toLowerCase().includes(q)?"":"none";});});});
-function loadBooks(){const body=document.getElementById("bookBody");const books=JSON.parse(localStorage.getItem("libraryBooks"))||[];body.innerHTML="";if(books.length===0){body.innerHTML=`<tr class="empty-row"><td colspan="6">No books added yet. Click "+ Add Book" to get started.</td></tr>`;return;}books.forEach((book,i)=>{const isLow=book.available<=1&&book.available>0;const isNone=book.available===0;const bc=isNone?"badge-red":isLow?"badge-amber":"badge-green";body.innerHTML+=`<tr><td><strong>${book.title}</strong></td><td>${book.author}</td><td><span class="badge badge-slate">${book.dept}</span></td><td><span class="badge ${bc}">${book.available}/${book.total}</span></td><td>${book.shelf||"—"}</td><td><button class="btn btn-danger btn-sm" onclick="deleteBook(${i})">🗑 Delete</button></td></tr>`;});}
-function saveBook(){const title=document.getElementById("title").value.trim();const author=document.getElementById("author").value.trim();const dept=document.getElementById("dept").value;const total=parseInt(document.getElementById("total").value);const shelf=document.getElementById("shelf").value.trim();if(!title||!author||!dept||!total){showToast("Please fill all required fields","error");return;}const books=JSON.parse(localStorage.getItem("libraryBooks"))||[];books.push({title,author,dept,total,available:total,shelf});localStorage.setItem("libraryBooks",JSON.stringify(books));closeModal();loadBooks();showToast(`"${title}" added successfully!`,"success");}
-function deleteBook(index){if(!confirm("Delete this book?"))return;const books=JSON.parse(localStorage.getItem("libraryBooks"))||[];const removed=books.splice(index,1)[0];localStorage.setItem("libraryBooks",JSON.stringify(books));loadBooks();showToast(`"${removed.title}" deleted`,"info");}
-function openModal(){document.getElementById("modal").classList.add("open");["title","author","dept","total","shelf","desc"].forEach(id=>{const el=document.getElementById(id);if(el)el.value="";});}
-function closeModal(){document.getElementById("modal").classList.remove("open");}
-function showToast(msg,type="success"){const t=document.getElementById("toast");t.innerText=msg;t.className=`toast ${type} show`;setTimeout(()=>t.classList.remove("show"),3000);}
+document.addEventListener("DOMContentLoaded", function () {
+  loadBooks();
+  document.getElementById("searchInput").addEventListener("keyup", function () {
+    const q = this.value.toLowerCase();
+    document.querySelectorAll("#bookBody tr").forEach(row => {
+      row.style.display = row.innerText.toLowerCase().includes(q) ? "" : "none";
+    });
+  });
+});
+
+function loadBooks() {
+  const body  = document.getElementById("bookBody");
+  const books = JSON.parse(localStorage.getItem("libraryBooks")) || [];
+
+  // Update stats
+  let totalAvail = 0, totalIssued = 0, unavail = 0;
+  books.forEach(b => {
+    totalAvail  += parseInt(b.available) || 0;
+    totalIssued += (parseInt(b.total) || 0) - (parseInt(b.available) || 0);
+    if ((parseInt(b.available) || 0) === 0) unavail++;
+  });
+  document.getElementById("totalBooks").innerText  = books.length;
+  document.getElementById("totalAvail").innerText  = totalAvail;
+  document.getElementById("totalIssued").innerText = totalIssued;
+  document.getElementById("unavailCount").innerText= unavail;
+
+  body.innerHTML = "";
+
+  if (books.length === 0) {
+    body.innerHTML = `<tr class="empty-row"><td colspan="7">No books added yet. Click "+ Add Book" to get started.</td></tr>`;
+    return;
+  }
+
+  books.forEach((book, i) => {
+    const avail    = parseInt(book.available) || 0;
+    const isNone   = avail === 0;
+    const isLow    = avail === 1;
+    const badgeCls = isNone ? "badge-red" : isLow ? "badge-amber" : "badge-green";
+
+    body.innerHTML += `
+      <tr>
+        <td>
+          <strong>${book.title}</strong>
+          <div style="font-size:12px;color:var(--text-soft);margin-top:2px;">${book.author}</div>
+        </td>
+        <td><span class="badge badge-slate">${book.dept || "—"}</span></td>
+        <td style="font-size:12px;color:var(--text-soft);">${book.isbn || "—"}</td>
+        <td style="font-size:12px;">${book.edition || "—"}</td>
+        <td><span class="badge ${badgeCls}">${avail}/${book.total || 0}</span></td>
+        <td style="font-size:12px;">${book.shelf || "—"}</td>
+        <td>
+          <button class="btn btn-danger btn-sm" onclick="deleteBook(${i})">🗑</button>
+        </td>
+      </tr>`;
+  });
+}
+
+function openModal() {
+  // Clear all fields
+  ["f_title","f_author","f_publisher","f_edition","f_year","f_isbn",
+   "f_dept","f_subject","f_total","f_shelf","f_pages","f_notes"].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.value = "";
+  });
+  document.getElementById("f_lang").value     = "English";
+  document.getElementById("f_category").value = "Textbook";
+  document.getElementById("modal").classList.add("open");
+}
+
+function closeModal() {
+  document.getElementById("modal").classList.remove("open");
+}
+
+function saveBook() {
+  const title = document.getElementById("f_title").value.trim();
+  const author= document.getElementById("f_author").value.trim();
+  const dept  = document.getElementById("f_dept").value;
+  const total = parseInt(document.getElementById("f_total").value);
+  const isbn  = document.getElementById("f_isbn").value.trim();
+
+  if (!title || !author || !dept || !total) {
+    showToast("Please fill: Title, Author, Department and Total Copies", "error");
+    return;
+  }
+
+  const book = {
+    title,
+    author,
+    publisher: document.getElementById("f_publisher").value.trim(),
+    edition:   document.getElementById("f_edition").value.trim(),
+    year:      document.getElementById("f_year").value.trim(),
+    language:  document.getElementById("f_lang").value,
+    isbn,
+    dept,
+    subject:   document.getElementById("f_subject").value.trim(),
+    category:  document.getElementById("f_category").value,
+    total,
+    available: total,
+    shelf:     document.getElementById("f_shelf").value.trim(),
+    pages:     document.getElementById("f_pages").value.trim(),
+    notes:     document.getElementById("f_notes").value.trim(),
+    addedDate: new Date().toISOString().split("T")[0]
+  };
+
+  const books = JSON.parse(localStorage.getItem("libraryBooks")) || [];
+  books.push(book);
+  localStorage.setItem("libraryBooks", JSON.stringify(books));
+
+  closeModal();
+  loadBooks();
+  showToast(`"${title}" added successfully!`, "success");
+}
+
+function deleteBook(index) {
+  if (!confirm("Delete this book from the library?")) return;
+  const books   = JSON.parse(localStorage.getItem("libraryBooks")) || [];
+  const removed = books.splice(index, 1)[0];
+  localStorage.setItem("libraryBooks", JSON.stringify(books));
+  loadBooks();
+  showToast(`"${removed.title}" deleted`, "info");
+}
+
+function showToast(msg, type = "success") {
+  const t = document.getElementById("toast");
+  t.innerText   = msg;
+  t.className   = `toast ${type} show`;
+  setTimeout(() => t.classList.remove("show"), 3000);
+}
 </script>
 </body>
 </html>

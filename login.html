@@ -4,202 +4,271 @@
 <meta charset="UTF-8">
 <title>Login | GRIET Central Library</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link rel="stylesheet" href="css/style.css">
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@700;800&display=swap" rel="stylesheet">
 
 <style>
+* { margin:0; padding:0; box-sizing:border-box; }
 
-/* ================= GLOBAL ================= */
-
-body{
-  margin:0;
-  font-family: "Georgia", serif;
-  background: linear-gradient(135deg,#0f2d52,#1f3a5f,#0b1c33);
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  min-height:100vh;
-  overflow:hidden;
+body {
+  font-family: 'Inter', 'Segoe UI', sans-serif;
+  background: linear-gradient(135deg, #0c2340 0%, #1a3a6b 50%, #0c2340 100%);
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
 }
 
-/* Animated Background Glow */
-body::before{
-  content:"";
-  position:absolute;
-  width:600px;
-  height:600px;
-  background:rgba(179,0,0,0.2);
-  border-radius:50%;
-  top:-200px;
-  right:-200px;
-  filter:blur(120px);
+/* Decorative blobs */
+body::before {
+  content: "";
+  position: absolute;
+  width: 700px; height: 700px;
+  background: rgba(179,0,0,0.18);
+  border-radius: 50%;
+  top: -250px; right: -250px;
+  filter: blur(120px);
+  pointer-events: none;
+}
+body::after {
+  content: "";
+  position: absolute;
+  width: 500px; height: 500px;
+  background: rgba(30,90,200,0.22);
+  border-radius: 50%;
+  bottom: -200px; left: -200px;
+  filter: blur(110px);
+  pointer-events: none;
 }
 
-/* ================= HOME BUTTON ================= */
+/* Back to home */
+.home-btn {
+  position: absolute;
+  top: 24px; left: 28px;
+  color: rgba(255,255,255,0.9);
+  font-size: 13.5px; font-weight: 600;
+  padding: 8px 18px;
+  border: 1.5px solid rgba(255,255,255,0.35);
+  border-radius: 30px;
+  transition: 0.25s;
+  z-index: 10;
+  text-decoration: none;
+}
+.home-btn:hover { background: rgba(255,255,255,0.12); border-color: rgba(255,255,255,0.6); }
 
-.home-btn{
-  position:absolute;
-  top:25px;
-  left:30px;
-  text-decoration:none;
-  color:#fff;
-  font-size:14px;
-  font-weight:600;
-  letter-spacing:1px;
-  padding:8px 18px;
-  border:1px solid rgba(255,255,255,0.3);
-  border-radius:30px;
-  transition:0.3s;
+/* Wrapper */
+.wrapper {
+  position: relative;
+  z-index: 2;
+  text-align: center;
+  width: 100%;
+  max-width: 960px;
+  padding: 40px 24px;
 }
 
-.home-btn:hover{
-  background:#b30000;
-  border-color:#b30000;
+/* Heading */
+.login-title {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 38px;
+  font-weight: 800;
+  color: #ffffff;
+  text-shadow: 0 2px 20px rgba(0,0,0,0.3);
+  margin-bottom: 10px;
+  letter-spacing: -0.5px;
 }
 
-/* ================= LOGIN CONTAINER ================= */
-
-.login-wrapper{
-  width:100%;
-  max-width:1000px;
-  padding:40px;
-  text-align:center;
-  color:white;
+.login-sub {
+  font-size: 16px;
+  color: rgba(255,255,255,0.78);
+  margin-bottom: 52px;
+  font-weight: 400;
 }
 
-.login-title{
-  font-size:38px;
-  margin-bottom:8px;
+/* Role cards */
+.role-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 24px;
 }
 
-.login-subtitle{
-  font-size:16px;
-  margin-bottom:50px;
-  opacity:0.85;
+.role-card {
+  background: rgba(255,255,255,0.10);
+  border: 1.5px solid rgba(255,255,255,0.20);
+  backdrop-filter: blur(16px);
+  padding: 40px 28px 34px;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: 0.3s;
+  text-align: center;
+}
+.role-card:hover {
+  background: rgba(255,255,255,0.18);
+  border-color: rgba(255,255,255,0.45);
+  transform: translateY(-8px);
+  box-shadow: 0 24px 50px rgba(0,0,0,0.3);
 }
 
-/* ================= ROLE CARDS ================= */
+.role-icon { font-size: 50px; margin-bottom: 16px; display: block; }
 
-.role-cards{
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
-  gap:30px;
+.role-card h3 {
+  font-size: 20px;
+  font-weight: 700;
+  color: #ffffff;       /* ✅ bright white */
+  margin-bottom: 6px;
+  letter-spacing: 0.3px;
 }
 
-.role-card{
-  backdrop-filter: blur(12px);
-  background: rgba(255,255,255,0.08);
-  border:1px solid rgba(255,255,255,0.15);
-  padding:35px 20px;
-  border-radius:16px;
-  cursor:pointer;
-  transition:0.4s;
+.role-card p {
+  font-size: 13.5px;
+  color: rgba(255,255,255,0.65);  /* ✅ clear subtitle */
+  margin: 0;
 }
 
-.role-card:hover{
-  transform:translateY(-8px);
-  background:rgba(255,255,255,0.15);
-  box-shadow:0 15px 40px rgba(0,0,0,0.3);
+/* Modal overlay */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.6);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
+  backdrop-filter: blur(4px);
+}
+.modal-overlay.show { display: flex; }
+
+/* Modal box */
+.modal-box {
+  background: #ffffff;
+  width: 420px;
+  max-width: 95vw;
+  border-radius: 20px;
+  box-shadow: 0 30px 70px rgba(0,0,0,0.35);
+  overflow: hidden;
+  animation: popIn 0.25s ease;
 }
 
-.role-icon{
-  font-size:48px;
-  margin-bottom:15px;
+@keyframes popIn {
+  from { transform: translateY(20px) scale(0.97); opacity: 0; }
+  to   { transform: translateY(0)    scale(1);    opacity: 1; }
 }
 
-.role-card h3{
-  font-size:20px;
-  letter-spacing:1px;
+.modal-top {
+  background: linear-gradient(135deg, #0f2d52, #1f3a5f);
+  padding: 26px 28px 22px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
 }
 
-/* ================= MODAL ================= */
-
-.modal{
-  position:fixed;
-  inset:0;
-  background:rgba(0,0,0,0.7);
-  display:none;
-  align-items:center;
-  justify-content:center;
+.modal-top-icon {
+  width: 44px; height: 44px;
+  background: rgba(255,255,255,0.15);
+  border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 22px; flex-shrink: 0;
 }
 
-.modal-box{
-  width:380px;
-  background:white;
-  padding:35px;
-  border-radius:18px;
-  text-align:left;
-  animation:fadeIn 0.3s ease;
+.modal-top h3 {
+  font-size: 19px;
+  font-weight: 700;
+  color: #ffffff;        /* ✅ white heading */
+  margin: 0;
 }
 
-@keyframes fadeIn{
-  from{transform:translateY(-20px);opacity:0;}
-  to{transform:translateY(0);opacity:1;}
+.modal-top small {
+  font-size: 12px;
+  color: rgba(255,255,255,0.58);
+  display: block;
+  margin-top: 2px;
 }
 
-.modal-box h3{
-  margin-bottom:20px;
-  color:#0f2d52;
-  font-size:20px;
+.modal-body { padding: 24px 28px 28px; }
+
+/* Error box */
+.err-box {
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  color: #dc2626;
+  border-radius: 8px;
+  padding: 10px 13px;
+  font-size: 13px;
+  margin-bottom: 14px;
+  display: none;
 }
 
-.modal-box input{
-  width:100%;
-  padding:12px;
-  margin-bottom:15px;
-  border:1px solid #ccc;
-  border-radius:8px;
-  font-size:14px;
+/* Field group */
+.field { margin-bottom: 16px; }
+
+.field label {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  color: #374151;        /* ✅ dark visible label */
+  margin-bottom: 6px;
 }
 
-.modal-box input:focus{
-  outline:none;
-  border-color:#0f2d52;
+.field input {
+  width: 100%;
+  padding: 11px 14px;
+  border: 1.5px solid #d1d5db;
+  border-radius: 10px;
+  font-size: 14px;
+  color: #111827;        /* ✅ dark text */
+  background: #f9fafb;
+  transition: 0.2s;
+  font-family: inherit;
+}
+.field input::placeholder { color: #9ca3af; }
+.field input:focus {
+  outline: none;
+  border-color: #0f2d52;
+  background: #fff;
+  box-shadow: 0 0 0 3px rgba(15,45,82,0.1);
 }
 
-/* Buttons */
-
-.modal-actions{
-  display:flex;
-  justify-content:space-between;
-  margin-top:10px;
+.modal-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 6px;
 }
 
-.btn{
-  padding:10px 18px;
-  border:none;
-  border-radius:8px;
-  cursor:pointer;
-  font-size:14px;
-  font-weight:600;
-  transition:0.3s;
+.btn-login {
+  flex: 1;
+  padding: 12px;
+  background: #0f2d52;
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: 0.22s;
+  font-family: inherit;
 }
+.btn-login:hover { background: #b30000; }
 
-.btn-primary{
-  background:#0f2d52;
-  color:white;
+.btn-cancel {
+  flex: 1;
+  padding: 12px;
+  background: #f3f4f6;
+  color: #374151;
+  border: 1.5px solid #e5e7eb;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.2s;
+  font-family: inherit;
 }
+.btn-cancel:hover { background: #e5e7eb; }
 
-.btn-primary:hover{
-  background:#b30000;
+@media(max-width:600px) {
+  .login-title { font-size: 26px; }
+  .role-cards  { grid-template-columns: 1fr; }
 }
-
-.btn-danger{
-  background:#ccc;
-}
-
-.btn-danger:hover{
-  background:#999;
-  color:white;
-}
-
-/* Responsive */
-
-@media(max-width:600px){
-  .login-title{
-    font-size:26px;
-  }
-}
-
 </style>
 </head>
 
@@ -207,80 +276,116 @@ body::before{
 
 <a href="index.html" class="home-btn">← Back to Home</a>
 
-<div class="login-wrapper">
-
-  <h1 class="login-title">GRIET Central Library Portal</h1>
-  <p class="login-subtitle">
-    Secure access for Students, Faculty & Librarians
-  </p>
+<div class="wrapper">
+  <h1 class="login-title">GRIET Central Library</h1>
+  <p class="login-sub">Secure access for Students, Faculty &amp; Librarians</p>
 
   <div class="role-cards">
-    <div class="role-card" onclick="openLogin('student')">
-      <div class="role-icon">🎓</div>
+
+    <div class="role-card" onclick="openLogin('student','🎓','Student Login','Roll Number')">
+      <span class="role-icon">🎓</span>
       <h3>Student Login</h3>
+      <p>Access your books &amp; fines</p>
     </div>
 
-    <div class="role-card" onclick="openLogin('faculty')">
-      <div class="role-icon">👨‍🏫</div>
+    <div class="role-card" onclick="openLogin('faculty','👨‍🏫','Faculty Login','Employee ID')">
+      <span class="role-icon">👨‍🏫</span>
       <h3>Faculty Login</h3>
+      <p>Issue books &amp; recommendations</p>
     </div>
 
-    <div class="role-card" onclick="openLogin('librarian')">
-      <div class="role-icon">📚</div>
+    <div class="role-card" onclick="openLogin('librarian','📚','Librarian Login','Staff ID')">
+      <span class="role-icon">📚</span>
       <h3>Librarian Login</h3>
+      <p>Full library management</p>
     </div>
-  </div>
 
+  </div>
 </div>
 
-<!-- ================= LOGIN MODAL ================= -->
-
-<div class="modal" id="loginModal">
+<!-- Modal -->
+<div class="modal-overlay" id="overlay">
   <div class="modal-box">
-    <h3 id="loginRoleTitle"></h3>
 
-    <input id="userid" placeholder="Roll No / Employee ID">
-    <input id="password" type="password" placeholder="Password">
-
-    <div class="modal-actions">
-      <button class="btn btn-primary" onclick="doLogin()">Login</button>
-      <button class="btn btn-danger" onclick="closeModal()">Cancel</button>
+    <div class="modal-top">
+      <div class="modal-top-icon" id="mIcon">🎓</div>
+      <div>
+        <h3 id="mTitle">Student Login</h3>
+        <small id="mSub">Enter your credentials to continue</small>
+      </div>
     </div>
+
+    <div class="modal-body">
+      <div class="err-box" id="errBox">⚠️ Please enter both ID and password.</div>
+
+      <div class="field">
+        <label id="idLabel">Roll Number</label>
+        <input id="userid" placeholder="e.g. 22501A0501" autocomplete="username">
+      </div>
+
+      <div class="field">
+        <label>Password</label>
+        <input id="password" type="password" placeholder="Enter your password" autocomplete="current-password">
+      </div>
+
+      <div class="modal-actions">
+        <button class="btn-cancel" onclick="closeModal()">Cancel</button>
+        <button class="btn-login"  onclick="doLogin()">Login →</button>
+      </div>
+    </div>
+
   </div>
 </div>
 
 <script>
-
 let selectedRole = "";
 
-function openLogin(role){
+function openLogin(role, icon, title, idLabel) {
   selectedRole = role;
-  document.getElementById("loginRoleTitle").innerText =
-    "Login as " + role.charAt(0).toUpperCase() + role.slice(1);
-  document.getElementById("loginModal").style.display = "flex";
+  document.getElementById("mIcon").innerText    = icon;
+  document.getElementById("mTitle").innerText   = title;
+  document.getElementById("idLabel").innerText  = idLabel;
+  document.getElementById("userid").value       = "";
+  document.getElementById("password").value     = "";
+  document.getElementById("errBox").style.display = "none";
+  document.getElementById("overlay").classList.add("show");
+  setTimeout(() => document.getElementById("userid").focus(), 100);
 }
 
-function closeModal(){
-  document.getElementById("loginModal").style.display = "none";
+function closeModal() {
+  document.getElementById("overlay").classList.remove("show");
 }
 
-function doLogin(){
-  const id = document.getElementById("userid").value.trim();
+function doLogin() {
+  const id   = document.getElementById("userid").value.trim();
   const pass = document.getElementById("password").value.trim();
+  const err  = document.getElementById("errBox");
 
-  if(!id || !pass){
-    alert("Please enter credentials");
+  if (!id || !pass) {
+    err.style.display = "block";
     return;
   }
 
+  err.style.display = "none";
   sessionStorage.setItem("userRole", selectedRole);
-  sessionStorage.setItem("userId", id);
+  sessionStorage.setItem("userId",   id);
 
-  if(selectedRole==="student") location.href="student-dashboard.html";
-  if(selectedRole==="faculty") location.href="faculty-dashboard.html";
-  if(selectedRole==="librarian") location.href="librarian-dashboard.html";
+  if (selectedRole === "student")   location.href = "student-dashboard.html";
+  if (selectedRole === "faculty")   location.href = "faculty-dashboard.html";
+  if (selectedRole === "librarian") location.href = "librarian-dashboard.html";
 }
 
+// Close on backdrop click
+document.getElementById("overlay").addEventListener("click", function(e) {
+  if (e.target === this) closeModal();
+});
+
+// Enter key submits
+document.addEventListener("keydown", function(e) {
+  if (e.key === "Enter" && document.getElementById("overlay").classList.contains("show")) {
+    doLogin();
+  }
+});
 </script>
 
 </body>

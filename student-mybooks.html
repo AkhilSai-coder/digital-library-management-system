@@ -1,17 +1,141 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><title>My Books | Student | GRIET Library</title><link rel="stylesheet" href="css/style.css"></head><body>
-<script src="js/auth.js"></script><script>protectDashboard("student");</script>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>My Books | Student | GRIET Library</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<script src="js/auth.js"></script>
+<script>protectDashboard("student");</script>
+
 <div class="dashboard-layout">
-<aside class="sidebar"><div class="sidebar-brand"><div class="brand-icon">🎓</div><div><h3>GRIET Library</h3><small>Student Portal</small></div></div><span class="nav-label">Menu</span><a href="student-dashboard.html"><span class="nav-icon">🏠</span> Dashboard</a><a href="catalogue.html"><span class="nav-icon">📚</span> Book Catalog</a><a class="active"><span class="nav-icon">📖</span> My Books</a><a href="student-fine.html"><span class="nav-icon">💰</span> Fines</a><div class="sidebar-footer"><a onclick="logout()"><span class="nav-icon">🚪</span> Logout</a></div></aside>
-<main class="main">
-<div class="page-header"><div><div class="page-title">My Books</div><div class="page-subtitle">Track your currently issued and returned books</div></div><a href="catalogue.html" class="btn btn-primary">Browse Catalog</a></div>
-<div class="tabs"><div class="tab active" id="activeTab">Active (0)</div><div class="tab" id="historyTab">History (0)</div></div>
-<div class="card"><div class="table-wrap"><table><thead><tr><th>Book</th><th>Issue Date</th><th>Due Date</th><th>Status</th></tr></thead><tbody id="booksTable"></tbody></table></div></div>
-</main></div>
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sidebar-brand">
+      <div class="brand-icon">🎓</div>
+      <div><h3>GRIET Library</h3><small>Student Portal</small></div>
+    </div>
+    <span class="nav-label">Menu</span>
+    <a href="student-dashboard.html"><span class="nav-icon">🏠</span> Dashboard</a>
+    <a href="catalogue.html"><span class="nav-icon">📚</span> Book Catalog</a>
+    <a href="student-mybooks.html" class="active"><span class="nav-icon">📖</span> My Books</a>
+    <a href="student-fine.html"><span class="nav-icon">💰</span> Fines</a>
+    <span class="nav-label">Account</span>
+    <a href="settings.html"><span class="nav-icon">⚙️</span> Settings</a>
+    <div class="sidebar-footer">
+      <a onclick="logout()"><span class="nav-icon">🚪</span> Logout</a>
+    </div>
+  </aside>
+
+  <!-- MAIN — tabs are inside here, that's the fix -->
+  <main class="main">
+
+    <div class="page-header">
+      <div>
+        <div class="page-title">My Books</div>
+        <div class="page-subtitle">Track your currently issued and returned books</div>
+      </div>
+      <a href="catalogue.html" class="btn btn-primary">Browse Catalog</a>
+    </div>
+
+    <!-- FIX: .tabs is inside .main so CSS scope works correctly -->
+    <div class="tabs">
+      <div class="tab active" id="activeTab">Active (0)</div>
+      <div class="tab" id="historyTab">History (0)</div>
+    </div>
+
+    <div class="card">
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Book Title</th>
+              <th>Issue Date</th>
+              <th>Due Date</th>
+              <th>Days Left</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody id="booksTable"></tbody>
+        </table>
+      </div>
+    </div>
+
+  </main>
+</div>
+
 <script>
-document.addEventListener("DOMContentLoaded",function(){const uid=sessionStorage.getItem("userId");const at=document.getElementById("activeTab");const ht=document.getElementById("historyTab");const tb=document.getElementById("booksTable");const sb=JSON.parse(localStorage.getItem("studentBooks"))||[];const sh=JSON.parse(localStorage.getItem("studentHistory"))||[];const today=new Date();const my=sb.filter(b=>b.userId===uid);const mh=sh.filter(b=>b.userId===uid);at.innerText=`Active (${my.length})`;ht.innerText=`History (${mh.length})`;
-function loadActive(){tb.innerHTML="";if(my.length===0){tb.innerHTML=`<tr class="empty-row"><td colspan="4">No active books. <a href="catalogue.html" style="color:var(--navy);font-weight:600;">Browse →</a></td></tr>`;return;}my.forEach(b=>{const od=today>new Date(b.dueDate);tb.innerHTML+=`<tr><td><strong>${b.title}</strong></td><td>${b.issueDate}</td><td>${b.dueDate}</td><td><span class="badge ${od?"badge-red":"badge-blue"}">${od?"Overdue":"Active"}</span></td></tr>`;});}
-function loadHistory(){tb.innerHTML="";if(mh.length===0){tb.innerHTML=`<tr class="empty-row"><td colspan="4">No history yet.</td></tr>`;return;}mh.forEach(b=>{tb.innerHTML+=`<tr><td><strong>${b.title}</strong></td><td>${b.issueDate}</td><td>${b.dueDate}</td><td><span class="badge badge-green">Returned</span></td></tr>`;});}
-at.addEventListener("click",function(){at.classList.add("active");ht.classList.remove("active");loadActive();});
-ht.addEventListener("click",function(){ht.classList.add("active");at.classList.remove("active");loadHistory();});
-loadActive();});
-</script></body></html>
+document.addEventListener("DOMContentLoaded", function () {
+  const uid   = sessionStorage.getItem("userId");
+  const atTab = document.getElementById("activeTab");
+  const htTab = document.getElementById("historyTab");
+  const tbody = document.getElementById("booksTable");
+
+  const allStudentBooks   = JSON.parse(localStorage.getItem("studentBooks"))   || [];
+  const allStudentHistory = JSON.parse(localStorage.getItem("studentHistory")) || [];
+  const today = new Date(); today.setHours(0,0,0,0);
+
+  const myBooks   = allStudentBooks.filter(b => b.userId === uid);
+  const myHistory = allStudentHistory.filter(b => b.userId === uid);
+
+  atTab.innerText = `Active (${myBooks.length})`;
+  htTab.innerText = `History (${myHistory.length})`;
+
+  function daysLeft(dueDateStr) {
+    const due = new Date(dueDateStr); due.setHours(0,0,0,0);
+    return Math.ceil((due - today) / (1000 * 60 * 60 * 24));
+  }
+
+  function loadActive() {
+    tbody.innerHTML = "";
+    if (myBooks.length === 0) {
+      tbody.innerHTML = `<tr class="empty-row"><td colspan="5">No active books. <a href="catalogue.html" style="color:var(--navy);font-weight:600;">Browse catalog →</a></td></tr>`;
+      return;
+    }
+    myBooks.forEach(b => {
+      const days = daysLeft(b.dueDate);
+      const isOverdue = days < 0;
+      const daysLabel = isOverdue
+        ? `<span style="color:var(--red);font-weight:600;">${Math.abs(days)} days ago</span>`
+        : `<span style="color:var(--green);">${days} days</span>`;
+      tbody.innerHTML += `
+        <tr>
+          <td><strong>${b.title}</strong></td>
+          <td>${b.issueDate}</td>
+          <td>${b.dueDate}</td>
+          <td>${daysLabel}</td>
+          <td><span class="badge ${isOverdue ? 'badge-red' : 'badge-blue'}">${isOverdue ? 'Overdue' : 'Active'}</span></td>
+        </tr>`;
+    });
+  }
+
+  function loadHistory() {
+    tbody.innerHTML = "";
+    if (myHistory.length === 0) {
+      tbody.innerHTML = `<tr class="empty-row"><td colspan="5">No return history yet.</td></tr>`;
+      return;
+    }
+    [...myHistory].reverse().forEach(b => {
+      tbody.innerHTML += `
+        <tr>
+          <td><strong>${b.title}</strong></td>
+          <td>${b.issueDate}</td>
+          <td>${b.dueDate}</td>
+          <td>—</td>
+          <td><span class="badge badge-green">Returned</span></td>
+        </tr>`;
+    });
+  }
+
+  atTab.addEventListener("click", () => { atTab.classList.add("active"); htTab.classList.remove("active"); loadActive(); });
+  htTab.addEventListener("click", () => { htTab.classList.add("active"); atTab.classList.remove("active"); loadHistory(); });
+
+  loadActive();
+});
+</script>
+
+</body>
+</html>

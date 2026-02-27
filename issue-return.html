@@ -1,20 +1,342 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><title>Issue & Return | GRIET Library</title><link rel="stylesheet" href="css/style.css"><style>.two-col{display:grid;grid-template-columns:1fr 1fr;gap:22px;}@media(max-width:900px){.two-col{grid-template-columns:1fr;}}.req-item{padding:14px 0;border-bottom:1px solid var(--border-soft);display:flex;justify-content:space-between;align-items:center;gap:12px;}.req-item:last-child{border-bottom:none;}.req-item small{color:var(--text-muted);font-size:12px;display:block;margin-top:2px;}.req-actions{display:flex;gap:8px;flex-shrink:0;}.empty-msg{text-align:center;padding:32px;color:var(--text-muted);font-size:14px;}</style></head><body>
-<script src="js/auth.js"></script><script>protectDashboard("librarian");</script>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Issue & Return | GRIET Library</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="css/style.css">
+<style>
+.req-item {
+  padding: 14px 0;
+  border-bottom: 1px solid var(--border-soft);
+  display: flex; justify-content: space-between; align-items: flex-start; gap: 12px;
+}
+.req-item:last-child { border-bottom: none; }
+.req-item .info strong { display:block; font-size:14px; color:var(--text); }
+.req-item .info small  { display:block; font-size:12px; color:var(--text-muted); margin-top:2px; }
+.req-actions { display:flex; gap:8px; flex-shrink:0; align-items:center; }
+.empty-msg { text-align:center; padding:30px; color:var(--text-muted); font-size:13.5px; }
+
+/* Due date picker inside request row */
+.due-input {
+  padding: 6px 10px;
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-sm);
+  font-size: 12px; color: var(--text);
+  background: var(--bg);
+  font-family: inherit;
+}
+.due-input:focus { outline:none; border-color:var(--navy); }
+
+.overdue-tag { color:var(--red); font-weight:600; font-size:11.5px; }
+</style>
+</head>
+<body>
+<script src="js/auth.js"></script>
+<script>protectDashboard("librarian");</script>
+
 <div class="dashboard-layout">
-<aside class="sidebar"><div class="sidebar-brand"><div class="brand-icon">📚</div><div><h3>GRIET Library</h3><small>Management Portal</small></div></div><span class="nav-label">Main</span><a href="librarian-dashboard.html"><span class="nav-icon">🏠</span> Dashboard</a><a href="book-management.html"><span class="nav-icon">📖</span> Book Management</a><a class="active"><span class="nav-icon">🔄</span> Issue & Return</a><a href="members.html"><span class="nav-icon">👥</span> Members</a><span class="nav-label">Reports</span><a href="reports.html"><span class="nav-icon">📊</span> Reports</a><a href="fine-management.html"><span class="nav-icon">💰</span> Fine Management</a><div class="sidebar-footer"><a onclick="logout()"><span class="nav-icon">🚪</span> Logout</a></div></aside>
-<main class="main">
-<div class="top-bar"><div><div class="page-title">Issue & Return</div><div class="page-subtitle">Manage book requests and returns</div></div></div>
-<div class="two-col">
-<div class="card"><div class="card-header"><h3>📥 Pending Requests</h3><span class="badge badge-amber" id="pendingCount">0 pending</span></div><div class="card-body"><div id="requestList"><div class="empty-msg">No pending requests</div></div></div></div>
-<div class="card"><div class="card-header"><h3>📤 Currently Issued</h3><span class="badge badge-blue" id="issuedCount">0 issued</span></div><div class="card-body"><div id="issuedList"><div class="empty-msg">No books issued</div></div></div></div>
-</div></main></div>
+
+  <aside class="sidebar">
+    <div class="sidebar-brand">
+      <div class="brand-icon">📚</div>
+      <div><h3>GRIET Library</h3><small>Management Portal</small></div>
+    </div>
+    <span class="nav-label">Main</span>
+    <a href="librarian-dashboard.html"><span class="nav-icon">🏠</span> Dashboard</a>
+    <a href="book-management.html"><span class="nav-icon">📖</span> Book Management</a>
+    <a href="issue-return.html" class="active"><span class="nav-icon">🔄</span> Issue & Return</a>
+    <a href="members.html"><span class="nav-icon">👥</span> Members</a>
+    <span class="nav-label">Reports</span>
+    <a href="reports.html"><span class="nav-icon">📊</span> Reports</a>
+    <a href="fine-management.html"><span class="nav-icon">💰</span> Fine Management</a>
+    <span class="nav-label">Account</span>
+    <a href="settings.html"><span class="nav-icon">⚙️</span> Settings</a>
+    <div class="sidebar-footer">
+      <a onclick="logout()"><span class="nav-icon">🚪</span> Logout</a>
+    </div>
+  </aside>
+
+  <main class="main">
+
+    <div class="top-bar">
+      <div>
+        <div class="page-title">Issue & Return</div>
+        <div class="page-subtitle">Approve requests and set custom due dates per member</div>
+      </div>
+    </div>
+
+    <div class="info-box">
+      💡 You can set a custom due date for each request before approving. Default is <strong>15 days</strong> from today.
+    </div>
+
+    <div class="two-col">
+
+      <!-- PENDING REQUESTS -->
+      <div class="card">
+        <div class="card-header">
+          <h3>📥 Pending Requests</h3>
+          <span class="badge badge-amber" id="pendingCount">0 pending</span>
+        </div>
+        <div class="card-body">
+          <div id="requestList"><div class="empty-msg">No pending requests</div></div>
+        </div>
+      </div>
+
+      <!-- CURRENTLY ISSUED -->
+      <div class="card">
+        <div class="card-header">
+          <h3>📤 Currently Issued</h3>
+          <span class="badge badge-blue" id="issuedCount">0 issued</span>
+        </div>
+        <div class="card-body">
+          <div id="issuedList"><div class="empty-msg">No books currently issued</div></div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- EXTEND DATE MODAL -->
+    <div class="modal" id="extendModal">
+      <div class="modal-box" style="width:400px;">
+        <div class="modal-header">
+          <h3>Extend Due Date</h3>
+          <button class="modal-close" onclick="closeExtend()">✕</button>
+        </div>
+        <div class="modal-body">
+          <p style="font-size:13.5px;color:var(--text-mid);margin-bottom:16px;">
+            Set a new due date for <strong id="extendTitle">—</strong>
+            issued to <strong id="extendUser">—</strong>.
+          </p>
+          <div class="form-group">
+            <label class="form-label">New Due Date *</label>
+            <input type="date" class="form-control" id="extendDate">
+          </div>
+          <div class="info-box" style="font-size:12px;">
+            📌 Extension fee (₹3/day) will be added to the member's account when you save.
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-ghost" onclick="closeExtend()">Cancel</button>
+          <button class="btn btn-primary" onclick="saveExtension()">Save Extension</button>
+        </div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
 <div class="toast" id="toast"></div>
+
 <script>
-document.addEventListener("DOMContentLoaded",function(){loadRequests();loadIssued();});
-function loadRequests(){const box=document.getElementById("requestList");const requests=JSON.parse(localStorage.getItem("bookRequests"))||[];const pending=requests.filter(r=>r.status==="pending");document.getElementById("pendingCount").innerText=`${pending.length} pending`;if(pending.length===0){box.innerHTML=`<div class="empty-msg">✅ No pending requests</div>`;return;}box.innerHTML="";pending.forEach(req=>{box.innerHTML+=`<div class="req-item"><div><strong>${req.title}</strong><small>${req.userRole} • ${req.userId} • ${req.requestDate}</small></div><div class="req-actions"><button class="btn btn-success btn-sm" onclick="approveReq('${req.title}','${req.userId}','${req.userRole}')">Approve</button><button class="btn btn-danger btn-sm" onclick="rejectReq('${req.title}','${req.userId}')">Reject</button></div></div>`;});}
-function loadIssued(){const box=document.getElementById("issuedList");const s=JSON.parse(localStorage.getItem("studentBooks"))||[];const f=JSON.parse(localStorage.getItem("facultyBooks"))||[];const all=[...s,...f];document.getElementById("issuedCount").innerText=`${all.length} issued`;if(all.length===0){box.innerHTML=`<div class="empty-msg">No books currently issued</div>`;return;}box.innerHTML="";all.forEach(book=>{const od=new Date()>new Date(book.dueDate);box.innerHTML+=`<div class="req-item"><div><strong>${book.title}</strong><small>${book.userRole} • ${book.userId} • Due: ${book.dueDate}${od?' <span style="color:var(--red);font-weight:600;">OVERDUE</span>':''}</small></div><button class="btn btn-danger btn-sm" onclick="returnBook('${book.title}','${book.userId}','${book.userRole}')">Return</button></div>`;});}
-window.approveReq=function(title,userId,userRole){let requests=JSON.parse(localStorage.getItem("bookRequests"))||[];const idx=requests.findIndex(r=>r.title===title&&r.userId===userId&&r.status==="pending");if(idx===-1)return;const today=new Date(),due=new Date();due.setDate(today.getDate()+15);const bd={title,issueDate:today.toISOString().split("T")[0],dueDate:due.toISOString().split("T")[0],userId,userRole};const key=userRole==="faculty"?"facultyBooks":"studentBooks";const arr=JSON.parse(localStorage.getItem(key))||[];arr.push(bd);localStorage.setItem(key,JSON.stringify(arr));requests[idx].status="approved";localStorage.setItem("bookRequests",JSON.stringify(requests));let lib=JSON.parse(localStorage.getItem("libraryBooks"))||[];const bi=lib.findIndex(b=>b.title.toLowerCase()===title.toLowerCase());if(bi!==-1&&lib[bi].available>0){lib[bi].available--;localStorage.setItem("libraryBooks",JSON.stringify(lib));}showToast(`Approved: "${title}"→${userId}`,"success");loadRequests();loadIssued();};
-window.rejectReq=function(title,userId){let r=JSON.parse(localStorage.getItem("bookRequests"))||[];const i=r.findIndex(x=>x.title===title&&x.userId===userId&&x.status==="pending");if(i!==-1){r[i].status="rejected";localStorage.setItem("bookRequests",JSON.stringify(r));}showToast(`Rejected request for "${title}"`,"warn");loadRequests();};
-window.returnBook=function(title,userId,userRole){const bk=userRole==="faculty"?"facultyBooks":"studentBooks";const hk=userRole==="faculty"?"facultyHistory":"studentHistory";let books=JSON.parse(localStorage.getItem(bk))||[];let hist=JSON.parse(localStorage.getItem(hk))||[];const idx=books.findIndex(b=>b.title===title&&b.userId===userId);if(idx!==-1){hist.push(books[idx]);books.splice(idx,1);}localStorage.setItem(bk,JSON.stringify(books));localStorage.setItem(hk,JSON.stringify(hist));let lib=JSON.parse(localStorage.getItem("libraryBooks"))||[];const bi=lib.findIndex(b=>b.title.toLowerCase()===title.toLowerCase());if(bi!==-1){lib[bi].available++;localStorage.setItem("libraryBooks",JSON.stringify(lib));}showToast(`"${title}" returned`,"success");loadIssued();};
-function showToast(msg,type="success"){const t=document.getElementById("toast");t.innerText=msg;t.className=`toast ${type} show`;setTimeout(()=>t.classList.remove("show"),3000);}
-</script></body></html>
+// Default due days
+const DEFAULT_DAYS = 15;
+
+// Format today + N days as YYYY-MM-DD
+function dateAfterDays(n) {
+  const d = new Date();
+  d.setDate(d.getDate() + n);
+  return d.toISOString().split("T")[0];
+}
+
+document.addEventListener("DOMContentLoaded", function () {
+  loadRequests();
+  loadIssued();
+});
+
+// ── PENDING REQUESTS ─────────────────────────────────────────────
+function loadRequests() {
+  const box      = document.getElementById("requestList");
+  const requests = JSON.parse(localStorage.getItem("bookRequests")) || [];
+  const pending  = requests.filter(r => r.status === "pending");
+
+  document.getElementById("pendingCount").innerText = `${pending.length} pending`;
+
+  if (pending.length === 0) {
+    box.innerHTML = `<div class="empty-msg">✅ No pending requests</div>`;
+    return;
+  }
+
+  box.innerHTML = "";
+  pending.forEach((req, idx) => {
+    const defaultDue = dateAfterDays(DEFAULT_DAYS);
+    box.innerHTML += `
+      <div class="req-item">
+        <div class="info">
+          <strong>${req.title}</strong>
+          <small>${req.userRole} · ${req.userId} · Requested: ${req.requestDate || "—"}</small>
+          <div style="margin-top:8px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+            <label style="font-size:12px;font-weight:600;color:var(--text-mid);">Due date:</label>
+            <input type="date" class="due-input" id="due_${idx}" value="${defaultDue}" min="${new Date().toISOString().split('T')[0]}">
+          </div>
+        </div>
+        <div class="req-actions">
+          <button class="btn btn-success btn-sm"
+            onclick="approveReq('${req.title}','${req.userId}','${req.userRole}',${idx})">
+            ✓ Approve
+          </button>
+          <button class="btn btn-danger btn-sm"
+            onclick="rejectReq('${req.title}','${req.userId}')">
+            ✗ Reject
+          </button>
+        </div>
+      </div>`;
+  });
+}
+
+// ── APPROVE ──────────────────────────────────────────────────────
+window.approveReq = function (title, userId, userRole, rowIdx) {
+  const dueDateEl = document.getElementById(`due_${rowIdx}`);
+  const dueDate   = dueDateEl ? dueDateEl.value : dateAfterDays(DEFAULT_DAYS);
+
+  if (!dueDate) {
+    showToast("Please set a due date before approving", "error");
+    return;
+  }
+
+  const today = new Date().toISOString().split("T")[0];
+  const bookData = { title, issueDate: today, dueDate, userId, userRole };
+
+  const key = userRole === "faculty" ? "facultyBooks" : "studentBooks";
+  const arr = JSON.parse(localStorage.getItem(key)) || [];
+  arr.push(bookData);
+  localStorage.setItem(key, JSON.stringify(arr));
+
+  // Mark request approved
+  let requests = JSON.parse(localStorage.getItem("bookRequests")) || [];
+  const ri = requests.findIndex(r => r.title === title && r.userId === userId && r.status === "pending");
+  if (ri !== -1) { requests[ri].status = "approved"; localStorage.setItem("bookRequests", JSON.stringify(requests)); }
+
+  // Decrease available count
+  let lib = JSON.parse(localStorage.getItem("libraryBooks")) || [];
+  const bi = lib.findIndex(b => b.title.toLowerCase() === title.toLowerCase());
+  if (bi !== -1 && lib[bi].available > 0) { lib[bi].available--; localStorage.setItem("libraryBooks", JSON.stringify(lib)); }
+
+  showToast(`✓ "${title}" issued to ${userId} · Due: ${dueDate}`, "success");
+  loadRequests();
+  loadIssued();
+};
+
+// ── REJECT ───────────────────────────────────────────────────────
+window.rejectReq = function (title, userId) {
+  let requests = JSON.parse(localStorage.getItem("bookRequests")) || [];
+  const ri = requests.findIndex(r => r.title === title && r.userId === userId && r.status === "pending");
+  if (ri !== -1) { requests[ri].status = "rejected"; localStorage.setItem("bookRequests", JSON.stringify(requests)); }
+  showToast(`Rejected request for "${title}"`, "warn");
+  loadRequests();
+};
+
+// ── ISSUED LIST ───────────────────────────────────────────────────
+function loadIssued() {
+  const box       = document.getElementById("issuedList");
+  const sBooks    = JSON.parse(localStorage.getItem("studentBooks")) || [];
+  const fBooks    = JSON.parse(localStorage.getItem("facultyBooks")) || [];
+  const all       = [...sBooks, ...fBooks];
+  const today     = new Date(); today.setHours(0,0,0,0);
+
+  document.getElementById("issuedCount").innerText = `${all.length} issued`;
+
+  if (all.length === 0) {
+    box.innerHTML = `<div class="empty-msg">No books currently issued</div>`;
+    return;
+  }
+
+  box.innerHTML = "";
+  all.forEach(book => {
+    const due      = new Date(book.dueDate); due.setHours(0,0,0,0);
+    const isOverdue = today > due;
+    const daysOver  = Math.ceil((today - due) / (1000*60*60*24));
+
+    box.innerHTML += `
+      <div class="req-item">
+        <div class="info">
+          <strong>${book.title}</strong>
+          <small>
+            ${book.userRole} · ${book.userId}<br>
+            Issued: ${book.issueDate} &nbsp;·&nbsp; Due: ${book.dueDate}
+            ${isOverdue ? `<span class="overdue-tag"> · ${daysOver}d overdue</span>` : ""}
+          </small>
+        </div>
+        <div class="req-actions" style="flex-direction:column;gap:6px;align-items:flex-end;">
+          <button class="btn btn-danger btn-sm"
+            onclick="returnBook('${book.title}','${book.userId}','${book.userRole}')">
+            Return
+          </button>
+          <button class="btn btn-ghost btn-sm"
+            onclick="openExtend('${book.title}','${book.userId}','${book.userRole}','${book.dueDate}')">
+            Extend Date
+          </button>
+        </div>
+      </div>`;
+  });
+}
+
+// ── RETURN ────────────────────────────────────────────────────────
+window.returnBook = function (title, userId, userRole) {
+  const bk = userRole === "faculty" ? "facultyBooks"   : "studentBooks";
+  const hk = userRole === "faculty" ? "facultyHistory" : "studentHistory";
+  let books = JSON.parse(localStorage.getItem(bk)) || [];
+  let hist  = JSON.parse(localStorage.getItem(hk)) || [];
+  const idx = books.findIndex(b => b.title === title && b.userId === userId);
+  if (idx !== -1) { hist.push(books[idx]); books.splice(idx, 1); }
+  localStorage.setItem(bk, JSON.stringify(books));
+  localStorage.setItem(hk, JSON.stringify(hist));
+
+  // Restore available count
+  let lib = JSON.parse(localStorage.getItem("libraryBooks")) || [];
+  const bi = lib.findIndex(b => b.title.toLowerCase() === title.toLowerCase());
+  if (bi !== -1) { lib[bi].available++; localStorage.setItem("libraryBooks", JSON.stringify(lib)); }
+
+  showToast(`"${title}" returned by ${userId}`, "success");
+  loadIssued();
+};
+
+// ── EXTEND DATE ───────────────────────────────────────────────────
+let extendCtx = {};
+
+window.openExtend = function (title, userId, userRole, currentDue) {
+  extendCtx = { title, userId, userRole };
+  document.getElementById("extendTitle").innerText = title;
+  document.getElementById("extendUser").innerText  = userId;
+  document.getElementById("extendDate").value      = currentDue;
+  document.getElementById("extendDate").min        = new Date().toISOString().split("T")[0];
+  document.getElementById("extendModal").classList.add("open");
+};
+
+function closeExtend() {
+  document.getElementById("extendModal").classList.remove("open");
+}
+
+function saveExtension() {
+  const newDue = document.getElementById("extendDate").value;
+  if (!newDue) { showToast("Please select a date", "error"); return; }
+
+  const { title, userId, userRole } = extendCtx;
+  const key = userRole === "faculty" ? "facultyBooks" : "studentBooks";
+  let books  = JSON.parse(localStorage.getItem(key)) || [];
+  const idx  = books.findIndex(b => b.title === title && b.userId === userId);
+
+  if (idx !== -1) {
+    const oldDue = new Date(books[idx].dueDate);
+    const nd     = new Date(newDue);
+    const extraDays = Math.max(0, Math.ceil((nd - oldDue) / (1000*60*60*24)));
+    const fee = extraDays * 3;
+
+    books[idx].dueDate = newDue;
+    localStorage.setItem(key, JSON.stringify(books));
+
+    closeExtend();
+    loadIssued();
+    showToast(`Due date updated to ${newDue}${fee > 0 ? ` · Extension fee: ₹${fee}` : ""}`, "success");
+  }
+}
+
+function showToast(msg, type = "success") {
+  const t = document.getElementById("toast");
+  t.innerText = msg;
+  t.className = `toast ${type} show`;
+  setTimeout(() => t.classList.remove("show"), 4000);
+}
+</script>
+</body>
+</html>

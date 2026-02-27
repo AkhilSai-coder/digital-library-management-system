@@ -2,142 +2,11 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Fines | Student | GRIET Library</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Fines | Student | GRIET Library</title>
 <link rel="stylesheet" href="css/style.css">
-
-<style>
-.dashboard-layout { display:flex; min-height:100vh; background:#f6f8fb; }
-
-.sidebar {
-  width:260px;
-  background:linear-gradient(180deg,#0f2d52,#0b1f3a);
-  color:#fff;
-  padding:25px 20px;
-  flex-shrink:0;
-}
-.sidebar h3 { font-size:18px; margin-bottom:30px; font-weight:600; }
-.sidebar a {
-  display:block; padding:12px 15px; margin-bottom:8px;
-  text-decoration:none; color:#dbeafe; border-radius:8px;
-  font-size:14px; transition:0.2s ease;
-}
-.sidebar a:hover, .sidebar a.active {
-  background:#b30000; color:#fff; transform:translateX(5px);
-}
-
-.main { flex:1; padding:30px; }
-
-h2 { margin-bottom:20px; color:#1f3a5f; }
-
-/* Summary Cards */
-.summary-row {
-  display:grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px,1fr));
-  gap:20px;
-  margin-bottom:30px;
-}
-
-.summary-card {
-  background:#fff;
-  border:1px solid #e5e7eb;
-  border-radius:12px;
-  padding:22px;
-}
-
-.summary-card h4 {
-  font-size:13px;
-  color:#64748b;
-  margin-bottom:8px;
-  text-transform:uppercase;
-  letter-spacing:0.5px;
-}
-
-.amount {
-  font-size:36px;
-  font-weight:bold;
-  color:#ef4444;
-}
-
-.amount.green { color:#16a34a; }
-
-.subtext { color:#64748b; font-size:13px; margin-top:4px; }
-
-/* Card */
-.card {
-  background:#fff;
-  border:1px solid #e5e7eb;
-  border-radius:12px;
-  padding:25px;
-  margin-bottom:25px;
-}
-
-.card-header {
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  margin-bottom:20px;
-}
-
-.card-header h3 { color:#1f3a5f; margin:0; font-size:16px; }
-
-/* Table */
-table { width:100%; border-collapse:collapse; }
-th, td { padding:14px; border-bottom:1px solid #f1f5f9; text-align:left; font-size:14px; }
-th { color:#64748b; font-size:13px; }
-tr:last-child td { border-bottom:none; }
-tr:hover td { background:#f9fafb; }
-
-/* Status badges */
-.status-pending {
-  background:#fef2f2; color:#ef4444;
-  padding:4px 12px; border-radius:20px;
-  font-size:12px; font-weight:600;
-  border:1px solid #fecaca;
-}
-.status-paid {
-  background:#f0fdf4; color:#16a34a;
-  padding:4px 12px; border-radius:20px;
-  font-size:12px; font-weight:600;
-  border:1px solid #bbf7d0;
-}
-
-/* Alert Banner */
-.alert-banner {
-  background:#fef2f2;
-  border:1px solid #fecaca;
-  border-radius:10px;
-  padding:14px 18px;
-  margin-bottom:25px;
-  display:flex;
-  align-items:center;
-  gap:10px;
-  color:#b91c1c;
-  font-size:14px;
-}
-
-.no-fines {
-  background:#f0fdf4;
-  border:1px solid #bbf7d0;
-  color:#16a34a;
-}
-
-/* Fine rate info */
-.fine-info {
-  background:#eff6ff;
-  border:1px solid #bfdbfe;
-  border-radius:8px;
-  padding:12px 16px;
-  font-size:13px;
-  color:#1d4ed8;
-  margin-bottom:20px;
-}
-
-.empty { text-align:center; padding:30px; color:#64748b; }
-</style>
 </head>
-
 <body>
-
 <script src="js/auth.js"></script>
 <script>protectDashboard("student");</script>
 
@@ -145,173 +14,204 @@ tr:hover td { background:#f9fafb; }
 
   <!-- SIDEBAR -->
   <aside class="sidebar">
-    <h3>🎓 Student</h3>
-    <a href="student-dashboard.html">Dashboard</a>
-    <a href="catalogue.html">Book Catalog</a>
-    <a href="student-mybooks.html">My Books</a>
-    <a class="active">Fines</a>
-    <a onclick="logout()" style="cursor:pointer;">Logout</a>
+    <div class="sidebar-brand">
+      <div class="brand-icon">🎓</div>
+      <div><h3>GRIET Library</h3><small>Student Portal</small></div>
+    </div>
+    <span class="nav-label">Menu</span>
+    <a href="student-dashboard.html"><span class="nav-icon">🏠</span> Dashboard</a>
+    <a href="catalogue.html"><span class="nav-icon">📚</span> Book Catalog</a>
+    <a href="student-mybooks.html"><span class="nav-icon">📖</span> My Books</a>
+    <a href="student-fine.html" class="active"><span class="nav-icon">💰</span> Fines</a>
+    <span class="nav-label">Account</span>
+    <a href="settings.html"><span class="nav-icon">⚙️</span> Settings</a>
+    <div class="sidebar-footer">
+      <a onclick="logout()"><span class="nav-icon">🚪</span> Logout</a>
+    </div>
   </aside>
 
   <!-- MAIN -->
   <main class="main">
 
-    <h2>My Fines</h2>
-
-    <div class="fine-info">
-      ℹ️ Fine rate: <strong>₹5 per day</strong> for overdue books. Fines are auto-calculated based on your due dates.
-    </div>
-
-    <!-- Alert Banner -->
-    <div id="alertBanner" class="alert-banner" style="display:none;"></div>
-
-    <!-- Summary Cards -->
-    <div class="summary-row">
-      <div class="summary-card">
-        <h4>Outstanding Amount</h4>
-        <div class="amount" id="totalPending">₹0</div>
-        <div class="subtext" id="pendingCount">0 pending fine(s)</div>
+    <div class="top-bar">
+      <div>
+        <div class="page-title">My Fines</div>
+        <div class="page-subtitle">Auto-calculated based on your overdue books</div>
       </div>
-      <div class="summary-card">
-        <h4>Overdue Books</h4>
-        <div class="amount" id="overdueBooks">0</div>
-        <div class="subtext">books past due date</div>
-      </div>
-      <div class="summary-card">
-        <h4>Total Paid</h4>
-        <div class="amount green" id="totalPaid">₹0</div>
-        <div class="subtext" id="paidCount">0 fine(s) cleared</div>
+      <div class="top-right">
+        <div class="user-chip">
+          <div class="avatar">🎓</div>
+          <span id="userChip">Student</span>
+        </div>
       </div>
     </div>
 
-    <!-- Active Fines Table -->
-    <div class="card">
+    <!-- Fine rate info -->
+    <div class="info-box">
+      ℹ️ Fine rate: <strong>₹5 per day</strong> for overdue books. Fines are cleared by the librarian upon return.
+    </div>
+
+    <!-- Alert banner -->
+    <div id="alertBanner"></div>
+
+    <!-- Stat cards -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-icon red">💸</div>
+        <div class="stat-info">
+          <h4>Outstanding Amount</h4>
+          <div class="stat-value red" id="totalPending">₹0</div>
+          <div class="text-muted" id="pendingCount">0 pending fine(s)</div>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon amber">⚠️</div>
+        <div class="stat-info">
+          <h4>Overdue Books</h4>
+          <div class="stat-value amber" id="overdueBooks">0</div>
+          <div class="text-muted">books past due date</div>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon green">✅</div>
+        <div class="stat-info">
+          <h4>Total Paid</h4>
+          <div class="stat-value green" id="totalPaid">₹0</div>
+          <div class="text-muted" id="paidCount">0 fine(s) cleared</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Pending fines table -->
+    <div class="card mb-20" style="margin-bottom:20px;">
       <div class="card-header">
         <h3>Pending Fines</h3>
+        <span class="badge badge-red" id="pendingBadge">0 pending</span>
       </div>
-      <table>
-        <thead>
-          <tr>
-            <th>Book Title</th>
-            <th>Due Date</th>
-            <th>Days Overdue</th>
-            <th>Amount</th>
-            <th>Status</th>
-          </tr>
-        </thead>
-        <tbody id="pendingFinesTable"></tbody>
-      </table>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Book Title</th>
+              <th>Due Date</th>
+              <th>Days Overdue</th>
+              <th>Fine Amount</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody id="pendingFinesTable"></tbody>
+        </table>
+      </div>
     </div>
 
-    <!-- Fine History -->
+    <!-- Fine history table -->
     <div class="card">
       <div class="card-header">
         <h3>Fine History (Cleared)</h3>
+        <span class="badge badge-green" id="paidBadge">0 cleared</span>
       </div>
-      <table>
-        <thead>
-          <tr>
-            <th>Book Title</th>
-            <th>Reason</th>
-            <th>Amount</th>
-            <th>Cleared On</th>
-            <th>Status</th>
-          </tr>
-        </thead>
-        <tbody id="fineHistoryTable"></tbody>
-      </table>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Book Title</th>
+              <th>Reason</th>
+              <th>Amount</th>
+              <th>Cleared On</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody id="fineHistoryTable"></tbody>
+        </table>
+      </div>
     </div>
 
   </main>
 </div>
 
 <script>
-document.addEventListener("DOMContentLoaded", function(){
+document.addEventListener("DOMContentLoaded", function () {
 
   const userId = sessionStorage.getItem("userId");
-  const today = new Date();
+  document.getElementById("userChip").innerText = userId || "Student";
 
-  // Get student's currently issued books
-  const studentBooks = JSON.parse(localStorage.getItem("studentBooks")) || [];
-  // Get fine history (paid/cleared fines)
-  const allFineHistory = JSON.parse(localStorage.getItem("fineHistory")) || [];
+  const today          = new Date(); today.setHours(0,0,0,0);
+  const studentBooks   = JSON.parse(localStorage.getItem("studentBooks"))   || [];
+  const allFineHistory = JSON.parse(localStorage.getItem("fineHistory"))    || [];
 
-  const myBooks = studentBooks.filter(b => b.userId === userId);
+  const myBooks       = studentBooks.filter(b => b.userId === userId);
   const myFineHistory = allFineHistory.filter(f => f.userId === userId);
 
-  const pendingTable = document.getElementById("pendingFinesTable");
-  const historyTable = document.getElementById("fineHistoryTable");
-  const alertBanner = document.getElementById("alertBanner");
+  const pendingTbody = document.getElementById("pendingFinesTable");
+  const historyTbody = document.getElementById("fineHistoryTable");
+  const alertBanner  = document.getElementById("alertBanner");
 
-  let totalPending = 0;
-  let overdueCount = 0;
-  let pendingRows = 0;
+  let totalPending = 0, overdueCount = 0;
 
-  // ─── Calculate active overdue fines ───────────────────────────────
+  // ── Pending / Active Fines ──────────────────────────────────────
+  pendingTbody.innerHTML = "";
   myBooks.forEach(book => {
-    const dueDate = new Date(book.dueDate);
-    if(today > dueDate) {
-      const diffMs = today - dueDate;
-      const daysOverdue = Math.ceil(diffMs / (1000 * 60 * 60 * 24));
-      const fineAmount = daysOverdue * 5; // ₹5 per day
-
-      totalPending += fineAmount;
+    const due = new Date(book.dueDate); due.setHours(0,0,0,0);
+    if (today > due) {
+      const daysOverdue = Math.ceil((today - due) / (1000*60*60*24));
+      const fine        = daysOverdue * 5;
+      totalPending += fine;
       overdueCount++;
-      pendingRows++;
-
-      pendingTable.innerHTML += `
+      pendingTbody.innerHTML += `
         <tr>
-          <td><b>${book.title}</b></td>
+          <td><strong>${book.title}</strong></td>
           <td>${book.dueDate}</td>
-          <td style="color:#ef4444;font-weight:600;">${daysOverdue} day(s)</td>
-          <td style="font-weight:600;">₹${fineAmount}</td>
-          <td><span class="status-pending">Pending</span></td>
-        </tr>
-      `;
+          <td><span style="color:var(--red);font-weight:600;">${daysOverdue} day(s)</span></td>
+          <td><strong>₹${fine}</strong></td>
+          <td><span class="badge badge-red">Pending</span></td>
+        </tr>`;
     }
   });
 
-  if(pendingRows === 0){
-    pendingTable.innerHTML = `<tr><td colspan="5" class="empty">✅ No pending fines</td></tr>`;
+  if (overdueCount === 0) {
+    pendingTbody.innerHTML = '<tr class="empty-row"><td colspan="5">✅ No pending fines</td></tr>';
   }
 
-  // ─── Fine History (cleared by librarian) ──────────────────────────
-  let totalPaid = 0;
-  let paidCount = 0;
+  // ── Fine History ────────────────────────────────────────────────
+  historyTbody.innerHTML = "";
+  let totalPaid = 0, paidCount = 0;
 
-  if(myFineHistory.length === 0){
-    historyTable.innerHTML = `<tr><td colspan="5" class="empty">No fine history yet</td></tr>`;
+  if (myFineHistory.length === 0) {
+    historyTbody.innerHTML = '<tr class="empty-row"><td colspan="5">No fine history yet</td></tr>';
   } else {
-    myFineHistory.forEach(fine => {
-      totalPaid += fine.amount;
+    myFineHistory.forEach(f => {
+      totalPaid  += (f.amount || 0);
       paidCount++;
-      historyTable.innerHTML += `
+      historyTbody.innerHTML += `
         <tr>
-          <td><b>${fine.title}</b></td>
-          <td>${fine.reason}</td>
-          <td>₹${fine.amount}</td>
-          <td>${fine.clearedOn}</td>
-          <td><span class="status-paid">Paid</span></td>
-        </tr>
-      `;
+          <td><strong>${f.title}</strong></td>
+          <td>${f.reason || "Overdue"}</td>
+          <td>₹${f.amount}</td>
+          <td>${f.clearedOn || "—"}</td>
+          <td><span class="badge badge-green">Paid</span></td>
+        </tr>`;
     });
   }
 
-  // ─── Update Summary ───────────────────────────────────────────────
-  document.getElementById("totalPending").innerText = `₹${totalPending}`;
-  document.getElementById("pendingCount").innerText = `${pendingRows} pending fine(s)`;
-  document.getElementById("overdueBooks").innerText = overdueCount;
-  document.getElementById("totalPaid").innerText = `₹${totalPaid}`;
-  document.getElementById("paidCount").innerText = `${paidCount} fine(s) cleared`;
+  // ── Update Stats ────────────────────────────────────────────────
+  document.getElementById("totalPending").innerText  = `₹${totalPending}`;
+  document.getElementById("pendingCount").innerText  = `${overdueCount} pending fine(s)`;
+  document.getElementById("overdueBooks").innerText  = overdueCount;
+  document.getElementById("totalPaid").innerText     = `₹${totalPaid}`;
+  document.getElementById("paidCount").innerText     = `${paidCount} fine(s) cleared`;
+  document.getElementById("pendingBadge").innerText  = `${overdueCount} pending`;
+  document.getElementById("paidBadge").innerText     = `${paidCount} cleared`;
 
-  // ─── Alert Banner ─────────────────────────────────────────────────
-  if(overdueCount > 0){
-    alertBanner.style.display = "flex";
-    alertBanner.innerHTML = `⚠️ You have <strong>${overdueCount} overdue book(s)</strong> with a total fine of <strong>₹${totalPending}</strong>. Please return them to the library immediately.`;
+  // ── Alert Banner ────────────────────────────────────────────────
+  if (overdueCount > 0) {
+    alertBanner.innerHTML = `
+      <div class="alert alert-danger" style="margin-bottom:20px;">
+        ⚠️ You have <strong>${overdueCount} overdue book(s)</strong> with a total fine of
+        <strong>₹${totalPending}</strong>. Please return them to avoid further charges.
+      </div>`;
   }
 
 });
 </script>
-
 </body>
 </html>
