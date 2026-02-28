@@ -265,11 +265,14 @@ document.addEventListener("DOMContentLoaded", async function(){
         /* FETCH BORROWED BOOKS         */
         /* ============================= */
 
-        const borrowResponse = await fetch("http://localhost:8080/borrow/my", {
-        headers: {
-        "Authorization": "Bearer " + token
+        const borrowResponse = await fetch(
+  "https://library-backend-production-a8a4.up.railway.app/borrow/my",
+  {
+    headers: {
+      "Authorization": "Bearer " + token
     }
-});
+  }
+);
 
         const borrows = borrowResponse.ok ? await borrowResponse.json() : [];
 
@@ -316,9 +319,14 @@ document.addEventListener("DOMContentLoaded", async function(){
         /* FETCH MY REQUESTS            */
         /* ============================= */
 
-        const requestResponse = await fetch("http://localhost:8080/request/my", {
-            headers: { "Authorization": "Bearer " + token }
-        });
+       const requestResponse = await fetch(
+  "https://library-backend-production-a8a4.up.railway.app/request/my",
+  {
+    headers: { 
+      "Authorization": "Bearer " + token 
+    }
+  }
+);
 
         const requests = requestResponse.ok ? await requestResponse.json() : [];
 
