@@ -1,67 +1,153 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Reports | GRIET Library</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Reports & Analytics | GRIET Library</title>
 <link rel="stylesheet" href="css/style.css">
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
 <script src="js/auth.js"></script>
 <script>protectDashboard("librarian");</script>
+
 <div class="dashboard-layout">
-<aside class="sidebar">
-  <h3>📚 GRIET Library</h3>
-  <div style="padding:4px 8px;flex:1;">
-    <a href="librarian-dashboard.html">🏠 Dashboard</a>
-    <a href="book-management.html">📖 Book Management</a>
-    <a href="issue-return.html">🔄 Issue &amp; Return</a>
-    <a href="members.html">👥 Members</a>
-    <a class="active" href="reports.html">📊 Reports</a>
-    <a href="fine-management.html">💰 Fine Management</a>
-  </div>
-  <div style="padding:14px 8px;"><a onclick="logout()" style="cursor:pointer;">🚪 Logout</a></div>
-</aside>
-<main class="main">
-  <div class="page-header"><div class="page-title">Reports &amp; Analytics</div></div>
-  <div class="cards" style="margin-bottom:26px;">
-    <div class="card" style="border-left:4px solid var(--navy);"><h4>Total Books</h4><div class="value" id="rTotalBooks">0</div></div>
-    <div class="card" style="border-left:4px solid var(--green);"><h4>Active Issues</h4><div class="value green" id="rActiveIssues">0</div></div>
-    <div class="card" style="border-left:4px solid var(--red);"><h4>Overdue</h4><div class="value danger" id="rOverdue">0</div></div>
-    <div class="card" style="border-left:4px solid var(--amber);"><h4>Total Fines (₹)</h4><div class="value amber" id="rFines">0</div></div>
-  </div>
-  <div style="display:grid;grid-template-columns:1fr 1fr;gap:22px;">
-    <div class="box"><div class="card-header"><h3>Books by Department</h3></div><canvas id="deptBar" height="220"></canvas></div>
-    <div class="box"><div class="card-header"><h3>Department Distribution</h3></div><canvas id="deptPie" height="220"></canvas></div>
-    <div class="box"><div class="card-header"><h3>Most Borrowed Books</h3></div><canvas id="borrowedBar" height="220"></canvas></div>
-    <div class="box"><div class="card-header"><h3>Overdue Trend</h3></div><canvas id="overdueLine" height="220"></canvas></div>
-  </div>
-</main>
+
+  <aside class="sidebar">
+    <div class="sidebar-brand">
+      <div class="brand-icon">📚</div>
+      <div><h3>GRIET Library</h3><small>Management Portal</small></div>
+    </div>
+    <span class="nav-label">Main</span>
+    <a href="librarian-dashboard.html"><span class="nav-icon">🏠</span> Dashboard</a>
+    <a href="book-management.html"><span class="nav-icon">📖</span> Book Management</a>
+    <a href="issue-return.html"><span class="nav-icon">🔄</span> Issue &amp; Return</a>
+    <a href="members.html"><span class="nav-icon">👥</span> Members</a>
+    <span class="nav-label">Reports</span>
+    <a href="reports.html" class="active"><span class="nav-icon">📊</span> Reports</a>
+    <a href="fine-management.html"><span class="nav-icon">💰</span> Fine Management</a>
+    <span class="nav-label">Account</span>
+    <a href="settings.html"><span class="nav-icon">⚙️</span> Settings</a>
+    <div class="sidebar-footer">
+      <a onclick="logout()"><span class="nav-icon">🚪</span> Logout</a>
+    </div>
+  </aside>
+
+  <main class="main">
+
+    <div class="top-bar">
+      <div>
+        <div class="page-title">Reports &amp; Analytics</div>
+        <div class="page-subtitle">Library performance overview</div>
+      </div>
+      <div class="top-right">
+        <div class="user-chip">
+          <div class="avatar">📊</div>
+          <span id="todayLabel"></span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Stat cards -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-icon blue">📚</div>
+        <div class="stat-info"><h4>Total Books</h4><div class="stat-value" id="rTotalBooks">0</div></div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon green">📤</div>
+        <div class="stat-info"><h4>Active Issues</h4><div class="stat-value green" id="rActiveIssues">0</div></div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon red">⚠️</div>
+        <div class="stat-info"><h4>Overdue</h4><div class="stat-value red" id="rOverdue">0</div></div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon amber">💰</div>
+        <div class="stat-info"><h4>Total Fines (₹)</h4><div class="stat-value amber" id="rFines">0</div></div>
+      </div>
+    </div>
+
+    <!-- Charts grid -->
+    <div class="two-col">
+      <div class="card">
+        <div class="card-header"><h3>Books by Department</h3></div>
+        <div class="card-body"><canvas id="deptBar" height="220"></canvas></div>
+      </div>
+      <div class="card">
+        <div class="card-header"><h3>Department Distribution</h3></div>
+        <div class="card-body"><canvas id="deptPie" height="220"></canvas></div>
+      </div>
+      <div class="card">
+        <div class="card-header"><h3>Most Borrowed Books</h3></div>
+        <div class="card-body"><canvas id="borrowedBar" height="220"></canvas></div>
+      </div>
+      <div class="card">
+        <div class="card-header"><h3>Overdue Trend</h3></div>
+        <div class="card-body"><canvas id="overdueLine" height="220"></canvas></div>
+      </div>
+    </div>
+
+  </main>
 </div>
+
 <script>
-document.addEventListener("DOMContentLoaded",function(){
-  const books=JSON.parse(localStorage.getItem("libraryBooks"))||[];
-  const sB=JSON.parse(localStorage.getItem("studentBooks"))||[];
-  const fB=JSON.parse(localStorage.getItem("facultyBooks"))||[];
-  const fineH=JSON.parse(localStorage.getItem("fineHistory"))||[];
-  const all=[...sB,...fB];
-  const today=new Date();
-  let overdue=0,fines=0;
-  all.forEach(b=>{if(new Date(b.dueDate)<today){overdue++;const d=Math.ceil((today-new Date(b.dueDate))/(1000*60*60*24));fines+=d*5;}});
-  fineH.forEach(f=>fines+=f.amount||0);
-  document.getElementById("rTotalBooks").innerText=books.length||106;
-  document.getElementById("rActiveIssues").innerText=all.length;
-  document.getElementById("rOverdue").innerText=overdue;
-  document.getElementById("rFines").innerText=fines;
+document.addEventListener("DOMContentLoaded", function () {
+  document.getElementById("todayLabel").innerText = new Date().toLocaleDateString("en-IN",{day:"numeric",month:"short",year:"numeric"});
 
-  const depts=["CSE","ECE","Mech","Civil","General"];
-  const deptData=depts.map(d=>books.filter(b=>b.dept===d).length||[32,24,20,14,16][depts.indexOf(d)]);
-  const colors=["#0f2d52","#1f3a5f","#64748b","#b30000","#94a3b8"];
+  const books = JSON.parse(localStorage.getItem("libraryBooks")) || [];
+  const sB    = JSON.parse(localStorage.getItem("studentBooks")) || [];
+  const fB    = JSON.parse(localStorage.getItem("facultyBooks")) || [];
+  const fineH = JSON.parse(localStorage.getItem("fineHistory"))  || [];
+  const all   = [...sB, ...fB];
+  const today = new Date();
 
-  new Chart(document.getElementById("deptBar"),{type:"bar",data:{labels:depts,datasets:[{data:deptData,backgroundColor:colors,borderRadius:6}]},options:{plugins:{legend:{display:false}},scales:{y:{beginAtZero:true,grid:{color:"#f1f5f9"}}}}});
-  new Chart(document.getElementById("deptPie"),{type:"doughnut",data:{labels:depts,datasets:[{data:deptData,backgroundColor:colors}]},options:{plugins:{legend:{position:"bottom"}},cutout:"60%"}});
-  new Chart(document.getElementById("borrowedBar"),{type:"bar",data:{labels:["Intro to Algorithms","OS Concepts","Digital Design","Engg Mechanics","Data Structures"],datasets:[{data:[10,9,9,8,8],backgroundColor:"#1f3a5f",borderRadius:6}]},options:{indexAxis:"y",plugins:{legend:{display:false}},scales:{x:{beginAtZero:true,grid:{color:"#f1f5f9"}}}}});
-  new Chart(document.getElementById("overdueLine"),{type:"line",data:{labels:["Oct","Nov","Dec","Jan","Feb"],datasets:[{data:[2,5,3,4,overdue||3],borderColor:"#b30000",backgroundColor:"rgba(179,0,0,0.08)",tension:0.4,fill:true,pointBackgroundColor:"#b30000"}]},options:{plugins:{legend:{display:false}},scales:{y:{beginAtZero:true,grid:{color:"#f1f5f9"}}}}});
+  let overdue = 0, fines = 0;
+  all.forEach(b => {
+    if (new Date(b.dueDate) < today) {
+      overdue++;
+      const d = Math.ceil((today - new Date(b.dueDate)) / (1000*60*60*24));
+      fines += d * 5;
+    }
+  });
+  fineH.forEach(f => fines += (f.amount || 0));
+
+  document.getElementById("rTotalBooks").innerText   = books.length || 106;
+  document.getElementById("rActiveIssues").innerText = all.length;
+  document.getElementById("rOverdue").innerText      = overdue;
+  document.getElementById("rFines").innerText        = fines;
+
+  const depts    = ["CSE","ECE","Mech","Civil","General"];
+  const deptData = depts.map((d,i) => books.filter(b=>b.dept===d).length || [32,24,20,14,16][i]);
+  const colors   = ["#0f2d52","#1f3a5f","#64748b","#b30000","#94a3b8"];
+  const gridColor= "#f1f5f9";
+
+  new Chart(document.getElementById("deptBar"),{
+    type:"bar",
+    data:{labels:depts,datasets:[{data:deptData,backgroundColor:colors,borderRadius:6}]},
+    options:{plugins:{legend:{display:false}},scales:{y:{beginAtZero:true,grid:{color:gridColor}}}}
+  });
+
+  new Chart(document.getElementById("deptPie"),{
+    type:"doughnut",
+    data:{labels:depts,datasets:[{data:deptData,backgroundColor:colors}]},
+    options:{plugins:{legend:{position:"bottom"}},cutout:"60%"}
+  });
+
+  new Chart(document.getElementById("borrowedBar"),{
+    type:"bar",
+    data:{labels:["Intro to Algorithms","OS Concepts","Digital Design","Engg Mechanics","Data Structures"],
+          datasets:[{data:[10,9,9,8,8],backgroundColor:"#1f3a5f",borderRadius:6}]},
+    options:{indexAxis:"y",plugins:{legend:{display:false}},scales:{x:{beginAtZero:true,grid:{color:gridColor}}}}
+  });
+
+  new Chart(document.getElementById("overdueLine"),{
+    type:"line",
+    data:{labels:["Oct","Nov","Dec","Jan","Feb"],
+          datasets:[{data:[2,5,3,4,overdue||3],borderColor:"#b30000",
+            backgroundColor:"rgba(179,0,0,0.08)",tension:0.4,fill:true,pointBackgroundColor:"#b30000"}]},
+    options:{plugins:{legend:{display:false}},scales:{y:{beginAtZero:true,grid:{color:gridColor}}}}
+  });
 });
 </script>
 </body>

@@ -2,89 +2,136 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Librarian Dashboard | GRIET Library</title>
 <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
 <script src="js/auth.js"></script>
 <script>protectDashboard("librarian");</script>
+
 <div class="dashboard-layout">
-<aside class="sidebar">
-  <h3>📚 GRIET Library</h3>
-  <div style="padding:4px 8px;flex:1;">
-    <a class="active" href="librarian-dashboard.html">🏠 Dashboard</a>
-    <a href="book-management.html">📖 Book Management</a>
-    <a href="issue-return.html">🔄 Issue &amp; Return</a>
-    <a href="members.html">👥 Members</a>
-    <a href="reports.html">📊 Reports</a>
-    <a href="fine-management.html">💰 Fine Management</a>
-  </div>
-  <div style="padding:14px 8px;">
-    <a onclick="logout()" style="cursor:pointer;">🚪 Logout</a>
-  </div>
-</aside>
-<main class="main">
-  <div class="top-bar">
-    <div>
-      <h2>Librarian Dashboard</h2>
-      <p style="font-size:13px;color:var(--text-soft);margin-top:2px;" id="greetDate"></p>
+
+  <aside class="sidebar">
+    <div class="sidebar-brand">
+      <div class="brand-icon">📚</div>
+      <div><h3>GRIET Library</h3><small>Management Portal</small></div>
     </div>
-    <div class="user-chip">🛡️ Administrator</div>
-  </div>
-  <div class="cards">
-    <div class="card" style="border-left:4px solid var(--navy);">
-      <h4>Total Issued</h4><div class="value" id="totalIssued">0</div>
+    <span class="nav-label">Main</span>
+    <a href="librarian-dashboard.html" class="active"><span class="nav-icon">🏠</span> Dashboard</a>
+    <a href="book-management.html"><span class="nav-icon">📖</span> Book Management</a>
+    <a href="issue-return.html"><span class="nav-icon">🔄</span> Issue &amp; Return</a>
+    <a href="members.html"><span class="nav-icon">👥</span> Members</a>
+    <span class="nav-label">Reports</span>
+    <a href="reports.html"><span class="nav-icon">📊</span> Reports</a>
+    <a href="fine-management.html"><span class="nav-icon">💰</span> Fine Management</a>
+    <span class="nav-label">Account</span>
+    <a href="settings.html"><span class="nav-icon">⚙️</span> Settings</a>
+    <div class="sidebar-footer">
+      <a onclick="logout()"><span class="nav-icon">🚪</span> Logout</a>
     </div>
-    <div class="card" style="border-left:4px solid var(--green);">
-      <h4>Issued Today</h4><div class="value green" id="issuedToday">0</div>
+  </aside>
+
+  <main class="main">
+
+    <div class="top-bar">
+      <div>
+        <div class="page-title">Librarian Dashboard</div>
+        <div class="page-subtitle" id="greetDate"></div>
+      </div>
+      <div class="top-right">
+        <div class="user-chip">
+          <div class="avatar">🛡️</div>
+          <span id="adminChip">Administrator</span>
+        </div>
+      </div>
     </div>
-    <div class="card" style="border-left:4px solid var(--red);">
-      <h4>Overdue Books</h4><div class="value danger" id="overdueCount">0</div>
+
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-icon blue">📤</div>
+        <div class="stat-info"><h4>Total Issued</h4><div class="stat-value" id="totalIssued">0</div></div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon green">✅</div>
+        <div class="stat-info"><h4>Issued Today</h4><div class="stat-value green" id="issuedToday">0</div></div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon red">⚠️</div>
+        <div class="stat-info"><h4>Overdue Books</h4><div class="stat-value red" id="overdueCount">0</div></div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon amber">🔔</div>
+        <div class="stat-info"><h4>Pending Requests</h4><div class="stat-value amber" id="pendingReq">0</div></div>
+      </div>
     </div>
-    <div class="card" style="border-left:4px solid var(--amber);">
-      <h4>Pending Requests</h4><div class="value amber" id="pendingReq">0</div>
+
+    <div class="card">
+      <div class="card-header">
+        <h3>Overdue Members</h3>
+        <span class="badge badge-red" id="overdueLabel">0 found</span>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>User ID</th><th>Role</th><th>Book</th>
+              <th>Due Date</th><th>Days Late</th><th>Fine</th><th>Status</th>
+            </tr>
+          </thead>
+          <tbody id="overdueTable"></tbody>
+        </table>
+      </div>
     </div>
-  </div>
-  <div class="box">
-    <div class="card-header">
-      <h3>Overdue Members</h3>
-      <span class="badge badge-gray" id="overdueLabel">0 found</span>
-    </div>
-    <div class="table-wrap">
-      <table>
-        <thead><tr><th>User ID</th><th>Role</th><th>Book</th><th>Due Date</th><th>Days Late</th><th>Fine</th><th>Status</th></tr></thead>
-        <tbody id="overdueTable"></tbody>
-      </table>
-    </div>
-  </div>
-</main>
+
+  </main>
 </div>
+
 <script>
-document.addEventListener("DOMContentLoaded",function(){
-  const today=new Date();
-  const todayStr=today.toISOString().split("T")[0];
-  document.getElementById("greetDate").innerText=today.toLocaleDateString("en-IN",{weekday:"long",year:"numeric",month:"long",day:"numeric"});
-  const sB=JSON.parse(localStorage.getItem("studentBooks"))||[];
-  const fB=JSON.parse(localStorage.getItem("facultyBooks"))||[];
-  const req=JSON.parse(localStorage.getItem("bookRequests"))||[];
-  const all=[...sB.map(b=>({...b,userRole:"student"})),...fB.map(b=>({...b,userRole:"faculty"}))];
-  let todayIssued=0,over=0;
-  const tbl=document.getElementById("overdueTable");
-  all.forEach(b=>{
-    if(b.issueDate===todayStr) todayIssued++;
-    if(new Date(b.dueDate)<today){
-      over++;
-      const days=Math.ceil((today-new Date(b.dueDate))/(1000*60*60*24));
-      tbl.innerHTML+=`<tr><td style="font-weight:600">${b.userId}</td><td><span class="badge badge-gray">${b.userRole}</span></td><td>${b.title}</td><td>${b.dueDate}</td><td style="color:var(--red);font-weight:600">${days}d</td><td style="font-weight:600">₹${days*5}</td><td><span class="status-overdue">Overdue</span></td></tr>`;
+document.addEventListener("DOMContentLoaded", function () {
+  const today    = new Date(); today.setHours(0,0,0,0);
+  const todayStr = new Date().toISOString().split("T")[0];
+
+  document.getElementById("greetDate").innerText = new Date().toLocaleDateString("en-IN",{weekday:"long",year:"numeric",month:"long",day:"numeric"});
+  document.getElementById("adminChip").innerText = sessionStorage.getItem("userId") || "Administrator";
+
+  const sB  = JSON.parse(localStorage.getItem("studentBooks"))  || [];
+  const fB  = JSON.parse(localStorage.getItem("facultyBooks"))  || [];
+  const req = JSON.parse(localStorage.getItem("bookRequests"))  || [];
+  const all = [...sB.map(b=>({...b,userRole:"student"})), ...fB.map(b=>({...b,userRole:"faculty"}))];
+
+  let todayIssued = 0, overdueCount = 0;
+  const tbody = document.getElementById("overdueTable");
+  tbody.innerHTML = "";
+
+  all.forEach(b => {
+    if (b.issueDate === todayStr) todayIssued++;
+    const due = new Date(b.dueDate); due.setHours(0,0,0,0);
+    if (today > due) {
+      overdueCount++;
+      const days = Math.ceil((today - due) / (1000*60*60*24));
+      tbody.innerHTML += `
+        <tr>
+          <td><strong>${b.userId}</strong></td>
+          <td><span class="badge badge-${b.userRole==="student"?"blue":"purple"}">${b.userRole}</span></td>
+          <td>${b.title}</td>
+          <td>${b.dueDate}</td>
+          <td><span style="color:var(--red);font-weight:600;">${days}d</span></td>
+          <td><strong>₹${days*5}</strong></td>
+          <td><span class="badge badge-red">Overdue</span></td>
+        </tr>`;
     }
   });
-  if(!over) tbl.innerHTML=`<tr><td colspan="7" class="empty">🎉 No overdue books right now</td></tr>`;
-  document.getElementById("totalIssued").innerText=all.length;
-  document.getElementById("issuedToday").innerText=todayIssued;
-  document.getElementById("overdueCount").innerText=over;
-  document.getElementById("pendingReq").innerText=req.filter(r=>r.status==="pending").length;
-  document.getElementById("overdueLabel").innerText=over+" found";
+
+  if (overdueCount === 0) {
+    tbody.innerHTML = '<tr class="empty-row"><td colspan="7">🎉 No overdue books right now</td></tr>';
+  }
+
+  document.getElementById("totalIssued").innerText  = all.length;
+  document.getElementById("issuedToday").innerText  = todayIssued;
+  document.getElementById("overdueCount").innerText = overdueCount;
+  document.getElementById("pendingReq").innerText   = req.filter(r => r.status === "pending").length;
+  document.getElementById("overdueLabel").innerText = overdueCount + " found";
 });
 </script>
 </body>
