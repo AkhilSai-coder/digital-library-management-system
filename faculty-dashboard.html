@@ -311,7 +311,7 @@ overdueCount.innerText = overdue;
       /* FETCH REQUESTS               */
       /* ============================= */
 
-      const requestResponse = await fetch("http://localhost:8080/request/my", {
+      const requestResponse = await fetch("https://library-backend-production-a8a4.up.railway.app/request/my", {
           headers: {
               "Authorization": "Bearer " + token
           }
