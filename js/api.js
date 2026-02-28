@@ -1,4 +1,4 @@
-const API_BASE = "http://localhost:8080";
+const API_BASE = "https://library-backend-production-a8a4.up.railway.app";
 
 function getToken() {
     const token = localStorage.getItem("token");
@@ -14,7 +14,7 @@ async function apiFetch(url, options = {}) {
 
     const token = localStorage.getItem("token");
 
-    return fetch("http://localhost:8080" + url, {
+    return fetch("https://library-backend-production-a8a4.up.railway.app" + url, {
         ...options,
         headers: {
             "Content-Type": "application/json",

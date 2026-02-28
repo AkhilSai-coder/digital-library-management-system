@@ -254,7 +254,7 @@ document.addEventListener("DOMContentLoaded", async function(){
       /* FETCH BORROWED BOOKS         */
       /* ============================= */
 
-      const borrowResponse = await fetch("http://localhost:8080/borrow/my", {
+      const borrowResponse = await fetch("https://library-backend-production-a8a4.up.railway.app/borrow/my", {
           headers: {
               "Authorization": "Bearer " + token
           }

@@ -201,7 +201,7 @@ document.addEventListener("DOMContentLoaded", async function(){
         ========================= */
 
         const requestResponse = await fetch(
-            "http://localhost:8080/request/pending", {
+            "https://library-backend-production-a8a4.up.railway.app/request/pending", {
                 headers: {
                     "Authorization": "Bearer " + token
                 }
@@ -241,7 +241,7 @@ document.addEventListener("DOMContentLoaded", async function(){
         ========================= */
 
         const issuedResponse = await fetch(
-            "http://localhost:8080/borrow/all", {
+            "https://library-backend-production-a8a4.up.railway.app/borrow/all", {
                 headers: {
                     "Authorization": "Bearer " + token
                 }
@@ -293,7 +293,7 @@ async function approveRequest(id){
     const token = localStorage.getItem("token");
 
     const response = await fetch(
-        `http://localhost:8080/request/approve/${id}`, {
+        `https://library-backend-production-a8a4.up.railway.app/request/approve/${id}`, {
             method: "POST",
             headers: {
                 "Authorization": "Bearer " + token
@@ -317,7 +317,7 @@ async function returnBook(id) {
 
     const token = localStorage.getItem("token");
 
-    await fetch(`http://localhost:8080/borrow/return/${id}`, {
+    await fetch(`https://library-backend-production-a8a4.up.railway.app/borrow/return/${id}`, {
         method: "POST",
         headers: {
             "Authorization": "Bearer " + token

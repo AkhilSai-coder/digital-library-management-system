@@ -235,7 +235,7 @@ async function loadMyBooks() {
 
     const token = localStorage.getItem("token");
 
-    const response = await fetch("http://localhost:8080/borrow/my", {
+    const response = await fetch("https://library-backend-production-a8a4.up.railway.app/borrow/my", {
         headers: {
             "Authorization": "Bearer " + token
         }

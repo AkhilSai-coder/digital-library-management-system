@@ -319,7 +319,7 @@ async function loadDashboard(){
         /* ============================= */
 
         const borrowResponse = await fetch(
-            "http://localhost:8080/borrow/all",
+            "https://library-backend-production-a8a4.up.railway.app/borrow/all",
             {
                 headers: {
                     "Authorization": "Bearer " + token
@@ -382,7 +382,7 @@ async function loadDashboard(){
         /* ============================= */
 
         const requestResponse = await fetch(
-            "http://localhost:8080/request/pending",
+            "https://library-backend-production-a8a4.up.railway.app/request/pending",
             {
                 headers: {
                     "Authorization": "Bearer " + token

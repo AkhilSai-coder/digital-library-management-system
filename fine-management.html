@@ -264,7 +264,7 @@ async function loadFines(){
 
   const token = localStorage.getItem("token");
 
-  const response = await fetch("http://localhost:8080/borrow/all", {
+  const response = await fetch("https://library-backend-production-a8a4.up.railway.app/borrow/all", {
     headers: {
       "Authorization": "Bearer " + token
     }
@@ -337,7 +337,7 @@ async function clearFine(borrowId){
   const token = localStorage.getItem("token");
 
   await fetch(
-    `http://localhost:8080/fine/clear/${borrowId}`,
+    `https://library-backend-production-a8a4.up.railway.app/fine/clear/${borrowId}`,
     {
       method: "POST",
       headers: {

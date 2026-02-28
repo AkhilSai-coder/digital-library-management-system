@@ -195,7 +195,7 @@ async function loadMembers() {
 
     const token = localStorage.getItem("token");
 
-const response = await fetch("http://localhost:8080/members", {
+const response = await fetch("https://library-backend-production-a8a4.up.railway.app/members", {
     headers: {
         "Authorization": "Bearer " + token
     }
