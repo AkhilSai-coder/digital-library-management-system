@@ -7,150 +7,140 @@
 <link rel="stylesheet" href="css/style.css">
 
 <style>
-body{
-  margin:0;
-  background:#f6f8fb;
-  font-family: Arial, sans-serif;
-  color:#111827;
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+:root{
+  --primary:#1f3a5f;
+  --bg:#f3f6fa;
+  --card:#ffffff;
+  --border:#e4e8ee;
+  --muted:#6b7280;
+  --button:#243b5a;
 }
 
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+}
+
+body{
+  font-family:'Inter',sans-serif;
+  background:linear-gradient(135deg,#f5f7fb,#eef2f7);
+  color:#1f2937;
+}
+
+/* Container */
 .container{
-  padding:30px;
   max-width:1200px;
   margin:auto;
+  padding:60px 20px;
 }
 
 h1{
-  font-size:28px;
-  color:#1f3a5f;
-  margin-bottom:20px;
+  font-size:32px;
+  font-weight:700;
+  color:var(--primary);
+  margin-bottom:30px;
 }
 
-/* FILTER BAR */
+/* Filters */
 .filters{
   display:flex;
-  gap:15px;
-  margin-bottom:15px;
+  gap:18px;
+  margin-bottom:40px;
+  flex-wrap:wrap;
 }
 
 .search{
   flex:1;
-  padding:12px 16px;
-  border-radius:10px;
-  border:1px solid #e5e7eb;
+  padding:14px 18px;
+  border-radius:12px;
+  border:1px solid var(--border);
   font-size:14px;
+  background:#fff;
+  transition:0.2s;
+}
+
+.search:focus{
+  outline:none;
+  border-color:var(--primary);
 }
 
 select{
-  padding:12px 16px;
-  border-radius:10px;
-  border:1px solid #e5e7eb;
+  padding:14px 18px;
+  border-radius:12px;
+  border:1px solid var(--border);
   font-size:14px;
   background:#fff;
+  cursor:pointer;
 }
 
-.count{
-  font-size:14px;
-  color:#64748b;
-  margin-bottom:20px;
-}
-
-/* GRID */
+/* Grid */
 .grid{
   display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(320px,1fr));
-  gap:20px;
+  grid-template-columns:repeat(auto-fit,minmax(300px,1fr));
+  gap:30px;
 }
 
-/* CARD */
+/* Card */
 .card{
-  background:#fff;
-  border:1px solid #e5e7eb;
-  border-radius:14px;
-  padding:18px;
-  position:relative;
+  background:var(--card);
+  border-radius:16px;
+  padding:28px;
+  border:1px solid var(--border);
+  transition:0.25s ease;
+  box-shadow:0 10px 25px rgba(0,0,0,0.04);
+}
+
+.card:hover{
+  transform:translateY(-6px);
+  box-shadow:0 20px 45px rgba(0,0,0,0.08);
+}
+
+.card-icon{
+  font-size:22px;
+  margin-bottom:12px;
 }
 
 .card h3{
   font-size:18px;
+  font-weight:600;
   margin-bottom:6px;
 }
 
 .author{
-  color:#475569;
-  margin-bottom:10px;
   font-size:14px;
+  color:var(--muted);
+  margin-bottom:18px;
 }
 
-.meta{
-  font-size:13px;
-  color:#64748b;
-}
-
-.badge{
-  position:absolute;
-  top:15px;
-  right:15px;
-  padding:4px 12px;
-  border-radius:20px;
-  font-size:12px;
-  background:#f1f5f9;
-}
-
-.unavailable{
-  background:#ef4444;
-  color:#fff;
-}
-
-/* REQUEST BUTTON */
+/* Button */
 .request-btn{
-  margin-top:12px;
-  padding:8px 14px;
-  border:none;
+  padding:10px 18px;
   border-radius:8px;
-  background:#1f3a5f;
+  border:none;
+  font-size:14px;
+  font-weight:500;
+  background:var(--button);
   color:#fff;
   cursor:pointer;
-  font-size:13px;
-}
-
-.request-btn:disabled{
-  background:#ccc;
-  cursor:not-allowed;
+  transition:0.2s ease;
 }
 
 .request-btn:hover{
-  opacity:0.9;
+  background:#1c2f4a;
+  transform:translateY(-2px);
 }
 
-/* ================= RESPONSIVE ================= */
-
-@media (max-width: 992px){
-
-  .container{
-    padding:20px;
-  }
-
-  .filters{
-    flex-wrap: wrap;
-  }
-
-  select{
-    flex:1;
-  }
-
+.request-btn:active{
+  transform:scale(0.97);
 }
 
-/* ================= MOBILE ================= */
-
-@media (max-width: 768px){
-
-  h1{
-    font-size:22px;
-  }
-
+/* Responsive */
+@media(max-width:768px){
   .filters{
-    flex-direction: column;
+    flex-direction:column;
   }
 
   .search,
@@ -158,14 +148,25 @@ select{
     width:100%;
   }
 
-  .grid{
-    grid-template-columns: 1fr;
+  .container{
+    padding:40px 15px;
   }
+}
 
-  .card{
-    padding:15px;
-  }
+.back-btn{
+  margin-bottom:20px;
+  padding:10px 16px;
+  border:none;
+  border-radius:8px;
+  background:#243b5a;
+  color:#fff;
+  font-size:14px;
+  cursor:pointer;
+  transition:0.2s ease;
+}
 
+.back-btn:hover{
+  background:#1c2f4a;
 }
 </style>
 </head>
@@ -175,6 +176,8 @@ select{
 <script src="js/auth.js"></script>
 
 <div class="container">
+
+  <button class="back-btn" onclick="goBack()">← Back to Dashboard</button>
 
 <h1>Book Catalog</h1>
 
@@ -201,38 +204,121 @@ select{
 <div id="bookGrid" class="grid"></div>
 
 <script>
-document.addEventListener("DOMContentLoaded", loadBooks);
+
+let allBooks = []; // Store all books globally
+
+document.addEventListener("DOMContentLoaded", () => {
+    loadBooks();
+
+    // Search listener
+    document.getElementById("searchInput")
+        .addEventListener("keyup", applyFilters);
+
+    // Department filter
+    document.getElementById("deptFilter")
+        .addEventListener("change", applyFilters);
+
+    // Category filter
+    document.getElementById("catFilter")
+        .addEventListener("change", applyFilters);
+});
+
+
+/* ================= LOAD BOOKS ================= */
 
 async function loadBooks() {
 
     const token = localStorage.getItem("token");
+
     const response = await fetch(
-  "https://library-backend-production-a8a4.up.railway.app/books",
-  {
-    headers: {
-      "Authorization": "Bearer " + token
+        "https://library-backend-production-a8a4.up.railway.app/books",
+        {
+            headers: {
+                "Authorization": "Bearer " + token
+            }
+        }
+    );
+
+    if(!response.ok){
+        alert("Failed to load books");
+        return;
     }
-  }
-);
 
     const books = await response.json();
+    allBooks = books; // Save globally
+    renderBooks(books);
+}
+
+
+/* ================= RENDER BOOKS ================= */
+
+function renderBooks(books){
+
     const grid = document.getElementById("bookGrid");
     grid.innerHTML = "";
+
+    if(books.length === 0){
+        grid.innerHTML = "<p>No books found.</p>";
+        return;
+    }
 
     books.forEach(book => {
 
         grid.innerHTML += `
-            <div class="card">
-                <h3>${book.title}</h3>
-                <p>${book.author}</p>
-
-                <button onclick="requestBook(${book.id})">
-                    Request
-                </button>
-            </div>
+        <div class="card">
+            <div class="card-icon">📘</div>
+            <h3>${book.title}</h3>
+            <div class="author">${book.author}</div>
+            <button class="request-btn"
+                onclick="requestBook(${book.id})">
+                Request
+            </button>
+        </div>
         `;
     });
 }
+
+
+/* ================= SEARCH + FILTER LOGIC ================= */
+
+function applyFilters(){
+
+    const searchValue = document
+        .getElementById("searchInput")
+        .value
+        .toLowerCase();
+
+    const selectedDept = document
+        .getElementById("deptFilter")
+        .value;
+
+    const selectedCategory = document
+        .getElementById("catFilter")
+        .value;
+
+    const filtered = allBooks.filter(book => {
+
+        const matchesSearch =
+            book.title.toLowerCase().includes(searchValue) ||
+            book.author.toLowerCase().includes(searchValue) ||
+            book.id.toString().includes(searchValue);
+
+        const matchesDept =
+            selectedDept === "all" ||
+            (book.dept && book.dept === selectedDept);
+
+        const matchesCategory =
+            selectedCategory === "all" ||
+            (book.category && book.category === selectedCategory);
+
+        return matchesSearch && matchesDept && matchesCategory;
+    });
+
+    renderBooks(filtered);
+}
+
+
+/* ================= REQUEST BOOK ================= */
 
 async function requestBook(bookId) {
 
@@ -254,6 +340,25 @@ async function requestBook(bookId) {
         alert("Request failed");
     }
 }
+
+
+/* ================= BACK BUTTON ================= */
+
+function goBack(){
+
+    const role = localStorage.getItem("role");
+
+    if(role === "STUDENT"){
+        window.location.href = "student-dashboard.html";
+    }
+    else if(role === "FACULTY"){
+        window.location.href = "faculty-dashboard.html";
+    }
+    else{
+        window.location.href = "login.html";
+    }
+}
+
 </script>
 
 </body>
