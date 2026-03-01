@@ -409,72 +409,7 @@ function logout(){
     window.location.href = "login.html";
 }
 
-/* ============================= */
-/* FETCH RECOMMENDATIONS        */
-/* ============================= */
 
-const recGrid = document.getElementById("recommendationGrid");
-
-try {
-
-    const recResponse = await fetch(
-        "https://library-backend-production-a8a4.up.railway.app/recommendations",
-        {
-            headers: {
-                "Authorization": "Bearer " + token
-            }
-        }
-    );
-
-    if(recResponse.ok){
-
-        const recommendations = await recResponse.json();
-        recGrid.innerHTML = "";
-
-        if(recommendations.length === 0){
-            recGrid.innerHTML = "<p>No recommendations yet.</p>";
-        }
-
-        recommendations.forEach(book => {
-
-            recGrid.innerHTML += `
-                <div class="recommend-card">
-                    <h4>${book.title}</h4>
-                    <p>${book.author}</p>
-                    <button class="recommend-btn"
-                        onclick="requestBook(${book.id})">
-                        Request Book
-                    </button>
-                </div>
-            `;
-        });
-
-    }
-
-} catch(error){
-    console.error("Recommendation error:", error);
-}
-
-async function requestBook(bookId) {
-
-    const token = localStorage.getItem("token");
-
-    const response = await fetch(
-        `https://library-backend-production-a8a4.up.railway.app/request/${bookId}`,
-        {
-            method: "POST",
-            headers: {
-                "Authorization": "Bearer " + token
-            }
-        }
-    );
-
-    if(response.ok){
-        alert("Request Sent Successfully!");
-    } else {
-        alert("Request Failed");
-    }
-}
 </script>
 
 </body>
