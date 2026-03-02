@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>About GRIET</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+
+body{
+    margin:0;
+    font-family:'Poppins', sans-serif;
+    background:#f2f4f8;
+    color:#2c2c2c;
+    line-height:1.8;
+}
+
+/* ===== HEADER ===== */
+
+.top-header{
+    background:#ffffff;
+    padding:15px 8%;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+}
+
+.logo-section{
+    display:flex;
+    align-items:center;
+    gap:18px;
+}
+
+.logo-section img{
+    height:65px;
+}
+
+.logo-text{
+    font-size:26px;
+    font-weight:700;
+    color:#8b0000;
+    letter-spacing:1px;
+}
+
+.logo-sub{
+    font-size:14px;
+    color:#555;
+}
+
+/* ===== NAVBAR ===== */
+
+.navbar{
+    background:#7a0f1b;
+    padding:12px 8%;
+    color:#fff;
+    font-size:15px;
+}
+
+.navbar span{
+    margin-right:25px;
+    cursor:pointer;
+}
+
+.navbar span:hover{
+    opacity:0.8;
+}
+
+/* ===== HERO SECTION ===== */
+
+.hero{
+    position:relative;
+    height:420px;
+    background:url('image/new griet.jpg') center/cover no-repeat;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+}
+
+.hero::after{
+    content:'';
+    position:absolute;
+    inset:0;
+    background:linear-gradient(to right, rgba(0,0,0,0.6), rgba(122,15,27,0.6));
+}
+
+.hero h1{
+    position:relative;
+    color:white;
+    font-size:48px;
+    font-weight:700;
+    letter-spacing:2px;
+}
+
+/* ===== CONTENT SECTION ===== */
+
+.about-wrapper{
+    padding:80px 0;
+}
+
+.about-container{
+    max-width:1100px;
+    margin:auto;
+    background:#ffffff;
+    padding:70px;
+    border-radius:10px;
+    box-shadow:0 15px 40px rgba(0,0,0,0.06);
+}
+
+/* HEADINGS */
+
+.about-container h2{
+    font-size:30px;
+    margin-top:45px;
+    margin-bottom:20px;
+    color:#7a0f1b;
+    font-weight:600;
+    position:relative;
+}
+
+.about-container h2::after{
+    content:'';
+    width:60px;
+    height:3px;
+    background:#0f2d52;
+    position:absolute;
+    left:0;
+    bottom:-8px;
+}
+
+.about-container h3{
+    font-size:21px;
+    margin-top:25px;
+    margin-bottom:12px;
+    font-weight:600;
+    color:#0f2d52;
+}
+
+.about-container p{
+    margin-bottom:20px;
+    text-align:justify;
+    font-size:15.5px;
+}
+
+.highlight{
+    font-weight:600;
+    color:#0f2d52;
+}
+
+.quote{
+    font-style:italic;
+    font-weight:500;
+    color:#444;
+}
+
+/* ===== FOOTER STYLE ===== */
+
+.footer{
+    background:#111827;
+    color:#ccc;
+    padding:25px 8%;
+    text-align:center;
+    font-size:14px;
+}
+
+/* ===== MOBILE ===== */
+
+@media(max-width:768px){
+
+    .top-header{
+        flex-direction:column;
+        text-align:center;
+        gap:10px;
+    }
+
+    .navbar{
+        text-align:center;
+    }
+
+    .hero{
+        height:260px;
+    }
+
+    .hero h1{
+        font-size:28px;
+        text-align:center;
+    }
+
+    .about-container{
+        padding:35px 20px;
+        margin:0 15px;
+    }
+
+    .about-container h2{
+        font-size:22px;
+    }
+
+    .about-container h3{
+        font-size:18px;
+    }
+}
+
+</style>
+</head>
+
+<body>
+
+<!-- HEADER -->
+<div class="top-header">
+    <div class="logo-section">
+        <img src="griet_logo.webp" alt="GRIET Logo">
+        <div>
+            <div class="logo-text">GOKARAJU RANGARAJU</div>
+            <div class="logo-sub">Institute of Engineering and Technology</div>
+        </div>
+    </div>
+</div>
+
+
+
+<!-- HERO -->
+<div class="hero">
+    <h1>About GRIET</h1>
+</div>
+
+<!-- CONTENT -->
+<div class="about-wrapper">
+<div class="about-container">
+
+    <h2>About Inspirer and Promoters</h2>
+
+    <h3>The Inspirer</h3>
+    <p>
+        Late Shri Gokaraju Rangaraju garu is the inspiration for establishment of 
+        Gokaraju Rangaraju Educational Society. He served as Member of Legislative Assembly 
+        from Undi Constituency in United Andhra Pradesh. He served as the Chairman of Board 
+        of Trustees of Tirumala Tirupathi Devasthanam twice. A crusader of education, he also 
+        served as Chairman of Governing Bodies of DNR College and SRKR Engineering College 
+        of West Godavari Districts, Andhra Pradesh.
+    </p>
+
+    <h3>The Promoters</h3>
+    <p>
+        <span class="highlight">Dr Gokaraju Ganga Raju</span> is an Indian politician and Member of Parliament 
+        to the 16th Lok Sabha from Narsapuram, Andhra Pradesh in 2014. He is also the founder 
+        of Laila Group of Companies. He served as Secretary of Andhra Cricket Association 
+        (2001–2019) and Vice-President, South Zone, BCCI (2015–2019).
+    </p>
+
+    <h2>The Sponsoring Society</h2>
+
+    <p>
+        Dr Gokaraju Gangaraju garu started 
+        <span class="highlight">Gokaraju Educational Society</span> in fond memory of his father 
+        Late Shri Gokaraju Rangaraju garu with a motto to 
+        <span class="quote">
+        “Promote modern and scientific education and to help develop the character of the younger generation of all castes, communities and religions”.
+        </span>
+    </p>
+
+    <h2>About GRIET</h2>
+
+    <p>
+        Gokaraju Rangaraju Institute of Engineering and Technology (GRIET), established in 1997 
+        under the patronage of the Gokaraju Rangaraju Educational Society, is an AICTE approved 
+        and permanently affiliated college with UGC Autonomous status under JNTUH, Hyderabad.
+        Following its mission to achieve and impart quality education with emphasis on practical 
+        skills and social relevance, GRIET has created a conducive teaching learning environment 
+        supported by qualified faculty, modern infrastructure and strong academic support systems.
+    </p>
+
+    <p>
+        GRIET is accredited by 
+        <span class="highlight">NAAC with A++ Grade (CGPA: 3.55)</span>. 
+        Six UG programs and four PG programs are accredited by 
+        <span class="highlight">National Board of Accreditation (NBA)</span>. 
+        The institution is ISO 9001:2015 certified, GRMTL is accredited by NABL, 
+        and GRES is recognized as SIRO by DSIR, Government of India.
+    </p>
+
+    <p>
+        The institute is ranked in the 
+        <span class="highlight">National Institutional Ranking Framework (NIRF)</span> 
+        within the 101–150 rank band (2024 & 2023) and has consistently maintained 
+        strong national positions over the years.
+    </p>
+
+    <p>
+        Spread across 24 acres of lush green campus, the institution focuses on preparing 
+        engineering graduates with the right attitude, skill and knowledge aligned with 
+        industry and societal needs.
+    </p>
+
+    <p>
+        The institute provides state-of-the-art classrooms, laboratories, high-end computer 
+        centres, language labs, training and placement cell, NSS, gym, medical centre, 
+        solar rooftop systems, RO plant, STP and Divyangjan-friendly infrastructure.
+    </p>
+
+    <p>
+        The GRIET Library and Information Centre houses over 17,195 titles and 1,30,740 volumes, 
+        along with 150 print journals, 6500+ e-books and 21500+ e-journals. The library is 
+        fully automated using KOHA software with cloud-based OPAC.
+    </p>
+
+    <p>
+        GRIET has established advanced research facilities including AICTE IDEA Lab, 
+        Incubation Centre under MSME, High Performance Computing, Artificial Intelligence 
+        and Machine Learning Centres, and DST-FIST sponsored SEM facility worth ₹1.2 Crores.
+    </p>
+
+    <p>
+        The institute holds MoUs with premier institutions and industries including 
+        IIT Hyderabad, NIT Warangal, Curtin University (Malaysia) and Infosys Spring Board.
+    </p>
+
+    <h2>Vision & Mission</h2>
+
+    <p>
+        <span class="highlight">Vision:</span> 
+        To be among the best institutions for engineers and technologists with attitudes, 
+        skills and knowledge and to become an epicentre of creative solutions.
+    </p>
+
+    <p>
+        <span class="highlight">Mission:</span> 
+        To achieve and impart quality education with emphasis on practical skills and social relevance.
+    </p>
+
+    <p>
+        The institute is guided by core values of Excellence, Integrity, Innovation, 
+        Entrepreneurship, Leadership, Sustainability and Service to the Nation.
+    </p>
+
+</div>
+</div>
+
+<!-- FOOTER -->
+<div class="footer">
+© 2026 Gokaraju Rangaraju Institute of Engineering and Technology | All Rights Reserved
+</div>
+
+</body>
+</html>

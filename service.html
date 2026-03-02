@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Services | GRIET</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+
+body{
+    margin:0;
+    font-family:'Poppins', sans-serif;
+    background:#f4f6f9;
+}
+
+/* ===== HEADER (Same as About) ===== */
+
+.top-header{
+    background:#ffffff;
+    padding:15px 8%;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    border-bottom:1px solid #e5e7eb;
+}
+
+.logo-section{
+    display:flex;
+    align-items:center;
+    gap:18px;
+}
+
+.logo-section img{
+    height:65px;
+}
+
+.logo-text{
+    font-size:26px;
+    font-weight:700;
+    color:#8b0000;
+    letter-spacing:1px;
+}
+
+.logo-sub{
+    font-size:14px;
+    color:#555;
+}
+
+/* ===== NAVBAR ===== */
+
+.navbar{
+    background:#7a0f1b;
+    padding:12px 8%;
+    color:#fff;
+    font-size:15px;
+}
+
+.navbar span{
+    margin-right:25px;
+    cursor:pointer;
+}
+
+.navbar span:hover{
+    opacity:0.8;
+}
+
+/* ===== HERO ===== */
+
+.hero{
+    height:320px;
+    background:linear-gradient(rgba(0,0,0,0.6), rgba(122,15,27,0.6)),
+    url('image/new griet.jpg') center/cover;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    color:white;
+}
+
+.hero h1{
+    font-size:42px;
+    letter-spacing:2px;
+}
+
+/* ===== SERVICES SECTION ===== */
+
+.services-section{
+    padding:80px 8%;
+}
+
+.section-title{
+    text-align:center;
+    font-size:30px;
+    color:#7a0f1b;
+    margin-bottom:50px;
+}
+
+/* GRID */
+
+.services-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+    gap:30px;
+}
+
+.service-card{
+    background:white;
+    padding:30px;
+    border-radius:10px;
+    box-shadow:0 10px 25px rgba(0,0,0,0.06);
+    transition:0.3s;
+}
+
+.service-card:hover{
+    transform:translateY(-8px);
+    box-shadow:0 15px 35px rgba(0,0,0,0.12);
+}
+
+.service-card h3{
+    color:#0f2d52;
+    margin-bottom:15px;
+}
+
+.service-card p{
+    font-size:14px;
+    color:#555;
+    line-height:1.7;
+}
+
+/* ===== FOOTER ===== */
+
+.footer{
+    background:#111827;
+    color:#ccc;
+    padding:25px 8%;
+    text-align:center;
+    font-size:14px;
+}
+
+/* ===== MOBILE ===== */
+
+@media(max-width:768px){
+
+    .top-header{
+        flex-direction:column;
+        text-align:center;
+        gap:10px;
+    }
+
+    .hero{
+        height:220px;
+    }
+
+    .hero h1{
+        font-size:26px;
+        text-align:center;
+    }
+
+}
+
+</style>
+</head>
+
+<body>
+
+<!-- HEADER -->
+<div class="top-header">
+    <div class="logo-section">
+        <img src="griet_logo.webp" alt="GRIET Logo">
+        <div>
+            <div class="logo-text">GOKARAJU RANGARAJU</div>
+            <div class="logo-sub">Institute of Engineering and Technology</div>
+        </div>
+    </div>
+</div>
+
+<!-- HERO -->
+<div class="hero">
+    <h1>Our Services</h1>
+</div>
+
+<!-- SERVICES -->
+<div class="services-section">
+
+    <h2 class="section-title">Comprehensive Institutional Services</h2>
+
+    <div class="services-grid">
+
+        <div class="service-card">
+            <h3>Library Services</h3>
+            <p>Fully automated library with KOHA software, 1,30,000+ volumes, 6500+ e-books and 21500+ e-journals.</p>
+        </div>
+
+        <div class="service-card">
+            <h3>Training & Placement</h3>
+            <p>Dedicated placement cell with industry collaborations, internships and career development programs.</p>
+        </div>
+
+        <div class="service-card">
+            <h3>Research & Innovation</h3>
+            <p>AICTE IDEA Lab, Incubation Centre, High Performance Computing and advanced research facilities.</p>
+        </div>
+
+        <div class="service-card">
+            <h3>Medical & Wellness</h3>
+            <p>On-campus medical centre with full-time doctor and health support services.</p>
+        </div>
+
+        <div class="service-card">
+            <h3>Sports & Recreation</h3>
+            <p>Indoor & outdoor sports facilities, gymnasium and student activity centres.</p>
+        </div>
+
+        <div class="service-card">
+            <h3>Transport Facility</h3>
+            <p>Well-connected transport system ensuring safe and convenient commuting.</p>
+        </div>
+
+    </div>
+
+</div>
+
+<!-- FOOTER -->
+<div class="footer">
+© 2026 GRIET | All Rights Reserved
+</div>
+
+</body>
+</html>
