@@ -91,10 +91,10 @@
 }
 
 .card{
-    background:#fff;
+    background:linear-gradient(145deg,#ffffff,#f8fafc);
     padding:25px;
     border-radius:15px;
-    box-shadow:0 10px 30px rgba(0,0,0,0.06);
+    box-shadow:0 8px 25px rgba(0,0,0,0.06);
     transition:0.3s;
     border-left:5px solid #0f2d52;
 }
@@ -197,27 +197,68 @@ tr:hover{
 
 /* ================= MOBILE ================= */
 
-@media (max-width: 768px){
+@media (max-width:768px){
+
+  .dashboard-layout{
+    flex-direction:column;
+  }
+
+  /* Sidebar → horizontal top nav */
+  .sidebar{
+    width:100%;
+    display:flex;
+    overflow-x:auto;
+    padding:15px;
+    align-items:center;
+  }
+
+  .sidebar h3{
+    display:none;
+  }
+
+  .sidebar a{
+    white-space:nowrap;
+    margin-right:10px;
+    font-size:13px;
+    padding:8px 12px;
+  }
+
+  .main{
+    padding:15px;
+  }
+
+  .top-bar{
+    flex-direction:column;
+    align-items:flex-start;
+    gap:8px;
+  }
 
   .cards{
-    grid-template-columns: 1fr;   /* stack cards */
+    grid-template-columns:1fr;
+    gap:15px;
+  }
+
+  .card{
+    padding:18px;
+    border-left:3px solid #0f2d52; /* thinner border */
   }
 
   .card .value{
-    font-size: 24px;
-  }
-
-  .box{
-    padding: 15px;
+    font-size:24px;
   }
 
   table{
-    display: block;
-    overflow-x: auto;   /* horizontal scroll on mobile */
+    display:block;
+    overflow-x:auto;
+    white-space:nowrap;
+  }
+
+  th, td{
+    font-size:12px;
+    padding:8px;
   }
 
 }
-
 </style>
 </head>
 
@@ -370,8 +411,13 @@ async function loadDashboard(){
 
         if(overdueCount === 0){
             overdueTable.innerHTML =
-                "<tr><td colspan='4'>No overdue books</td></tr>";
+                "<tr><td colspan='4' style='text-align:center;color:#64748b;padding:20px;'>🎉 No overdue books</td></tr>";
         }
+
+        if(overdueCount > 0){
+    overdueEl.parentElement.style.borderLeft = "5px solid #b30000";
+    overdueEl.style.color = "#b30000";
+}
 
         totalIssuedEl.innerText = totalIssued;
         issuedTodayEl.innerText = issuedToday;
