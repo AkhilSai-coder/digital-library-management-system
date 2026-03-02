@@ -8,6 +8,28 @@
 
 <style>
 
+.status{
+  padding:4px 10px;
+  border-radius:20px;
+  font-size:12px;
+  font-weight:500;
+  text-transform:capitalize;
+}
+
+.status.pending{
+  background:#fff3cd;
+  color:#856404;
+}
+
+.status.approved{
+  background:#d4edda;
+  color:#155724;
+}
+
+.status.rejected{
+  background:#f8d7da;
+  color:#721c24;
+}
 
 /* Layout */
 .dashboard-layout{
@@ -155,32 +177,79 @@ th{
 }
 
 /* ================= MOBILE ================= */
+@media (max-width:768px){
 
-@media (max-width: 768px){
+  .dashboard-layout{
+    flex-direction:column;
+  }
 
-  .form-row{
-    flex-direction: column;
-    gap: 10px;
+  /* Sidebar → horizontal scroll top nav */
+  .sidebar{
+    width:100%;
+    display:flex;
+    align-items:center;
+    overflow-x:auto;
+    padding:12px;
+  }
+
+  .sidebar h3{
+    display:none;
+  }
+
+  .sidebar a{
+    white-space:nowrap;
+    margin-right:8px;
+    font-size:12px;
+    padding:8px 10px;
+  }
+
+  .main{
+    padding:15px;
   }
 
   h2{
-    font-size: 20px;
+    font-size:20px;
+    margin-bottom:15px;
   }
 
-  table{
-    font-size: 12px;
+  .card{
+    padding:15px;
   }
 
-  th, td{
-    padding: 8px;
+  /* Form adjustments */
+  .form-row{
+    flex-direction:column;
+    gap:10px;
+  }
+
+  input, textarea{
+    font-size:13px;
+    padding:10px;
+  }
+
+  textarea{
+    height:90px;
   }
 
   button{
-    width: 100%;
+    width:100%;
+    padding:10px;
+    font-size:13px;
+  }
+
+  /* Table scroll */
+  table{
+    display:block;
+    overflow-x:auto;
+    white-space:nowrap;
+  }
+
+  th, td{
+    font-size:12px;
+    padding:8px;
   }
 
 }
-
 </style>
 </head>
 

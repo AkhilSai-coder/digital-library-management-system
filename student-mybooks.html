@@ -119,10 +119,12 @@ th{
 }
 
 .status-returned{
-  background:#2df1b9;
+  background:#d1fae5;
+  color:#065f46;
   padding:4px 12px;
   border-radius:20px;
   font-size:12px;
+  font-weight:500;
 }
 
 /* ================= TABLET ================= */
@@ -139,22 +141,29 @@ th{
 
 /* ================= MOBILE ================= */
 
-@media (max-width: 768px){
+@media (max-width:768px){
 
   .dashboard-layout{
-    flex-direction: column;
+    flex-direction:column;
   }
 
   .sidebar{
     width:100%;
     display:flex;
+    align-items:center;
     overflow-x:auto;
-    padding:15px;
+    padding:12px;
+  }
+
+  .sidebar h3{
+    display:none;
   }
 
   .sidebar a{
-    margin-right:10px;
     white-space:nowrap;
+    margin-right:8px;
+    font-size:12px;
+    padding:8px 10px;
   }
 
   .main{
@@ -166,7 +175,6 @@ th{
   }
 
   .tabs{
-    flex-wrap:wrap;
     width:100%;
   }
 
@@ -176,11 +184,16 @@ th{
     font-size:13px;
   }
 
-  th, td{
-    font-size:13px;
-    padding:10px;
+  table{
+    display:block;
+    overflow-x:auto;
+    white-space:nowrap;
   }
 
+  th, td{
+    font-size:12px;
+    padding:8px;
+  }
 }
 </style>
 </head>

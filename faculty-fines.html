@@ -129,27 +129,65 @@ th{
 }
 
 /* ================= MOBILE ================= */
+@media (max-width:768px){
 
-@media (max-width: 768px){
+  .dashboard-layout{
+    flex-direction:column;
+  }
+
+  /* Sidebar → horizontal top menu */
+  .sidebar{
+    width:100%;
+    display:flex;
+    align-items:center;
+    overflow-x:auto;
+    padding:12px;
+  }
+
+  .sidebar h3{
+    display:none;
+  }
+
+  .sidebar a{
+    white-space:nowrap;
+    margin-right:8px;
+    font-size:12px;
+    padding:8px 10px;
+  }
+
+  .main{
+    padding:15px;
+  }
 
   h2{
-    font-size: 20px;
+    font-size:20px;
   }
 
   .amount{
-    font-size: 30px;
+    font-size:28px;
   }
 
   table{
-    font-size: 12px;
+    display:block;
+    overflow-x:auto;
+    white-space:nowrap;
   }
 
   th, td{
-    padding: 8px;
+    font-size:12px;
+    padding:8px;
   }
 
 }
 
+.status-pending{
+  background:#ef4444;
+  color:#fff;
+  padding:4px 10px;
+  border-radius:20px;
+  font-size:12px;
+  font-weight:600;
+}
 </style>
 </head>
 
@@ -227,7 +265,7 @@ async function loadFines(){
               <td>Overdue - ${overdueDays} day(s)</td>
               <td>₹${fine}</td>
               <td>${b.dueDate}</td>
-              <td style="color:#ef4444;font-weight:600;">Pending</td>
+              <td><span class="status-pending">Pending</span></td>
             </tr>
           `;
         }
