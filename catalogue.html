@@ -331,36 +331,8 @@ document.addEventListener("DOMContentLoaded", function(){
   // These appear if the librarian hasn't added any books yet.
   // Once librarian adds books via book-management.html,
   // those override/merge with these defaults.
-  const defaultBooks = [
-    { title:"Introduction to Algorithms", author:"Thomas H. Cormen", dept:"CSE", total:5, available:3, shelf:"A1-01" },
-    { title:"Operating System Concepts",  author:"Abraham Silberschatz", dept:"CSE", total:4, available:1, shelf:"A1-02" },
-    { title:"Artificial Intelligence",    author:"Stuart Russell",       dept:"CSE", total:3, available:2, shelf:"A2-01" },
-    { title:"Computer Networks",          author:"Andrew Tanenbaum",     dept:"CSE", total:3, available:3, shelf:"A2-02" },
-    { title:"Database System Concepts",   author:"Silberschatz",         dept:"CSE", total:4, available:0, shelf:"A2-03" },
-    { title:"Digital Design",             author:"M. Morris Mano",       dept:"ECE", total:4, available:3, shelf:"B1-01" },
-    { title:"Signals and Systems",        author:"Oppenheim",            dept:"ECE", total:2, available:0, shelf:"B1-02" },
-    { title:"Electronic Devices",         author:"Floyd",                dept:"ECE", total:3, available:2, shelf:"B1-03" },
-    { title:"Engineering Mechanics",      author:"R.C. Hibbeler",        dept:"Mech",total:3, available:2, shelf:"C1-01" },
-    { title:"Thermodynamics",             author:"Cengel & Boles",       dept:"Mech",total:2, available:1, shelf:"C1-02" },
-    { title:"Fluid Mechanics",            author:"Frank White",          dept:"Civil",total:3, available:2, shelf:"D1-01" },
-    { title:"Structural Analysis",        author:"R.C. Hibbeler",        dept:"Civil",total:2, available:2, shelf:"D1-02" },
-  ];
-
-  // Merge: libraryBooks (from book-management) takes priority
+  // Only show books added by the librarian via Book Management
   let libraryBooks = JSON.parse(localStorage.getItem("libraryBooks")) || [];
-
-  // If librarian hasn't added anything yet, seed with defaults
-  if(libraryBooks.length === 0){
-    libraryBooks = defaultBooks;
-  } else {
-    // Merge defaults that aren't already in libraryBooks by title
-    defaultBooks.forEach(def => {
-      const exists = libraryBooks.some(b =>
-        b.title.toLowerCase() === def.title.toLowerCase()
-      );
-      if(!exists) libraryBooks.push(def);
-    });
-  }
 
   // ── RENDER ──────────────────────────────────────────────────────
   function renderBooks(books){
@@ -372,11 +344,14 @@ document.addEventListener("DOMContentLoaded", function(){
     grid.innerHTML = "";
 
     if(books.length === 0){
+      const allBooks = JSON.parse(localStorage.getItem("libraryBooks")) || [];
+      const emptyMsg = allBooks.length === 0
+        ? `<h3>No books in the catalog yet</h3><p>The librarian hasn't added any books. Check back later.</p>`
+        : `<h3>No books found</h3><p>Try adjusting your search or filters.</p>`;
       grid.innerHTML = `
         <div class="empty-state" style="grid-column:1/-1">
           <div class="icon">📭</div>
-          <h3>No books found</h3>
-          <p>Try adjusting your search or filters.</p>
+          ${emptyMsg}
         </div>
       `;
       countText.innerText = "0 books found";
