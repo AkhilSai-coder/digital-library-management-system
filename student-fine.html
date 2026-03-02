@@ -126,36 +126,32 @@ th{
   font-weight:500;
 }
 
-/* ================= TABLET ================= */
+/* ================= RESPONSIVE (TABLET + MOBILE) ================= */
 
-@media (max-width: 992px){
-
-  table{
-    display:block;
-    overflow-x:auto;
-    white-space:nowrap;
-  }
-
-}
-
-/* ================= MOBILE ================= */
-
-@media (max-width: 768px){
+@media (max-width:992px){
 
   .dashboard-layout{
-    flex-direction: column;
+    flex-direction:column;
   }
 
+  /* Sidebar → top horizontal scroll */
   .sidebar{
     width:100%;
     display:flex;
+    align-items:center;
     overflow-x:auto;
-    padding:15px;
+    padding:12px;
+  }
+
+  .sidebar h3{
+    display:none;
   }
 
   .sidebar a{
-    margin-right:10px;
     white-space:nowrap;
+    margin-right:10px;
+    padding:8px 12px;
+    font-size:13px;
   }
 
   .main{
@@ -170,8 +166,15 @@ th{
     font-size:28px;
   }
 
+  table{
+    display:block;
+    width:100%;
+    overflow-x:auto;
+    white-space:nowrap;
+  }
+
   th, td{
-    font-size:13px;
+    font-size:12px;
     padding:10px;
   }
 

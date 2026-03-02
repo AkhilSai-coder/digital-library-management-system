@@ -134,17 +134,15 @@ th{
   color:#64748b;
 }
 
-/* ================= MOBILE ================= */
+/* ================= RESPONSIVE (TABLET + MOBILE) ================= */
 
-/* ================= MOBILE ================= */
-
-@media (max-width:768px){
+@media (max-width:992px){
 
   .dashboard-layout{
     flex-direction:column;
   }
 
-  /* Sidebar → horizontal scroll menu */
+  /* Sidebar becomes top scroll nav */
   .sidebar{
     width:100%;
     display:flex;
@@ -159,9 +157,9 @@ th{
 
   .sidebar a{
     white-space:nowrap;
-    margin-right:8px;
-    font-size:12px;
-    padding:8px 10px;
+    margin-right:10px;
+    padding:8px 12px;
+    font-size:13px;
   }
 
   .main{
@@ -169,31 +167,21 @@ th{
   }
 
   h1{
-    font-size:20px;
+    font-size:22px;
     margin-bottom:15px;
   }
 
   /* Tabs */
   .tabs{
     width:100%;
-    justify-content:space-between;
-    padding:5px;
   }
 
   .tab{
     flex:1;
     text-align:center;
-    font-size:13px;
-    padding:8px;
   }
 
-  /* Card */
-  .card{
-    padding:0;
-    border-radius:10px;
-  }
-
-  /* Table */
+  /* Table scroll */
   table{
     display:block;
     width:100%;
@@ -205,17 +193,6 @@ th{
     font-size:12px;
     padding:10px;
   }
-
-  .status-active,
-  .status-overdue,
-  .status-returned{
-  background:#d1fae5;
-  color:#065f46;
-  padding:4px 12px;
-  border-radius:20px;
-  font-size:12px;
-  font-weight:500;
-}
 
 }
 </style>
