@@ -16,6 +16,7 @@
 .sidebar{
   width:260px;
   background:linear-gradient(180deg,#0f2d52,#0b1f3a);
+  flex-shrink:0;
   color:#fff;
   padding:25px 20px;
 }
@@ -143,29 +144,33 @@ th{
 
   /* Sidebar becomes horizontal navbar */
   .sidebar{
-    width:100%;
-    display:flex;
-    flex-direction:row;
-    align-items:center;
-    overflow-x:auto;
-    padding:12px;
-    gap:8px;
-  }
+  width:100%;
+  height:auto;
+  display:flex;
+  flex-direction:row;
+  align-items:center;
+  justify-content:flex-start;
+  overflow-x:auto;
+  gap:8px;
+  padding:10px;
+  background:linear-gradient(90deg,#0f2d52,#0b1f3a);
+}
 
   .sidebar h3{
     display:none;
   }
 
   .sidebar a{
-    display:inline-block;
-    white-space:nowrap;
-    padding:8px 14px;
-    font-size:13px;
-    border-radius:6px;
-    margin:0;
-  }
+  display:inline-flex;
+  align-items:center;
+  white-space:nowrap;
+  padding:8px 14px;
+  font-size:13px;
+  border-radius:6px;
+  margin:0;
+}
 
-  /* Hide scrollbar */
+  /* hide scrollbar for clean UI */
   .sidebar::-webkit-scrollbar{
     display:none;
   }
@@ -179,7 +184,7 @@ th{
     font-size:20px;
   }
 
-  /* Tabs */
+  /* Tabs responsive */
   .tabs{
     width:100%;
   }
@@ -258,7 +263,7 @@ async function loadMyBooks(){
 
     const token = localStorage.getItem("token");
 
-    const response = await fetch("https://library-backend-production-a8a4.up.railway.app/borrow/my", {
+    const response = await fetch("https://library-backend-1-e3r2.onrender.com/borrow/my", {
         headers: {
             "Authorization": "Bearer " + token
         }

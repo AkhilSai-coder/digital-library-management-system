@@ -368,7 +368,7 @@ document.addEventListener("DOMContentLoaded", async function(){
       /* FETCH BORROWED BOOKS         */
       /* ============================= */
 
-      const borrowResponse = await fetch("https://library-backend-production-a8a4.up.railway.app/borrow/my", {
+      const borrowResponse = await fetch("https://library-backend-1-e3r2.onrender.com/borrow/my", {
           headers: {
               "Authorization": "Bearer " + token
           }
@@ -425,7 +425,7 @@ overdueCount.innerText = overdue;
       /* FETCH REQUESTS               */
       /* ============================= */
 
-      const requestResponse = await fetch("https://library-backend-production-a8a4.up.railway.app/request/my", {
+      const requestResponse = await fetch("https://library-backend-1-e3r2.onrender.com/request/my", {
           headers: {
               "Authorization": "Bearer " + token
           }
