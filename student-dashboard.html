@@ -443,10 +443,14 @@ table.innerHTML += `
 
         const requests = requestResponse.ok ? await requestResponse.json() : [];
 
-        // Count only pending requests
-        const pendingRequests = requests.filter(r => r.status === "PENDING");
+// Count only pending requests
+const pendingRequests = requests.filter(r => r.status === "PENDING");
 
-        const activeBooks = borrows.filter(b => !b.returned);
+// Update reservation card
+reservationCountEl.innerText = pendingRequests.length;
+
+// Update issued books count
+const activeBooks = borrows.filter(b => !b.returned);
 issuedCountEl.innerText = activeBooks.length;
 
     } catch(error){

@@ -8,6 +8,16 @@
 
 <style>
 
+
+.status-overdue{
+  background:#ef4444;
+  color:#fff;
+  padding:4px 12px;
+  border-radius:20px;
+  font-size:12px;
+  font-weight:bold;
+}
+
 .dashboard-layout{
   display:flex;
   min-height:100vh;
@@ -272,8 +282,16 @@ function showActive() {
     table.innerHTML = "";
 
     const activeBooks = allBorrows.filter(b => !b.returned);
+    const today = new Date();
 
     activeBooks.forEach(b => {
+
+        const dueDate = new Date(b.dueDate);
+        let status = "active";
+
+        if(today > dueDate){
+            status = "overdue";
+        }
 
         table.innerHTML += `
             <tr>
@@ -281,7 +299,9 @@ function showActive() {
                 <td>${b.issueDate}</td>
                 <td>${b.dueDate}</td>
                 <td>
-                    <span class="status-active">Active</span>
+                    <span class="status-${status}">
+                        ${status}
+                    </span>
                 </td>
             </tr>
         `;
