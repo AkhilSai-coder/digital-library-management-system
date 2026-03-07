@@ -1,345 +1,176 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>About GRIET</title>
-
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-
+<title>About | GRIET Central Library</title>
+<link rel="stylesheet" href="css/public.css">
 <style>
-
-body{
-    margin:0;
-    font-family:'Poppins', sans-serif;
-    background:#f2f4f8;
-    color:#2c2c2c;
-    line-height:1.8;
-}
-
-/* ===== HEADER ===== */
-
-.top-header{
-    background:#ffffff;
-    padding:15px 8%;
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-}
-
-.logo-section{
-    display:flex;
-    align-items:center;
-    gap:18px;
-}
-
-.logo-section img{
-    height:65px;
-}
-
-.logo-text{
-    font-size:26px;
-    font-weight:700;
-    color:#8b0000;
-    letter-spacing:1px;
-}
-
-.logo-sub{
-    font-size:14px;
-    color:#555;
-}
-
-/* ===== NAVBAR ===== */
-
-.navbar{
-    background:#7a0f1b;
-    padding:12px 8%;
-    color:#fff;
-    font-size:15px;
-}
-
-.navbar span{
-    margin-right:25px;
-    cursor:pointer;
-}
-
-.navbar span:hover{
-    opacity:0.8;
-}
-
-/* ===== HERO SECTION ===== */
-
-.hero{
-    position:relative;
-    height:420px;
-    background:url('image/new griet.jpg') center/cover no-repeat;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-}
-
-.hero::after{
-    content:'';
-    position:absolute;
-    inset:0;
-    background:linear-gradient(to right, rgba(0,0,0,0.6), rgba(122,15,27,0.6));
-}
-
-.hero h1{
-    position:relative;
-    color:white;
-    font-size:48px;
-    font-weight:700;
-    letter-spacing:2px;
-}
-
-/* ===== CONTENT SECTION ===== */
-
-.about-wrapper{
-    padding:80px 0;
-}
-
-.about-container{
-    max-width:1100px;
-    margin:auto;
-    background:#ffffff;
-    padding:70px;
-    border-radius:10px;
-    box-shadow:0 15px 40px rgba(0,0,0,0.06);
-}
-
-/* HEADINGS */
-
-.about-container h2{
-    font-size:30px;
-    margin-top:45px;
-    margin-bottom:20px;
-    color:#7a0f1b;
-    font-weight:600;
-    position:relative;
-}
-
-.about-container h2::after{
-    content:'';
-    width:60px;
-    height:3px;
-    background:#0f2d52;
-    position:absolute;
-    left:0;
-    bottom:-8px;
-}
-
-.about-container h3{
-    font-size:21px;
-    margin-top:25px;
-    margin-bottom:12px;
-    font-weight:600;
-    color:#0f2d52;
-}
-
-.about-container p{
-    margin-bottom:20px;
-    text-align:justify;
-    font-size:15.5px;
-}
-
-.highlight{
-    font-weight:600;
-    color:#0f2d52;
-}
-
-.quote{
-    font-style:italic;
-    font-weight:500;
-    color:#444;
-}
-
-/* ===== FOOTER STYLE ===== */
-
-.footer{
-    background:#111827;
-    color:#ccc;
-    padding:25px 8%;
-    text-align:center;
-    font-size:14px;
-}
-
-/* ===== MOBILE ===== */
-
-@media(max-width:768px){
-
-    .top-header{
-        flex-direction:column;
-        text-align:center;
-        gap:10px;
-    }
-
-    .navbar{
-        text-align:center;
-    }
-
-    .hero{
-        height:260px;
-    }
-
-    .hero h1{
-        font-size:28px;
-        text-align:center;
-    }
-
-    .about-container{
-        padding:35px 20px;
-        margin:0 15px;
-    }
-
-    .about-container h2{
-        font-size:22px;
-    }
-
-    .about-container h3{
-        font-size:18px;
-    }
-}
-
+.about-intro{display:grid;grid-template-columns:1fr 1fr;gap:72px;align-items:center;}
+.about-img{position:relative;}
+.about-img img{width:100%;height:480px;object-fit:cover;border-radius:22px;box-shadow:0 30px 80px rgba(8,28,58,0.18);}
+.about-img-badge{position:absolute;bottom:-20px;right:-20px;background:var(--navy);color:#fff;border-radius:18px;padding:22px 28px;box-shadow:0 16px 48px rgba(8,28,58,0.25);}
+.about-img-badge .num{font-family:'Cormorant Garamond',serif;font-size:40px;font-weight:700;color:var(--gold);line-height:1;}
+.about-img-badge .lbl{font-size:12px;opacity:0.65;margin-top:4px;}
+.about-text p{color:var(--muted);line-height:1.85;font-size:15.5px;margin-bottom:18px;}
+.about-text b{color:var(--navy);font-weight:700;}
+.features-list{list-style:none;margin-top:16px;}
+.features-list li{display:flex;gap:12px;align-items:flex-start;padding:10px 0;border-bottom:1px solid var(--border);font-size:14.5px;color:#374151;}
+.features-list li:last-child{border-bottom:none;}
+.features-list li::before{content:"✦";color:var(--gold);font-size:10px;margin-top:4px;flex-shrink:0;}
+.promoters-section{background:linear-gradient(135deg,var(--navy),var(--navy2));padding:96px 0;}
+.promoters-grid{display:grid;grid-template-columns:1fr 1fr;gap:28px;margin-top:52px;}
+.promoter-card{background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.1);border-radius:20px;overflow:hidden;transition:0.35s;}
+.promoter-card:hover{transform:translateY(-6px);background:rgba(255,255,255,0.12);border-color:rgba(201,168,76,0.3);}
+.promoter-img{height:280px;overflow:hidden;}
+.promoter-img img{width:100%;height:100%;object-fit:cover;transition:0.6s;}
+.promoter-card:hover .promoter-img img{transform:scale(1.05);}
+.promoter-body{padding:26px 28px;}
+.promoter-body .title{font-size:10px;font-weight:700;letter-spacing:2.5px;color:var(--gold);text-transform:uppercase;margin-bottom:8px;}
+.promoter-body h3{font-family:'Cormorant Garamond',serif;font-size:22px;color:#fff;font-weight:700;margin-bottom:10px;}
+.promoter-body p{font-size:13px;color:rgba(255,255,255,0.55);line-height:1.75;}
+.infra-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-top:48px;}
+.infra-card{border-radius:18px;overflow:hidden;height:240px;position:relative;cursor:pointer;transition:0.4s;}
+.infra-card:hover{transform:translateY(-8px);box-shadow:0 28px 70px rgba(0,0,0,0.2);}
+.infra-card img{width:100%;height:100%;object-fit:cover;transition:0.6s;}
+.infra-card:hover img{transform:scale(1.08);}
+.infra-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(8,28,58,0.82),transparent 50%);}
+.infra-label{position:absolute;bottom:18px;left:18px;color:#fff;font-size:15px;font-weight:700;}
+.achievement-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:20px;margin-top:48px;}
+.ach{background:#fff;border-radius:18px;padding:32px 24px;text-align:center;box-shadow:0 8px 28px rgba(8,28,58,0.07);transition:0.35s;border-bottom:3px solid transparent;}
+.ach:hover{transform:translateY(-6px);box-shadow:0 22px 60px rgba(8,28,58,0.12);border-bottom-color:var(--crimson);}
+.ach-icon{font-size:36px;margin-bottom:14px;}
+.ach-num{font-family:'Cormorant Garamond',serif;font-size:38px;font-weight:700;background:linear-gradient(135deg,var(--navy),var(--crimson));-webkit-background-clip:text;-webkit-text-fill-color:transparent;line-height:1;}
+.ach-label{font-size:12.5px;color:var(--muted);margin-top:8px;font-weight:500;}
+.staff-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;margin-top:48px;}
+.staff-card{background:#fff;border-radius:18px;overflow:hidden;box-shadow:0 8px 28px rgba(8,28,58,0.07);transition:0.35s;text-align:center;}
+.staff-card:hover{transform:translateY(-6px);box-shadow:0 24px 60px rgba(8,28,58,0.12);}
+.staff-img{height:200px;overflow:hidden;background:linear-gradient(135deg,var(--navy),var(--navy2));display:flex;align-items:center;justify-content:center;font-size:64px;}
+.staff-body{padding:22px;}
+.staff-body h4{font-family:'Cormorant Garamond',serif;font-size:19px;color:var(--navy);font-weight:700;margin-bottom:4px;}
+.staff-body .role{font-size:12px;color:var(--crimson);font-weight:600;letter-spacing:0.5px;text-transform:uppercase;margin-bottom:8px;}
+.staff-body p{font-size:13px;color:var(--muted);line-height:1.6;}
+.vm-section{background:#f1f5f9;}
+.vm-grid{display:grid;grid-template-columns:1fr 1fr;gap:28px;}
+.vm-card{background:#fff;border-radius:20px;padding:44px;box-shadow:0 12px 40px rgba(8,28,58,0.07);position:relative;overflow:hidden;transition:0.35s;}
+.vm-card:hover{transform:translateY(-6px);}
+.vm-card::before{content:"";position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--navy),var(--crimson));}
+.vm-card h3{font-family:'Cormorant Garamond',serif;font-size:26px;color:var(--navy);margin-bottom:16px;}
+.vm-card p{color:var(--muted);line-height:1.85;font-size:15px;}
+.vm-list{list-style:none;margin-top:12px;}
+.vm-list li{padding:9px 0;color:var(--muted);font-size:14.5px;border-bottom:1px solid var(--border);display:flex;gap:10px;}
+.vm-list li::before{content:"✦";color:var(--gold);flex-shrink:0;font-size:10px;margin-top:4px;}
+.vm-list li:last-child{border-bottom:none;}
+@media(max-width:992px){.about-intro,.promoters-grid,.vm-grid{grid-template-columns:1fr;}.achievement-grid,.infra-grid,.staff-grid{grid-template-columns:1fr 1fr;}.about-img-badge{right:0;}}
+@media(max-width:640px){.achievement-grid,.infra-grid,.staff-grid{grid-template-columns:1fr;}}
 </style>
 </head>
-
 <body>
-
-<!-- HEADER -->
-<div class="top-header">
-    <div class="logo-section">
-        <img src="griet_logo.webp" alt="GRIET Logo">
-        <div>
-            <div class="logo-text">GOKARAJU RANGARAJU</div>
-            <div class="logo-sub">Institute of Engineering and Technology</div>
-        </div>
+<div class="announce"><div class="announce-track"><span>Library Closed Sundays</span><span>New Springer eBooks Added</span><span>GRIET Library Ranked Top 5 in Telangana</span><span>Extended Hours During Exams</span><span>IEEE Xplore Access Available</span><span>Library Closed Sundays</span><span>New Springer eBooks Added</span><span>GRIET Library Ranked Top 5 in Telangana</span><span>Extended Hours During Exams</span><span>IEEE Xplore Access Available</span></div></div>
+<header class="site-header">
+  <div class="header-inner">
+    <a href="index.html" class="logo"><img src="griet_logo.webp" alt="GRIET"><div class="logo-text"><div class="logo-name">GRIET Library</div><div class="logo-sub">Central Knowledge Hub</div></div></a>
+    <nav class="site-nav">
+      <a href="index.html" class="nav-link">Home</a>
+      <a href="about.html" class="nav-link active">About</a>
+      <a href="service.html" class="nav-link">Services</a>
+      <a href="login.html" class="nav-login">Login →</a>
+    </nav>
+  </div>
+</header>
+<div class="page-hero" style="background:url('image/new griet.jpg') center/cover">
+  <div class="page-hero-overlay"></div>
+  <div class="page-hero-content">
+    <div class="breadcrumb">Home · About</div>
+    <h1>About Our <em>Library</em></h1>
+    <p>A world-class academic resource centre serving 5,000+ students and 350+ faculty since 1997.</p>
+  </div>
+</div>
+<section class="section"><div class="container">
+  <div class="about-intro">
+    <div class="about-img reveal-left">
+      <img src="image/lib new 3.jpg" alt="GRIET Library">
+      <div class="about-img-badge"><div class="num">27+</div><div class="lbl">Years of Excellence</div></div>
     </div>
-</div>
-
-
-
-<!-- HERO -->
-<div class="hero">
-    <h1>About GRIET</h1>
-</div>
-
-<!-- CONTENT -->
-<div class="about-wrapper">
-<div class="about-container">
-
-    <h2>About Inspirer and Promoters</h2>
-
-    <h3>The Inspirer</h3>
-    <p>
-        Late Shri Gokaraju Rangaraju garu is the inspiration for establishment of 
-        Gokaraju Rangaraju Educational Society. He served as Member of Legislative Assembly 
-        from Undi Constituency in United Andhra Pradesh. He served as the Chairman of Board 
-        of Trustees of Tirumala Tirupathi Devasthanam twice. A crusader of education, he also 
-        served as Chairman of Governing Bodies of DNR College and SRKR Engineering College 
-        of West Godavari Districts, Andhra Pradesh.
-    </p>
-
-    <h3>The Promoters</h3>
-    <p>
-        <span class="highlight">Dr Gokaraju Ganga Raju</span> is an Indian politician and Member of Parliament 
-        to the 16th Lok Sabha from Narsapuram, Andhra Pradesh in 2014. He is also the founder 
-        of Laila Group of Companies. He served as Secretary of Andhra Cricket Association 
-        (2001–2019) and Vice-President, South Zone, BCCI (2015–2019).
-    </p>
-
-    <h2>The Sponsoring Society</h2>
-
-    <p>
-        Dr Gokaraju Gangaraju garu started 
-        <span class="highlight">Gokaraju Educational Society</span> in fond memory of his father 
-        Late Shri Gokaraju Rangaraju garu with a motto to 
-        <span class="quote">
-        “Promote modern and scientific education and to help develop the character of the younger generation of all castes, communities and religions”.
-        </span>
-    </p>
-
-    <h2>About GRIET</h2>
-
-    <p>
-        Gokaraju Rangaraju Institute of Engineering and Technology (GRIET), established in 1997 
-        under the patronage of the Gokaraju Rangaraju Educational Society, is an AICTE approved 
-        and permanently affiliated college with UGC Autonomous status under JNTUH, Hyderabad.
-        Following its mission to achieve and impart quality education with emphasis on practical 
-        skills and social relevance, GRIET has created a conducive teaching learning environment 
-        supported by qualified faculty, modern infrastructure and strong academic support systems.
-    </p>
-
-    <p>
-        GRIET is accredited by 
-        <span class="highlight">NAAC with A++ Grade (CGPA: 3.55)</span>. 
-        Six UG programs and four PG programs are accredited by 
-        <span class="highlight">National Board of Accreditation (NBA)</span>. 
-        The institution is ISO 9001:2015 certified, GRMTL is accredited by NABL, 
-        and GRES is recognized as SIRO by DSIR, Government of India.
-    </p>
-
-    <p>
-        The institute is ranked in the 
-        <span class="highlight">National Institutional Ranking Framework (NIRF)</span> 
-        within the 101–150 rank band (2024 & 2023) and has consistently maintained 
-        strong national positions over the years.
-    </p>
-
-    <p>
-        Spread across 24 acres of lush green campus, the institution focuses on preparing 
-        engineering graduates with the right attitude, skill and knowledge aligned with 
-        industry and societal needs.
-    </p>
-
-    <p>
-        The institute provides state-of-the-art classrooms, laboratories, high-end computer 
-        centres, language labs, training and placement cell, NSS, gym, medical centre, 
-        solar rooftop systems, RO plant, STP and Divyangjan-friendly infrastructure.
-    </p>
-
-    <p>
-        The GRIET Library and Information Centre houses over 17,195 titles and 1,30,740 volumes, 
-        along with 150 print journals, 6500+ e-books and 21500+ e-journals. The library is 
-        fully automated using KOHA software with cloud-based OPAC.
-    </p>
-
-    <p>
-        GRIET has established advanced research facilities including AICTE IDEA Lab, 
-        Incubation Centre under MSME, High Performance Computing, Artificial Intelligence 
-        and Machine Learning Centres, and DST-FIST sponsored SEM facility worth ₹1.2 Crores.
-    </p>
-
-    <p>
-        The institute holds MoUs with premier institutions and industries including 
-        IIT Hyderabad, NIT Warangal, Curtin University (Malaysia) and Infosys Spring Board.
-    </p>
-
-    <h2>Vision & Mission</h2>
-
-    <p>
-        <span class="highlight">Vision:</span> 
-        To be among the best institutions for engineers and technologists with attitudes, 
-        skills and knowledge and to become an epicentre of creative solutions.
-    </p>
-
-    <p>
-        <span class="highlight">Mission:</span> 
-        To achieve and impart quality education with emphasis on practical skills and social relevance.
-    </p>
-
-    <p>
-        The institute is guided by core values of Excellence, Integrity, Innovation, 
-        Entrepreneurship, Leadership, Sustainability and Service to the Nation.
-    </p>
-
-</div>
-</div>
-
-<!-- FOOTER -->
-<div class="footer">
-© 2026 Gokaraju Rangaraju Institute of Engineering and Technology | All Rights Reserved
-</div>
-
+    <div class="about-text reveal-right">
+      <div class="eyebrow">Our Story</div>
+      <div class="display-title">GRIET Central <em>Library</em></div>
+      <p style="margin-top:18px">The <b>GRIET Central Library</b>, established in 1997, is the intellectual heart of Gokaraju Rangaraju Institute of Engineering and Technology. Spread across multiple floors of a dedicated building, it houses over <b>1,30,000 volumes</b> of print books, along with a rich digital library of eBooks and eJournals.</p>
+      <p>Our library is fully automated using the <b>KOHA integrated library management system</b>, offering seamless access to OPAC, catalogue, issue-return and digital resources from any device.</p>
+      <p>Accredited by <b>NAAC with 'A++' grade</b>, the library continuously evolves to meet the information needs of students, faculty and researchers across all disciplines.</p>
+      <ul class="features-list">
+        <li>NAAC A++ Accredited Institution</li>
+        <li>KOHA Automated Library Management</li>
+        <li>IEEE, Springer, Elsevier Database Access</li>
+        <li>Ranked Top 5 Library in Telangana</li>
+      </ul>
+    </div>
+  </div>
+</div></section>
+<section class="section" style="padding-top:0"><div class="container reveal">
+  <div class="eyebrow">Milestones</div>
+  <div class="display-title" style="margin-bottom:48px">Key <em>Achievements</em></div>
+  <div class="achievement-grid">
+    <div class="ach"><div class="ach-icon">📚</div><div class="ach-num"><span class="counter" data-target="130746">0</span></div><div class="ach-label">Print Volumes</div></div>
+    <div class="ach"><div class="ach-icon">💻</div><div class="ach-num"><span class="counter" data-target="6746">0</span></div><div class="ach-label">eBooks Available</div></div>
+    <div class="ach"><div class="ach-icon">📰</div><div class="ach-num"><span class="counter" data-target="5535">0</span></div><div class="ach-label">eJournals</div></div>
+    <div class="ach"><div class="ach-icon">🎓</div><div class="ach-num"><span class="counter" data-target="5000">0</span>+</div><div class="ach-label">Active Members</div></div>
+  </div>
+</div></section>
+<section class="promoters-section reveal"><div class="container">
+  <div class="eyebrow gold">Leadership</div>
+  <div class="display-title" style="-webkit-text-fill-color:#fff;color:#fff">Our <em style="color:var(--gold)">Promoters</em></div>
+  <div class="promoters-grid">
+    <div class="promoter-card">
+      <div class="promoter-img"><img src="Gokaraju-Rangaraju.jpeg" alt="Promoters"></div>
+      <div class="promoter-body"><div class="title">Founders</div><h3>Gokaraju & Rangaraju</h3><p>Visionaries who established GRIET with a mission to provide world-class technical education and research facilities in Hyderabad.</p></div>
+    </div>
+    <div class="promoter-card">
+      <div class="promoter-img" style="background:linear-gradient(135deg,#0d2a57,#1a3a6b);display:flex;align-items:center;justify-content:center;font-size:80px;">🏛️</div>
+      <div class="promoter-body"><div class="title">Administration</div><h3>GRIET Management</h3><p>Committed to continuously upgrading library facilities, digital resources and infrastructure to support academic excellence and research innovation.</p></div>
+    </div>
+  </div>
+</div></section>
+<section class="section vm-section"><div class="container reveal">
+  <div class="eyebrow">Our Direction</div>
+  <div class="display-title" style="margin-bottom:40px">Vision & <em>Mission</em></div>
+  <div class="vm-grid">
+    <div class="vm-card"><h3>🔭 Our Vision</h3><p>To be a centre of excellence in knowledge dissemination, fostering innovation, research and lifelong learning for engineers and technologists of tomorrow.</p></div>
+    <div class="vm-card"><h3>🎯 Our Mission</h3><ul class="vm-list"><li>Promote a research culture among students and faculty</li><li>Provide seamless digital access to global resources</li><li>Ensure academic integrity and ethical scholarship</li><li>Continuously update collections to match curriculum needs</li></ul></div>
+  </div>
+</div></section>
+<section class="section"><div class="container reveal">
+  <div class="eyebrow">Our Spaces</div>
+  <div class="display-title" style="margin-bottom:48px">Library <em>Infrastructure</em></div>
+  <div class="infra-grid">
+    <div class="infra-card"><img src="image/lib new 3.jpg" alt=""><div class="infra-overlay"></div><div class="infra-label">Main Reading Hall</div></div>
+    <div class="infra-card"><img src="image/lib new 2.jpg" alt=""><div class="infra-overlay"></div><div class="infra-label">Digital Zone</div></div>
+    <div class="infra-card"><img src="image/lib new 4.jpg" alt=""><div class="infra-overlay"></div><div class="infra-label">Stack Area</div></div>
+  </div>
+</div></section>
+<section class="section" style="background:#f1f5f9;padding-top:0"><div class="container reveal">
+  <div class="eyebrow">Our Team</div>
+  <div class="display-title" style="margin-bottom:8px">Library <em>Staff</em></div>
+  <p class="lead" style="margin-bottom:0">Dedicated professionals committed to your academic success.</p>
+  <div class="staff-grid">
+    <div class="staff-card"><div class="staff-img">👨‍💼</div><div class="staff-body"><h4>Dr. Librarian</h4><div class="role">Chief Librarian</div><p>M.L.I.Sc., Ph.D. · 20+ years experience in academic library management.</p></div></div>
+    <div class="staff-card"><div class="staff-img">👩‍💻</div><div class="staff-body"><h4>Digital Resources</h4><div class="role">e-Resource Manager</div><p>Manages IEEE, Springer, Elsevier subscriptions and Knimbus remote access platform.</p></div></div>
+    <div class="staff-card"><div class="staff-img">📋</div><div class="staff-body"><h4>Technical Services</h4><div class="role">Cataloguing & Acquisition</div><p>Handles book procurement, cataloguing and KOHA system management across all departments.</p></div></div>
+  </div>
+</div></section>
+<section class="section" style="background:linear-gradient(135deg,var(--navy),#0d2547)"><div class="container reveal" style="text-align:center">
+  <div class="eyebrow white">Ready to Explore?</div>
+  <div class="display-title white" style="-webkit-text-fill-color:#fff;margin-bottom:18px">Access the <em style="color:var(--gold)">Library Portal</em></div>
+  <p class="lead white" style="margin:0 auto 36px">Login with your college ID to browse books, access digital resources and manage your account.</p>
+  <a href="login.html" class="btn-primary">Login to Portal →</a>
+</div></section>
+<footer class="site-footer">© 2026 <em>GRIET Central Library</em> · All Rights Reserved</footer>
+<script>
+const ro=new IntersectionObserver(e=>e.forEach(en=>{if(en.isIntersecting)en.target.classList.add("show");}),{threshold:0.08});
+document.querySelectorAll(".reveal,.reveal-left,.reveal-right").forEach(el=>ro.observe(el));
+function animateNum(el){const target=+(el.dataset.target||0);let cur=0;const inc=target/70;const t=setInterval(()=>{cur=Math.min(cur+inc,target);el.textContent=Math.floor(cur).toLocaleString();if(cur>=target)clearInterval(t);},22);}
+const co=new IntersectionObserver(e=>e.forEach(en=>{if(en.isIntersecting){animateNum(en.target);co.unobserve(en.target);}}),{threshold:0.5});
+document.querySelectorAll(".counter").forEach(el=>co.observe(el));
+</script>
 </body>
 </html>
