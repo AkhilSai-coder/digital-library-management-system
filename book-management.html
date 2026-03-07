@@ -6,10 +6,6 @@
 <link rel="stylesheet" href="css/style.css">
 
 <style>
-/* =====================================================
-   GRIET LIBRARY – PREMIUM ADMIN UI
-   Clean • Modern • Institutional • Soft
-===================================================== */
 
 :root{
   --primary:#0f2d52;
@@ -22,16 +18,12 @@
   --shadow:0 20px 60px rgba(0,0,0,0.06);
 }
 
-/* ================= GLOBAL ================= */
-
 body{
   margin:0;
   font-family:'Poppins',sans-serif;
   background:var(--bg);
   color:var(--text);
 }
-
-/* ================= LAYOUT ================= */
 
 .dashboard-layout{
   display:flex;
@@ -94,8 +86,6 @@ body{
   color:var(--primary);
 }
 
-/* ================= PREMIUM BUTTON ================= */
-
 .btn-primary{
   background:linear-gradient(135deg,#1e3a8a,#0f2d52);
   color:#fff;
@@ -127,6 +117,7 @@ body{
   background:#fff;
   box-shadow:0 10px 25px rgba(0,0,0,0.05);
   transition:0.3s;
+  box-sizing:border-box;
 }
 
 .search-bar input:focus{
@@ -144,8 +135,6 @@ body{
   overflow:hidden;
   padding:10px 0;
 }
-
-/* ================= TABLE ================= */
 
 table{
   width:100%;
@@ -175,8 +164,6 @@ tr:hover{
   background:#f9fafb;
 }
 
-/* ================= ACTION BUTTON ================= */
-
 table button{
   background:linear-gradient(135deg,#ef4444,#b91c1c);
   color:#fff;
@@ -192,8 +179,6 @@ table button:hover{
   transform:scale(1.05);
 }
 
-/* ================= EMPTY ================= */
-
 .empty{
   padding:30px;
   text-align:center;
@@ -205,19 +190,25 @@ table button:hover{
 .modal{
   position:fixed;
   inset:0;
-  background:rgba(0,0,0,0.4);
+  background:rgba(0,0,0,0.5);
   display:none;
   align-items:center;
   justify-content:center;
+  z-index:1000;
+  overflow-y:auto;
+  padding:20px;
 }
 
 .modal-box{
   background:#fff;
-  width:450px;
+  width:100%;
+  max-width:600px;
   padding:35px;
   border-radius:20px;
   box-shadow:0 30px 60px rgba(0,0,0,0.25);
   animation:fadeIn 0.3s ease;
+  max-height:90vh;
+  overflow-y:auto;
 }
 
 @keyframes fadeIn{
@@ -231,16 +222,39 @@ table button:hover{
   color:var(--primary);
 }
 
+/* Section label inside modal */
+.field-section{
+  font-size:12px;
+  font-weight:600;
+  text-transform:uppercase;
+  letter-spacing:1px;
+  color:var(--muted);
+  margin:18px 0 10px;
+  border-bottom:1px solid #f1f5f9;
+  padding-bottom:6px;
+}
+
+/* Two column grid for fields */
+.field-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:12px;
+}
+
+.field-grid .full{
+  grid-column:1/-1;
+}
+
 .modal-box input,
 .modal-box select,
 .modal-box textarea{
   width:100%;
   padding:12px;
-  margin-bottom:15px;
   border-radius:12px;
   border:1px solid #e5e7eb;
   font-size:14px;
   transition:0.3s;
+  box-sizing:border-box;
 }
 
 .modal-box input:focus,
@@ -254,6 +268,7 @@ table button:hover{
 .modal-actions{
   display:flex;
   gap:10px;
+  margin-top:20px;
 }
 
 .btn-secondary{
@@ -263,30 +278,47 @@ table button:hover{
   border:1px solid #ddd;
   background:#f1f5f9;
   cursor:pointer;
+  font-size:14px;
 }
 
 .btn-save{
-  flex:1;
+  flex:2;
   background:linear-gradient(135deg,#1e3a8a,#0f2d52);
   color:#fff;
   border:none;
   border-radius:40px;
   cursor:pointer;
+  padding:12px;
+  font-size:14px;
+  font-weight:600;
+}
+
+.btn-save:hover{
+  opacity:0.9;
 }
 
 /* ================= RESPONSIVE ================= */
 
 @media(max-width:992px){
-  .dashboard-layout{
-    flex-direction:column;
-  }
+  .dashboard-layout{ flex-direction:column; }
+  .sidebar{ width:100%; text-align:center; }
+  .main{ padding:25px; }
+  .field-grid{ grid-template-columns:1fr; }
+}
+
+@media(max-width:768px){
   .sidebar{
-    width:100%;
-    text-align:center;
+    display:flex;
+    overflow-x:auto;
+    padding:15px;
+    align-items:center;
   }
-  .main{
-    padding:25px;
-  }
+  .sidebar h3{ display:none; }
+  .sidebar a{ white-space:nowrap; margin-right:10px; }
+  .main{ padding:15px; }
+  table{ display:block; overflow-x:auto; white-space:nowrap; }
+  .modal-box{ padding:20px; }
+  .field-grid{ grid-template-columns:1fr; }
 }
 
 </style>
@@ -314,77 +346,113 @@ table button:hover{
 <!-- MAIN -->
 <main class="main">
 
-<div class="page-header">
-  <div class="page-title">Book Management</div>
-  <button class="btn-primary" onclick="openModal()">+ Add Book</button>
-</div>
-
-<div class="search-bar">
-  <input type="text" id="searchInput" placeholder="Search books by title or author...">
-</div>
-
-<div class="card">
-  <div style="overflow-x:auto;">
-    <table id="bookTable">
-    <tr>
-    <th>Title</th>
-    <th>Author</th>
-    <th>Price</th>
-    <th>Department</th>
-    <th>Shelf</th>
-    <th>Action</th>
-</tr>
-      </table>
+  <div class="page-header">
+    <div class="page-title">Book Management</div>
+    <button class="btn-primary" onclick="openModal()">+ Add Book</button>
   </div>
-</div>
+
+  <div class="search-bar">
+    <input type="text" id="searchInput" placeholder="Search books by title, author, accession number...">
+  </div>
+
+  <div class="card">
+    <div style="overflow-x:auto;">
+      <table id="bookTable">
+        <tr>
+          <th>Accession No.</th>
+          <th>Title</th>
+          <th>Authors</th>
+          <th>Publisher</th>
+          <th>Year</th>
+          <th>Branch</th>
+          <th>Price</th>
+          <th>Available</th>
+          <th>Action</th>
+        </tr>
+      </table>
+    </div>
+  </div>
 
 </main>
 </div>
 
-<!-- MODAL -->
+<!-- ===================== ADD BOOK MODAL ===================== -->
 <div class="modal" id="modal">
   <div class="modal-box">
     <h3>Add New Book</h3>
 
-    <input id="title" placeholder="Book Title">
-    <input id="author" placeholder="Author Name">
+    <!-- Basic Info -->
+    <div class="field-section">Basic Information</div>
+    <div class="field-grid">
+      <input id="accessionNumber" placeholder="Accession Number *">
+      <input id="isbn" placeholder="ISBN">
+      <input id="title" placeholder="Book Title *" class="full">
+      <input id="authors" placeholder="Author(s) *" class="full">
+    </div>
 
-    <select id="dept">
-      <option value="">Select Department</option>
-      <option>CSE</option>
-      <option>ECE</option>
-      <option>Mech</option>
-      <option>Civil</option>
-      <option>General</option>
-    </select>
+    <!-- Publication Details -->
+    <div class="field-section">Publication Details</div>
+    <div class="field-grid">
+      <input id="publisher" placeholder="Publisher">
+      <input id="placeOfPublication" placeholder="Place of Publication">
+      <input id="year" type="number" placeholder="Year of Publication">
+      <input id="pages" type="number" placeholder="Number of Pages">
+    </div>
 
-    <input id="shelf" placeholder="Shelf Number (A1-01)">
-    <input id="price" type="number" step="0.01" placeholder="Book Price">
-    <textarea id="desc" placeholder="Book Description"></textarea>
+    <!-- Purchase Details -->
+    <div class="field-section">Purchase Details</div>
+    <div class="field-grid">
+      <input id="source" placeholder="Source (e.g. Donated / Purchased)">
+      <input id="price" type="number" step="0.01" placeholder="Price (₹)">
+      <input id="billNo" placeholder="Bill Number">
+      <input id="billDate" type="date" placeholder="Bill Date">
+    </div>
+
+    <!-- Classification -->
+    <div class="field-section">Classification</div>
+    <div class="field-grid">
+      <select id="type">
+        <option value="">Select Type</option>
+        <option value="TEXTBOOK">Textbook</option>
+        <option value="REFERENCE">Reference</option>
+        <option value="NOVEL">Novel</option>
+        <option value="JOURNAL">Journal</option>
+        <option value="MAGAZINE">Magazine</option>
+        <option value="OTHER">Other</option>
+      </select>
+
+      <select id="branch">
+        <option value="">Select Branch</option>
+        <option value="CSE">CSE</option>
+        <option value="ECE">ECE</option>
+        <option value="MECH">Mech</option>
+        <option value="CIVIL">Civil</option>
+        <option value="EEE">EEE</option>
+        <option value="IT">IT</option>
+        <option value="GENERAL">General</option>
+      </select>
+
+      <input id="category" placeholder="Category (e.g. Programming, Math)">
+      <input id="recommendedYear" type="number" placeholder="Recommended Year (1–4)">
+    </div>
 
     <div class="modal-actions">
       <button class="btn-secondary" onclick="closeModal()">Cancel</button>
-      <button class="btn-save" onclick="saveBook()">Save</button>
+      <button class="btn-save" onclick="saveBook()">Save Book</button>
     </div>
   </div>
 </div>
 
 <script>
 
-let allBooks = []; // Global storage for filtering
+let allBooks = [];
 
-/* ================= INITIAL LOAD ================= */
+/* ================= LOAD ================= */
 
 document.addEventListener("DOMContentLoaded", () => {
     loadBooks();
-
-    document
-        .getElementById("searchInput")
-        .addEventListener("keyup", filterBooks);
+    document.getElementById("searchInput").addEventListener("keyup", filterBooks);
 });
-
-
-/* ================= LOAD BOOKS ================= */
 
 async function loadBooks(){
 
@@ -392,26 +460,16 @@ async function loadBooks(){
 
     const response = await fetch(
         "https://library-backend-1-e3r2.onrender.com/books",
-        {
-            headers: {
-                "Authorization": "Bearer " + token
-            }
-        }
+        { headers: { "Authorization": "Bearer " + token } }
     );
 
-    if(!response.ok){
-        alert("Failed to load books");
-        return;
-    }
+    if(!response.ok){ alert("Failed to load books"); return; }
 
-    const books = await response.json();
-
-    allBooks = books; // Store globally
-    renderBooks(books);
+    allBooks = await response.json();
+    renderBooks(allBooks);
 }
 
-
-/* ================= RENDER BOOKS ================= */
+/* ================= RENDER ================= */
 
 function renderBooks(books){
 
@@ -419,66 +477,53 @@ function renderBooks(books){
 
     table.innerHTML = `
         <tr>
+            <th>Accession No.</th>
             <th>Title</th>
-            <th>Author</th>
+            <th>Authors</th>
+            <th>Publisher</th>
+            <th>Year</th>
+            <th>Branch</th>
             <th>Price</th>
-            <th>Department</th>
-            <th>Shelf</th>
+            <th>Available</th>
             <th>Action</th>
         </tr>
     `;
 
     if(books.length === 0){
-        table.innerHTML += `
-            <tr>
-                <td colspan="6" class="empty">
-                    No books found
-                </td>
-            </tr>
-        `;
+        table.innerHTML += `<tr><td colspan="9" class="empty">No books found</td></tr>`;
         return;
     }
 
     books.forEach(book => {
-
         table.innerHTML += `
             <tr>
+                <td>${book.accessionNumber || "-"}</td>
                 <td><strong>${book.title}</strong></td>
-                <td>${book.author}</td>
-                <td>${book.price}</td>
-                <td>${book.dept || "-"}</td>
-                <td>${book.shelf || "-"}</td>
-                <td>
-                    <button onclick="deleteBook(${book.id})">
-                        Delete
-                    </button>
-                </td>
+                <td>${book.authors || "-"}</td>
+                <td>${book.publisher || "-"}</td>
+                <td>${book.year || "-"}</td>
+                <td>${book.branch || "-"}</td>
+                <td>${book.price ? "₹" + book.price : "-"}</td>
+                <td>${book.available ? "✅ Yes" : "❌ No"}</td>
+                <td><button onclick="deleteBook(${book.id})">Delete</button></td>
             </tr>
         `;
     });
 }
 
-
-/* ================= SEARCH FILTER ================= */
+/* ================= SEARCH ================= */
 
 function filterBooks(){
-
-    const searchValue = document
-        .getElementById("searchInput")
-        .value
-        .toLowerCase();
-
-    const filtered = allBooks.filter(book =>
-        book.title.toLowerCase().includes(searchValue) ||
-        book.author.toLowerCase().includes(searchValue) ||
-        book.id.toString().includes(searchValue) ||
-        (book.dept && book.dept.toLowerCase().includes(searchValue)) ||
-        (book.shelf && book.shelf.toLowerCase().includes(searchValue))
+    const val = document.getElementById("searchInput").value.toLowerCase();
+    const filtered = allBooks.filter(b =>
+        (b.title && b.title.toLowerCase().includes(val)) ||
+        (b.authors && b.authors.toLowerCase().includes(val)) ||
+        (b.accessionNumber && b.accessionNumber.toLowerCase().includes(val)) ||
+        (b.branch && b.branch.toLowerCase().includes(val)) ||
+        (b.publisher && b.publisher.toLowerCase().includes(val))
     );
-
     renderBooks(filtered);
 }
-
 
 /* ================= SAVE BOOK ================= */
 
@@ -486,16 +531,47 @@ async function saveBook(){
 
     const token = localStorage.getItem("token");
 
-    const title = document.getElementById("title").value.trim();
-    const author = document.getElementById("author").value.trim();
-    const price = document.getElementById("price").value;
-    const dept = document.getElementById("dept").value;
-    const shelf = document.getElementById("shelf").value;
+    const accessionNumber  = document.getElementById("accessionNumber").value.trim();
+    const title            = document.getElementById("title").value.trim();
+    const authors          = document.getElementById("authors").value.trim();
+    const publisher        = document.getElementById("publisher").value.trim();
+    const placeOfPublication = document.getElementById("placeOfPublication").value.trim();
+    const year             = parseInt(document.getElementById("year").value) || 0;
+    const isbn             = document.getElementById("isbn").value.trim();
+    const pages            = parseInt(document.getElementById("pages").value) || 0;
+    const source           = document.getElementById("source").value.trim();
+    const price            = parseFloat(document.getElementById("price").value) || 0;
+    const billNo           = document.getElementById("billNo").value.trim();
+    const billDate         = document.getElementById("billDate").value || null;
+    const type             = document.getElementById("type").value;
+    const category         = document.getElementById("category").value.trim();
+    const branch           = document.getElementById("branch").value;
+    const recommendedYear  = parseInt(document.getElementById("recommendedYear").value) || 0;
 
-    if(!title || !author || !price){
-        alert("Please fill required fields");
+    // Required fields
+    if(!accessionNumber || !title || !authors){
+        alert("Accession Number, Title and Authors are required.");
         return;
     }
+
+    const body = {
+        accessionNumber,
+        title,
+        authors,
+        publisher,
+        placeOfPublication,
+        year,
+        isbn,
+        pages,
+        source,
+        price,
+        billNo,
+        billDate,
+        type,
+        category,
+        branch,
+        recommendedYear
+    };
 
     const response = await fetch(
         "https://library-backend-1-e3r2.onrender.com/books/admin/add-book",
@@ -505,35 +581,27 @@ async function saveBook(){
                 "Content-Type": "application/json",
                 "Authorization": "Bearer " + token
             },
-            body: JSON.stringify({
-                title,
-                author,
-                price: parseFloat(price),
-                dept,
-                shelf
-            })
+            body: JSON.stringify(body)
         }
     );
 
     if(response.ok){
         closeModal();
-        loadBooks(); // Refresh table
+        clearModal();
+        loadBooks();
     } else {
-        alert("Failed to save book");
+        const err = await response.text();
+        alert("Failed to save book: " + err);
     }
 }
 
-
-/* ================= DELETE BOOK ================= */
-
-/* ================= DELETE BOOK ================= */
+/* ================= DELETE ================= */
 
 async function deleteBook(id){
     alert("Book deletion is not supported. Please contact the system administrator.");
 }
 
-
-/* ================= MODAL CONTROLS ================= */
+/* ================= MODAL ================= */
 
 function openModal(){
     document.getElementById("modal").style.display = "flex";
@@ -541,8 +609,18 @@ function openModal(){
 
 function closeModal(){
     document.getElementById("modal").style.display = "none";
+    clearModal();
 }
 
+function clearModal(){
+    ["accessionNumber","title","authors","publisher","placeOfPublication",
+     "year","isbn","pages","source","price","billNo","billDate",
+     "category","recommendedYear"].forEach(id => {
+        document.getElementById(id).value = "";
+    });
+    document.getElementById("type").value = "";
+    document.getElementById("branch").value = "";
+}
 
 /* ================= LOGOUT ================= */
 
