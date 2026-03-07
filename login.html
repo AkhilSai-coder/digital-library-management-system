@@ -347,40 +347,37 @@ async function doLogin(){
         );
 
         if(!response.ok){
-            alert("Invalid credentials. Check your ID, password and selected role.");
+            alert("Invalid credentials");
             return;
         }
 
-        const token = await response.text();
+        const data = await response.json();
+        const token = data.token;
 
-        // Save token
         localStorage.setItem("token", token);
 
-        // Decode token to get role
         const payload = JSON.parse(atob(token.split('.')[1]));
         const role = payload.role;
 
-        // Save role for use across pages
         localStorage.setItem("role", role);
 
         alert("Login successful");
-        closeModal();
 
-        // Redirect based on role
-        if(role === "ROLE_LIBRARIAN"){
+        if(role === "LIBRARIAN"){
             window.location.href = "librarian-dashboard.html";
-        } else if(role === "ROLE_FACULTY"){
+        }
+        else if(role === "FACULTY"){
             window.location.href = "faculty-dashboard.html";
-        } else {
+        }
+        else{
             window.location.href = "student-dashboard.html";
         }
 
     } catch(error){
         console.error(error);
-        alert("Server error. Please try again.");
+        alert("Server error");
     }
 }
-
 </script>
 
 </body>
