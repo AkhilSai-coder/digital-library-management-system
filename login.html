@@ -149,6 +149,7 @@ body::before{
   border:1px solid #ccc;
   border-radius:8px;
   font-size:14px;
+  box-sizing:border-box;
 }
 
 .modal-box input:focus{
@@ -222,7 +223,7 @@ body::before{
   }
 
   .role-cards{
-    grid-template-columns:1fr;   /* stack vertically */
+    grid-template-columns:1fr;
     gap:20px;
   }
 
@@ -239,7 +240,9 @@ body::before{
     padding:6px 14px;
   }
 
-  @media (max-width: 480px){
+}
+
+@media (max-width: 480px){
 
   .modal-box{
     width:90%;
@@ -256,7 +259,6 @@ body::before{
 
 }
 
-}
 </style>
 </head>
 
@@ -351,11 +353,10 @@ async function doLogin(){
             return;
         }
 
-        // get token from backend
-        const data = await response.json();
-        const token = data.token;
+        // ✅ FIXED: backend returns plain string token, not JSON object
+        const token = await response.text();
 
-        // store token
+        // store token and role
         localStorage.setItem("token", token);
         localStorage.setItem("role", selectedRole.toUpperCase());
 
@@ -377,6 +378,7 @@ async function doLogin(){
         alert("Server error");
     }
 }
+
 </script>
 
 </body>
