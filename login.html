@@ -351,22 +351,21 @@ async function doLogin(){
             return;
         }
 
+        // get token from backend
         const data = await response.json();
         const token = data.token;
 
+        // store token
         localStorage.setItem("token", token);
-
-        const payload = JSON.parse(atob(token.split('.')[1]));
-        const role = payload.role;
-
-        localStorage.setItem("role", role);
+        localStorage.setItem("role", selectedRole.toUpperCase());
 
         alert("Login successful");
 
-        if(role === "LIBRARIAN"){
+        // redirect based on role
+        if(selectedRole === "librarian"){
             window.location.href = "librarian-dashboard.html";
         }
-        else if(role === "FACULTY"){
+        else if(selectedRole === "faculty"){
             window.location.href = "faculty-dashboard.html";
         }
         else{
