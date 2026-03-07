@@ -357,7 +357,6 @@ document.addEventListener("DOMContentLoaded", async function(){
     const token = localStorage.getItem("token");
 
     if(!token){
-        alert("Login required");
         window.location.href = "login.html";
         return;
     }
@@ -456,7 +455,7 @@ issuedCountEl.innerText = activeBooks.length;
 
     } catch(error){
         console.error(error);
-        alert("Server error");
+        toast("Server error", "error");
     }
 
 });

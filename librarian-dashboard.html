@@ -264,6 +264,7 @@ tr:hover{
 
 <body>
 
+<script src="js/toast.js"></script>
 <script src="js/auth.js"></script>
 
 <div class="dashboard-layout">
@@ -343,7 +344,6 @@ async function loadDashboard(){
     const token = localStorage.getItem("token");
 
     if(!token){
-        alert("Login required");
         window.location.href = "login.html";
         return;
     }
@@ -443,7 +443,7 @@ async function loadDashboard(){
 
     } catch(error){
         console.error(error);
-        alert("Server error");
+        toast("Server error", "error");
     }
 }
 </script>

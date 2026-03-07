@@ -2,384 +2,230 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-
-<title>Login | GRIET Central Library</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Login | GRIET Central Library</title>
 <link rel="stylesheet" href="css/style.css">
-
 <style>
-
-/* ================= GLOBAL ================= */
-
 body{
   margin:0;
-  font-family: "Georgia", serif;
-  background: linear-gradient(135deg,#0f2d52,#1f3a5f,#0b1c33);
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  min-height:100vh;
+  font-family:"Inter",sans-serif;
+  background:linear-gradient(135deg,#0f2d52,#1a3a6b,#0b1c33);
+  display:flex; align-items:center; justify-content:center; min-height:100vh;
+  overflow:hidden;
 }
-
-/* Animated Background Glow */
 body::before{
-  content:"";
-  position:absolute;
-  width:600px;
-  height:600px;
-  background:rgba(179,0,0,0.2);
-  border-radius:50%;
-  top:-200px;
-  right:-200px;
-  filter:blur(120px);
+  content:""; position:absolute; width:700px; height:700px;
+  background:radial-gradient(circle,rgba(179,0,0,0.3),transparent 70%);
+  top:-200px; right:-200px; filter:blur(80px); animation:floatGlow 8s ease-in-out infinite alternate;
 }
-
-/* ================= HOME BUTTON ================= */
+body::after{
+  content:""; position:absolute; width:500px; height:500px;
+  background:radial-gradient(circle,rgba(30,58,138,0.4),transparent 70%);
+  bottom:-150px; left:-100px; filter:blur(80px); animation:floatGlow 10s ease-in-out infinite alternate-reverse;
+}
+@keyframes floatGlow{ from{transform:translateY(0)} to{transform:translateY(30px)} }
 
 .home-btn{
-  position:absolute;
-  top:25px;
-  left:30px;
-  text-decoration:none;
-  color:#fff;
-  font-size:14px;
-  font-weight:600;
-  letter-spacing:1px;
-  padding:8px 18px;
-  border:1px solid rgba(255,255,255,0.3);
-  border-radius:30px;
-  transition:0.3s;
+  position:fixed; top:25px; left:30px; color:#fff; font-size:13px; font-weight:600;
+  padding:8px 18px; border:1px solid rgba(255,255,255,0.25); border-radius:30px;
+  transition:0.3s; z-index:10; backdrop-filter:blur(10px); background:rgba(255,255,255,0.05);
 }
+.home-btn:hover{ background:#b30000; border-color:#b30000; }
 
-.home-btn:hover{
-  background:#b30000;
-  border-color:#b30000;
-}
+.wrapper{ width:100%; max-width:1050px; padding:40px 20px; text-align:center; color:#fff; position:relative; z-index:1; }
 
-/* ================= LOGIN CONTAINER ================= */
+.logo{ font-size:44px; margin-bottom:14px; }
+h1{ font-size:34px; font-weight:700; margin-bottom:8px; letter-spacing:-0.5px; }
+.sub{ font-size:15px; opacity:0.7; margin-bottom:55px; }
 
-.login-wrapper{
-  width:100%;
-  max-width:1000px;
-  padding:40px;
-  text-align:center;
-  color:white;
-}
-
-.login-title{
-  font-size:38px;
-  margin-bottom:8px;
-}
-
-.login-subtitle{
-  font-size:16px;
-  margin-bottom:50px;
-  opacity:0.85;
-}
-
-/* ================= ROLE CARDS ================= */
-
-.role-cards{
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
-  gap:30px;
-}
+.role-cards{ display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:24px; }
 
 .role-card{
-  backdrop-filter: blur(12px);
-  background: rgba(255,255,255,0.08);
-  border:1px solid rgba(255,255,255,0.15);
-  padding:35px 20px;
-  border-radius:16px;
-  cursor:pointer;
-  transition:0.4s;
+  background:rgba(255,255,255,0.07); border:1px solid rgba(255,255,255,0.12);
+  padding:40px 24px; border-radius:20px; cursor:pointer; transition:0.4s;
+  backdrop-filter:blur(16px);
 }
-
 .role-card:hover{
-  transform:translateY(-8px);
-  background:rgba(255,255,255,0.15);
-  box-shadow:0 15px 40px rgba(0,0,0,0.3);
+  transform:translateY(-10px); background:rgba(255,255,255,0.13);
+  box-shadow:0 25px 60px rgba(0,0,0,0.3); border-color:rgba(255,255,255,0.25);
 }
+.role-card .icon{ font-size:52px; margin-bottom:18px; }
+.role-card h3{ font-size:18px; font-weight:600; letter-spacing:0.5px; }
+.role-card p{ font-size:13px; opacity:0.6; margin-top:6px; }
 
-.role-icon{
-  font-size:48px;
-  margin-bottom:15px;
-}
-
-.role-card h3{
-  font-size:20px;
-  letter-spacing:1px;
-}
-
-/* ================= MODAL ================= */
-
+/* MODAL */
 .modal{
-  position:fixed;
-  inset:0;
-  background:rgba(0,0,0,0.7);
-  display:none;
-  align-items:center;
-  justify-content:center;
+  position:fixed; inset:0; background:rgba(0,0,0,0.6);
+  display:none; align-items:center; justify-content:center; z-index:100;
+  backdrop-filter:blur(6px);
 }
-
+.modal.open{ display:flex; }
 .modal-box{
-  width:380px;
-  background:white;
-  padding:35px;
-  border-radius:18px;
-  text-align:left;
-  animation:fadeIn 0.3s ease;
+  width:420px; background:#fff; padding:40px; border-radius:24px;
+  box-shadow:0 40px 100px rgba(0,0,0,0.35); animation:slideUp 0.35s cubic-bezier(0.175,0.885,0.32,1.275);
+}
+@keyframes slideUp{ from{opacity:0;transform:translateY(30px)} to{opacity:1;transform:translateY(0)} }
+
+.modal-box .modal-icon{ font-size:36px; text-align:center; margin-bottom:8px; }
+.modal-box h3{ color:#0f2d52; font-size:20px; font-weight:700; margin-bottom:24px; text-align:center; }
+
+.input-group{ position:relative; margin-bottom:16px; }
+.input-group input{
+  width:100%; padding:14px 16px; border:1.5px solid #e5e7eb; border-radius:12px;
+  font-size:14px; transition:0.3s; box-sizing:border-box; background:#fafafa;
+}
+.input-group input:focus{ outline:none; border-color:#0f2d52; background:#fff; box-shadow:0 0 0 3px rgba(15,45,82,0.1); }
+.input-group label{
+  position:absolute; left:16px; top:50%; transform:translateY(-50%);
+  font-size:14px; color:#9ca3af; pointer-events:none; transition:0.2s;
+}
+.input-group input:focus ~ label,
+.input-group input:not(:placeholder-shown) ~ label{
+  top:0; font-size:11px; background:#fff; padding:0 4px; color:#0f2d52;
 }
 
-@keyframes fadeIn{
-  from{transform:translateY(-20px);opacity:0;}
-  to{transform:translateY(0);opacity:1;}
+.inline-error{ font-size:13px; color:#ef4444; margin:-8px 0 12px; display:none; }
+.inline-error.show{ display:block; }
+
+.modal-actions{ display:flex; gap:12px; margin-top:8px; }
+.btn-login{
+  flex:2; padding:14px; background:linear-gradient(135deg,#0f2d52,#1e3a8a);
+  color:#fff; border:none; border-radius:12px; font-size:15px; font-weight:600;
+  cursor:pointer; transition:0.3s;
 }
+.btn-login:hover{ transform:translateY(-2px); box-shadow:0 10px 25px rgba(15,45,82,0.3); }
+.btn-login:disabled{ opacity:0.7; cursor:not-allowed; transform:none; }
+.btn-cancel{ flex:1; padding:14px; background:#f1f5f9; border:none; border-radius:12px; cursor:pointer; font-size:14px; }
+.btn-cancel:hover{ background:#e2e8f0; }
 
-.modal-box h3{
-  margin-bottom:20px;
-  color:#0f2d52;
-  font-size:20px;
-}
-
-.modal-box input{
-  width:100%;
-  padding:12px;
-  margin-bottom:15px;
-  border:1px solid #ccc;
-  border-radius:8px;
-  font-size:14px;
-  box-sizing:border-box;
-}
-
-.modal-box input:focus{
-  outline:none;
-  border-color:#0f2d52;
-}
-
-/* Buttons */
-
-.modal-actions{
-  display:flex;
-  justify-content:space-between;
-  margin-top:10px;
-}
-
-.btn{
-  padding:10px 18px;
-  border:none;
-  border-radius:8px;
-  cursor:pointer;
-  font-size:14px;
-  font-weight:600;
-  transition:0.3s;
-}
-
-.btn-primary{
-  background:#0f2d52;
-  color:white;
-}
-
-.btn-primary:hover{
-  background:#b30000;
-}
-
-.btn-danger{
-  background:#ccc;
-}
-
-.btn-danger:hover{
-  background:#999;
-  color:white;
-}
-
-/* Responsive */
-
-@media(max-width:600px){
-  .login-title{
-    font-size:26px;
-  }
-}
-
-/* ================= RESPONSIVE FIX ================= */
-
-@media (max-width: 768px){
-
-  body{
-    padding:20px;
-  }
-
-  .login-wrapper{
-    padding:20px;
-  }
-
-  .login-title{
-    font-size:28px;
-  }
-
-  .login-subtitle{
-    font-size:14px;
-    margin-bottom:30px;
-  }
-
-  .role-cards{
-    grid-template-columns:1fr;
-    gap:20px;
-  }
-
-  .modal-box{
-    width:100%;
-    max-width:320px;
-    padding:25px;
-  }
-
-  .home-btn{
-    top:15px;
-    left:15px;
-    font-size:12px;
-    padding:6px 14px;
-  }
-
-}
-
-@media (max-width: 480px){
-
-  .modal-box{
-    width:90%;
-  }
-
-  .modal-actions{
-    flex-direction:column;
-    gap:10px;
-  }
-
-  .btn{
-    width:100%;
-  }
-
-}
-
+@media(max-width:600px){ .modal-box{ width:92%; padding:28px; } }
 </style>
 </head>
-
 <body>
+<script src="js/toast.js"></script>
 
-<a href="index.html" class="home-btn">← Back to Home</a>
+<a href="index.html" class="home-btn">← Home</a>
 
-<div class="login-wrapper">
-
-  <h1 class="login-title">GRIET Central Library Portal</h1>
-  <p class="login-subtitle">
-    Secure access for Students, Faculty & Librarians
-  </p>
+<div class="wrapper">
+  <div class="logo">📚</div>
+  <h1>GRIET Central Library</h1>
+  <p class="sub">Secure access for Students, Faculty & Librarians</p>
 
   <div class="role-cards">
-    <div class="role-card" onclick="openLogin('student')">
-      <div class="role-icon">🎓</div>
-      <h3>Student Login</h3>
+    <div class="role-card" onclick="openLogin('STUDENT')">
+      <div class="icon">🎓</div>
+      <h3>Student</h3>
+      <p>Access catalogue & borrowed books</p>
     </div>
-
-    <div class="role-card" onclick="openLogin('faculty')">
-      <div class="role-icon">👨‍🏫</div>
-      <h3>Faculty Login</h3>
+    <div class="role-card" onclick="openLogin('FACULTY')">
+      <div class="icon">👨‍🏫</div>
+      <h3>Faculty</h3>
+      <p>Extended borrowing privileges</p>
     </div>
-
-    <div class="role-card" onclick="openLogin('librarian')">
-      <div class="role-icon">📚</div>
-      <h3>Librarian Login</h3>
+    <div class="role-card" onclick="openLogin('LIBRARIAN')">
+      <div class="icon">🏛️</div>
+      <h3>Librarian</h3>
+      <p>Full administrative access</p>
     </div>
   </div>
-
 </div>
-
-<!-- ================= LOGIN MODAL ================= -->
 
 <div class="modal" id="loginModal">
   <div class="modal-box">
+    <div class="modal-icon" id="modalIcon"></div>
     <h3 id="loginRoleTitle"></h3>
-
-    <input id="userid" placeholder="Roll No / Employee ID">
-    <input id="password" type="password" placeholder="Password">
-
+    <div class="input-group">
+      <input id="userid" placeholder=" " autocomplete="username">
+      <label>Roll No / Employee ID</label>
+    </div>
+    <div class="input-group">
+      <input id="password" type="password" placeholder=" " autocomplete="current-password">
+      <label>Password</label>
+    </div>
+    <div class="inline-error" id="loginError"></div>
     <div class="modal-actions">
-      <button class="btn btn-primary" onclick="doLogin()">Login</button>
-      <button class="btn btn-danger" onclick="closeModal()">Cancel</button>
+      <button class="btn-login" id="loginBtn" onclick="doLogin()">Login</button>
+      <button class="btn-cancel" onclick="closeModal()">Cancel</button>
     </div>
   </div>
 </div>
 
 <script>
-
 let selectedRole = "";
+const roleIcons = { STUDENT:"🎓", FACULTY:"👨‍🏫", LIBRARIAN:"🏛️" };
 
 function openLogin(role){
-    selectedRole = role;
-    document.getElementById("loginRoleTitle").innerText =
-        "Login as " + role.charAt(0).toUpperCase() + role.slice(1);
-    document.getElementById("loginModal").style.display = "flex";
+  selectedRole = role;
+  document.getElementById("loginRoleTitle").innerText = "Login as " + role.charAt(0) + role.slice(1).toLowerCase();
+  document.getElementById("modalIcon").innerText = roleIcons[role];
+  document.getElementById("userid").value = "";
+  document.getElementById("password").value = "";
+  showError("");
+  document.getElementById("loginModal").classList.add("open");
+  setTimeout(()=> document.getElementById("userid").focus(), 100);
 }
 
-function closeModal(){
-    document.getElementById("loginModal").style.display = "none";
+function closeModal(){ document.getElementById("loginModal").classList.remove("open"); }
+
+function showError(msg){
+  const el = document.getElementById("loginError");
+  el.textContent = msg;
+  el.classList.toggle("show", !!msg);
 }
+
+// Close on backdrop click
+document.getElementById("loginModal").addEventListener("click", function(e){
+  if(e.target === this) closeModal();
+});
+
+// Enter key
+document.addEventListener("keydown", e => {
+  if(e.key === "Escape") closeModal();
+  if(e.key === "Enter" && document.getElementById("loginModal").classList.contains("open")) doLogin();
+});
 
 async function doLogin(){
+  const collegeId = document.getElementById("userid").value.trim();
+  const password  = document.getElementById("password").value.trim();
+  const btn = document.getElementById("loginBtn");
 
-    const collegeId = document.getElementById("userid").value.trim();
-    const password = document.getElementById("password").value.trim();
+  showError("");
 
-    if(!collegeId || !password){
-        alert("Please enter credentials");
-        return;
+  if(!collegeId || !password){ showError("Please enter your credentials"); return; }
+
+  btnLoad(btn, "Signing in...");
+
+  try {
+    const res = await fetch("https://library-backend-1-e3r2.onrender.com/auth/login", {
+      method:"POST",
+      headers:{ "Content-Type":"application/json" },
+      body: JSON.stringify({ collegeId, password, role: selectedRole })
+    });
+
+    if(!res.ok){
+      const err = await res.json().catch(()=>({error:"Invalid credentials"}));
+      showError(err.error || "Invalid credentials");
+      btnReset(btn);
+      return;
     }
 
-    try {
+    const token = await res.text();
+    localStorage.setItem("token", token);
+    localStorage.setItem("role", selectedRole);
 
-        const response = await fetch(
-            "https://library-backend-1-e3r2.onrender.com/auth/login",
-            {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                    collegeId: collegeId,
-                    password: password,
-                    role: selectedRole.toUpperCase()
-                })
-            }
-        );
+    toast("Welcome back! Redirecting...", "success");
 
-        if(!response.ok){
-            alert("Invalid credentials");
-            return;
-        }
+    setTimeout(()=>{
+      if(selectedRole === "LIBRARIAN")      window.location.href = "librarian-dashboard.html";
+      else if(selectedRole === "FACULTY")   window.location.href = "faculty-dashboard.html";
+      else                                  window.location.href = "student-dashboard.html";
+    }, 900);
 
-        // ✅ FIXED: backend returns plain string token, not JSON object
-        const token = await response.text();
-
-        // store token and role
-        localStorage.setItem("token", token);
-        localStorage.setItem("role", selectedRole.toUpperCase());
-
-        alert("Login successful");
-
-        // redirect based on role
-        if(selectedRole === "librarian"){
-            window.location.href = "librarian-dashboard.html";
-        }
-        else if(selectedRole === "faculty"){
-            window.location.href = "faculty-dashboard.html";
-        }
-        else{
-            window.location.href = "student-dashboard.html";
-        }
-
-    } catch(error){
-        console.error(error);
-        alert("Server error");
-    }
+  } catch(e){
+    showError("Server unreachable. Please try again.");
+    btnReset(btn);
+  }
 }
-
 </script>
-
 </body>
 </html>

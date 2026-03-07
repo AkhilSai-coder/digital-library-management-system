@@ -452,6 +452,23 @@ let allBooks = [];
 document.addEventListener("DOMContentLoaded", () => {
     loadBooks();
     document.getElementById("searchInput").addEventListener("keyup", filterBooks);
+
+    // Real-time duplicate check on accession number field
+    document.getElementById("accessionNumber").addEventListener("input", function(){
+        const val = this.value.trim().toLowerCase();
+        const isDuplicate = val && allBooks.some(b =>
+            b.accessionNumber && b.accessionNumber.toLowerCase() === val
+        );
+        if(isDuplicate){
+            this.style.borderColor = "#e10600";
+            this.style.background = "#fff5f5";
+            this.title = "This accession number already exists!";
+        } else {
+            this.style.borderColor = "";
+            this.style.background = "";
+            this.title = "";
+        }
+    });
 });
 
 async function loadBooks(){
@@ -463,7 +480,7 @@ async function loadBooks(){
         { headers: { "Authorization": "Bearer " + token } }
     );
 
-    if(!response.ok){ alert("Failed to load books"); return; }
+    if(!response.ok){ toast("Failed to load books", "error"); return; }
 
     allBooks = await response.json();
     renderBooks(allBooks);
@@ -550,7 +567,17 @@ async function saveBook(){
 
     // Required fields
     if(!accessionNumber || !title || !authors){
-        alert("Accession Number, Title and Authors are required.");
+        toast("Accession Number, Title and Authors are required.", "info");
+        return;
+    }
+
+    // ✅ Check for duplicate accession number locally
+    const duplicate = allBooks.find(b =>
+        b.accessionNumber && b.accessionNumber.toLowerCase() === accessionNumber.toLowerCase()
+    );
+    if(duplicate){
+        toast(`❌ Accession Number "${accessionNumber}" already exists!\nBook: "${duplicate.title}"`, "error");
+        document.getElementById("accessionNumber").focus();
         return;
     }
 
@@ -591,14 +618,14 @@ async function saveBook(){
         loadBooks();
     } else {
         const err = await response.text();
-        alert("Failed to save book: " + err);
+        toast("Failed to save book: " + err, "error");
     }
 }
 
 /* ================= DELETE ================= */
 
 async function deleteBook(id){
-    alert("Book deletion is not supported. Please contact the system administrator.");
+    toast("Book deletion is not supported. Please contact the system administrator.", "info");
 }
 
 /* ================= MODAL ================= */

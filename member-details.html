@@ -394,7 +394,7 @@ async function issueOffline(){
   const bookId = input.dataset.bookId;
 
   if(!bookId){
-    alert("⚠ Please select book from suggestions list");
+    toast("⚠ Please select book from suggestions list", "info");
     return;
   }
 
@@ -411,7 +411,7 @@ async function issueOffline(){
   );
 
   if(response.ok){
-    alert("Book issued successfully");
+    toast("Book issued successfully", "success");
 
     input.value = "";
     input.dataset.bookId = "";
@@ -419,7 +419,7 @@ async function issueOffline(){
     loadActive();
   } else {
     const msg = await response.text();
-    alert("Issue failed: " + msg);
+    toast("Issue failed: " + msg, "error");
   }
 }
 /* =======================
@@ -439,7 +439,7 @@ async function returnBook(borrowId){
     }
   );
 
-  alert("Book returned successfully");
+  toast("Book returned successfully", "success");
 
   loadActive();
 }

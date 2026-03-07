@@ -5,148 +5,81 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Issue & Return | GRIET Library</title>
 <link rel="stylesheet" href="css/style.css">
-
 <style>
-
-.dashboard-layout { display:flex; min-height:100vh; background:#f6f8fb; }
-.sidebar{
-  width:260px;
-  background:linear-gradient(180deg,#0f2d52,#0b1f3a);
-  color:#fff;
-  padding:25px 20px;
+:root{ --primary:#0f2d52; --accent:#b30000; --bg:#f4f7fb; }
+body{ background:var(--bg); font-family:'Inter',sans-serif; margin:0; }
+.dashboard-layout{ display:flex; min-height:100vh; }
+.sidebar{ width:260px; background:linear-gradient(180deg,#0f2d52,#0b1f3a); color:#fff; padding:25px 20px; }
+.sidebar h3{ font-size:18px; margin-bottom:30px; font-weight:700; }
+.sidebar a{ display:block; padding:12px 15px; margin-bottom:8px; text-decoration:none; color:#dbeafe; border-radius:10px; font-size:14px; transition:0.25s; }
+.sidebar a:hover{ background:rgba(255,255,255,0.1); transform:translateX(5px); }
+.sidebar a.active{ background:var(--accent); color:#fff; }
+.main{ flex:1; padding:36px; overflow-x:hidden; }
+.page-header{ display:flex; justify-content:space-between; align-items:center; margin-bottom:28px; }
+.page-title{ font-size:26px; font-weight:700; color:var(--primary); }
+.refresh-btn{
+  padding:9px 18px; background:rgba(15,45,82,0.08); border:1px solid rgba(15,45,82,0.15);
+  border-radius:10px; font-size:13px; font-weight:600; color:var(--primary); cursor:pointer; transition:0.2s;
 }
-
-.sidebar h3{
-  font-size:18px;
-  margin-bottom:30px;
-  font-weight:600;
+.refresh-btn:hover{ background:var(--primary); color:#fff; }
+.grid{ display:grid; grid-template-columns:1fr 1fr; gap:24px; }
+.panel{
+  background:#fff; border-radius:18px; box-shadow:0 8px 30px rgba(0,0,0,0.06);
+  border:1px solid #f1f5f9; overflow:hidden;
 }
-
-.sidebar a{
-  display:block;
-  padding:12px 15px;
-  margin-bottom:8px;
-  text-decoration:none;
-  color:#dbeafe;
-  border-radius:8px;
-  font-size:14px;
-  transition:0.2s ease;
+.panel-header{
+  padding:18px 22px; background:linear-gradient(135deg,#f8fafc,#f1f5f9);
+  border-bottom:1px solid #e5e7eb; display:flex; justify-content:space-between; align-items:center;
 }
-
-.sidebar a:hover,
-.sidebar a.active{
-    background:#b30000;
-    color:#fff;
-    transform:translateX(5px);
-}
-
-.main{
-  flex:1;
-  padding:30px;
-}
-.page-title{
-  font-size:26px;
-  margin-bottom:25px;
-  color:#1f3a5f;
-}
-.grid{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:25px;
-}
-.card{
-  background:#fff;
-  border:1px solid #e5e7eb;
-  border-radius:12px;
-  padding:20px;
-}
-.list-item{
-  padding:12px;
-  border-bottom:1px solid #f1f5f9;
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-}
-.btn{
-  padding:8px 14px;
-  border:none;
-  border-radius:8px;
-  background:#1f3a5f;
-  color:#fff;
-  cursor:pointer;
-  font-size:13px;
-}
-.btn.return{
-  background:#ef4444;
-}
+.panel-title{ font-weight:700; font-size:15px; color:var(--primary); }
 .badge{
-  font-size:12px;
-  padding:4px 10px;
-  border-radius:20px;
-  background:#f1f5f9;
+  font-size:11px; font-weight:700; padding:3px 10px; border-radius:20px;
+  background:var(--accent); color:#fff; min-width:24px; text-align:center;
 }
-.section-title{
-  font-weight:bold;
-  margin-bottom:15px;
+.badge.blue{ background:var(--primary); }
+.panel-body{ padding:8px 0; min-height:120px; max-height:520px; overflow-y:auto; }
+
+.list-item{
+  padding:14px 22px; display:flex; justify-content:space-between; align-items:center;
+  gap:12px; border-bottom:1px solid #f8fafc; transition:background 0.2s;
 }
+.list-item:last-child{ border-bottom:none; }
+.list-item:hover{ background:#fafbff; }
+.item-info b{ font-size:14px; color:#1f2937; display:block; margin-bottom:3px; }
+.item-info small{ font-size:12px; color:#94a3b8; }
 
-/* ================= RESPONSIVE ================= */
-
-@media (max-width: 992px){
-
-  .dashboard-layout{
-    flex-direction: column;
-  }
-
-  .sidebar{
-    width: 100%;
-    text-align: center;
-  }
-
-  .sidebar a{
-    display: inline-block;
-    margin: 5px;
-  }
-
-  .main{
-    padding: 20px;
-  }
-
-  .grid{
-    grid-template-columns: 1fr;   /* stack cards */
-  }
-
+.overdue-tag{
+  font-size:10px; font-weight:700; padding:2px 8px; border-radius:20px;
+  background:#fef2f2; color:#dc2626; border:1px solid #fecaca; margin-left:6px;
 }
 
-/* ================= MOBILE ================= */
-
-@media (max-width: 768px){
-
-  .page-title{
-    font-size: 20px;
-  }
-
-  .list-item{
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 10px;
-  }
-
-  .btn{
-    width: 100%;
-  }
-
+.btn-group{ display:flex; gap:8px; flex-shrink:0; }
+.action-btn{
+  padding:7px 14px; border:none; border-radius:8px; cursor:pointer;
+  font-size:12px; font-weight:700; transition:0.2s; letter-spacing:0.3px;
 }
+.action-btn:hover{ transform:translateY(-2px); filter:brightness(1.1); }
+.action-btn:disabled{ opacity:0.6; cursor:not-allowed; transform:none; }
+.btn-approve{ background:linear-gradient(135deg,#059669,#047857); color:#fff; }
+.btn-reject { background:linear-gradient(135deg,#ef4444,#dc2626); color:#fff; }
+.btn-return { background:linear-gradient(135deg,#f97316,#ea580c); color:#fff; }
 
+.empty-state{ padding:48px 20px; text-align:center; color:#cbd5e1; }
+.empty-state .e-icon{ font-size:40px; margin-bottom:10px; }
+.empty-state .e-text{ font-size:14px; font-weight:500; }
+
+/* Slide-out animation for removed items */
+@keyframes slideOut{ to{ opacity:0; transform:translateX(30px); max-height:0; padding:0; overflow:hidden; } }
+.removing{ animation:slideOut 0.3s ease forwards; }
+
+@media(max-width:992px){ .dashboard-layout{ flex-direction:column; } .sidebar{ width:100%; display:flex; overflow-x:auto; padding:15px; } .sidebar h3{ display:none; } .sidebar a{ white-space:nowrap; margin-right:8px; } .grid{ grid-template-columns:1fr; } .main{ padding:20px; } }
 </style>
 </head>
-
 <body>
-
+<script src="js/toast.js"></script>
 <script src="js/auth.js"></script>
 
 <div class="dashboard-layout">
-
 <aside class="sidebar">
   <h3>📚 Library</h3>
   <a href="librarian-dashboard.html">Dashboard</a>
@@ -160,177 +93,166 @@
 </aside>
 
 <main class="main">
+  <div class="page-header">
+    <div class="page-title">Issue & Return</div>
+    <button class="refresh-btn" onclick="loadAll()">↻ Refresh</button>
+  </div>
 
-<div class="page-title">Issue & Return</div>
+  <div class="grid">
+    <div class="panel">
+      <div class="panel-header">
+        <span class="panel-title">📋 Pending Requests</span>
+        <span class="badge" id="reqBadge">0</span>
+      </div>
+      <div class="panel-body" id="requestList"></div>
+    </div>
 
-<div class="grid">
-
-<!-- LEFT SIDE -->
-<div class="card">
-  <div class="section-title">Pending Book Requests</div>
-  <div id="requestList"></div>
-</div>
-
-<!-- RIGHT SIDE -->
-<div class="card">
-  <div class="section-title">Issued Books</div>
-  <div id="issuedList"></div>
-</div>
-
-</div>
+    <div class="panel">
+      <div class="panel-header">
+        <span class="panel-title">📖 Issued Books</span>
+        <span class="badge blue" id="issuedBadge">0</span>
+      </div>
+      <div class="panel-body" id="issuedList"></div>
+    </div>
+  </div>
 </main>
 </div>
 
 <script>
-document.addEventListener("DOMContentLoaded", async function(){
+checkAuth();
+const BASE = "https://library-backend-1-e3r2.onrender.com";
 
-    const token = localStorage.getItem("token");
+document.addEventListener("DOMContentLoaded", loadAll);
 
-    if(!token){
-        alert("Login required");
-        window.location.href = "login.html";
-        return;
-    }
-
-    const requestList = document.getElementById("requestList");
-    const issuedList = document.getElementById("issuedList");
-
-    try {
-
-        /* =========================
-           LOAD PENDING REQUESTS
-        ========================= */
-
-        const requestResponse = await fetch(
-            "https://library-backend-1-e3r2.onrender.com/request/pending", {
-                headers: {
-                    "Authorization": "Bearer " + token
-                }
-            }
-        );
-
-        const requests = requestResponse.ok ? 
-            await requestResponse.json() : [];
-
-        requestList.innerHTML = "";
-
-        if(requests.length === 0){
-            requestList.innerHTML = "No pending requests";
-        }
-
-        requests.forEach(req => {
-
-            requestList.innerHTML += `
-                <div class="list-item">
-                    <div>
-                        <b>${req.book.title}</b><br>
-                        <small>${req.user.collegeId}</small>
-                    </div>
-                    <div>
-                        <button class="btn"
-                            onclick="approveRequest(${req.id})">
-                            Approve
-                        </button>
-                    </div>
-                </div>
-            `;
-        });
-
-
-        /* =========================
-           LOAD ISSUED BOOKS
-        ========================= */
-
-        const issuedResponse = await fetch(
-            "https://library-backend-1-e3r2.onrender.com/borrow/all", {
-                headers: {
-                    "Authorization": "Bearer " + token
-                }
-            }
-        );
-
-        const borrows = issuedResponse.ok ? 
-            await issuedResponse.json() : [];
-
-        issuedList.innerHTML = "";
-
-        if(borrows.length === 0){
-            issuedList.innerHTML = "No issued books";
-        }
-
-        borrows
-  .filter(b => !b.returned)
-  .forEach(b => {
-
-      issuedList.innerHTML += `
-          <div class="list-item">
-              <div>
-                  <b>${b.book.title}</b><br>
-                  <small>${b.user.collegeId} • Due: ${b.dueDate}</small>
-              </div>
-              <div>
-                  <button class="btn return"
-                      onclick="returnBook(${b.id})">
-                      Return
-                  </button>
-              </div>
-          </div>
-      `;
-});
-
-    } catch(error){
-        console.error(error);
-        alert("Server error");
-    }
-
-});
-
-
-/* =========================
-   APPROVE REQUEST
-========================= */
-async function approveRequest(id){
-
-    const token = localStorage.getItem("token");
-
-    const response = await fetch(
-        `https://library-backend-1-e3r2.onrender.com/request/approve/${id}`, {
-            method: "POST",
-            headers: {
-                "Authorization": "Bearer " + token
-            }
-        }
-    );
-
-    if(response.ok){
-        alert("Request Approved");
-        location.reload();
-    } else {
-        alert("Failed to approve");
-    }
+async function loadAll(){
+  await Promise.all([loadRequests(), loadIssued()]);
 }
 
+/* ── LOAD PENDING REQUESTS ── */
+async function loadRequests(){
+  const el = document.getElementById("requestList");
+  el.innerHTML = skeleton(4, 3);
+  try {
+    const res = await apiFetch("/request/pending");
+    const data = res.ok ? await res.json() : [];
+    document.getElementById("reqBadge").textContent = data.length;
+    if(!data.length){ el.innerHTML = `<div class="empty-state"><div class="e-icon">✅</div><div class="e-text">No pending requests</div></div>`; return; }
+    el.innerHTML = data.map(r => `
+      <div class="list-item" id="req-${r.id}">
+        <div class="item-info">
+          <b>${r.book.title}</b>
+          <small>👤 ${r.user.collegeId} &nbsp;·&nbsp; 📗 ${r.book.accessionNumber||"—"}</small>
+        </div>
+        <div class="btn-group">
+          <button class="action-btn btn-approve" onclick="approveRequest(${r.id}, this)">Approve</button>
+          <button class="action-btn btn-reject"  onclick="rejectRequest(${r.id}, this)">Reject</button>
+        </div>
+      </div>`).join("");
+  } catch(e){ el.innerHTML = `<div class="empty-state"><div class="e-text">Failed to load</div></div>`; }
+}
 
-/* =========================
-   RETURN BOOK
-========================= */
-async function returnBook(id) {
+/* ── LOAD ISSUED BOOKS ── */
+async function loadIssued(){
+  const el = document.getElementById("issuedList");
+  el.innerHTML = skeleton(4, 3);
+  try {
+    const res = await apiFetch("/borrow/all");
+    const data = res.ok ? await res.json() : [];
+    const active = data.filter(b => !b.returned);
+    document.getElementById("issuedBadge").textContent = active.length;
+    if(!active.length){ el.innerHTML = `<div class="empty-state"><div class="e-icon">📭</div><div class="e-text">No books currently issued</div></div>`; return; }
+    const today = new Date();
+    el.innerHTML = active.map(b => {
+      const overdue = new Date(b.dueDate) < today;
+      return `
+        <div class="list-item" id="borrow-${b.id}">
+          <div class="item-info">
+            <b>${b.book.title}${overdue?'<span class="overdue-tag">OVERDUE</span>':''}</b>
+            <small>👤 ${b.user.collegeId} &nbsp;·&nbsp; Due: ${b.dueDate}</small>
+          </div>
+          <div class="btn-group">
+            <button class="action-btn btn-return" onclick="returnBook(${b.id}, this)">Return</button>
+          </div>
+        </div>`;
+    }).join("");
+  } catch(e){ el.innerHTML = `<div class="empty-state"><div class="e-text">Failed to load</div></div>`; }
+}
 
-    const token = localStorage.getItem("token");
+/* ── APPROVE ── */
+async function approveRequest(id, btn){
+  btnLoad(btn, "...");
+  const btns = document.querySelectorAll(`#req-${id} .action-btn`);
+  btns.forEach(b => b.disabled = true);
+  const res = await apiFetch(`/request/approve/${id}`, { method:"POST" });
+  if(res.ok){
+    removeItem("req-" + id);
+    decBadge("reqBadge");
+    toast("Request approved — book issued!", "success");
+    loadIssued();
+  } else {
+    const err = await res.json().catch(()=>({error:"Failed"}));
+    toast(err.error || "Failed to approve", "error");
+    btns.forEach(b => b.disabled = false);
+    btnReset(btn);
+  }
+}
 
-    await fetch(`https://library-backend-1-e3r2.onrender.com/borrow/return/${id}`, {
-        method: "POST",
-        headers: {
-            "Authorization": "Bearer " + token
-        }
+/* ── REJECT ── */
+async function rejectRequest(id, btn){
+  btnLoad(btn, "...");
+  const btns = document.querySelectorAll(`#req-${id} .action-btn`);
+  btns.forEach(b => b.disabled = true);
+  const res = await apiFetch(`/request/reject/${id}`, { method:"POST" });
+  if(res.ok){
+    removeItem("req-" + id);
+    decBadge("reqBadge");
+    toast("Request rejected", "info");
+  } else {
+    toast("Failed to reject", "error");
+    btns.forEach(b => b.disabled = false);
+    btnReset(btn);
+  }
+}
+
+/* ── RETURN BOOK ── */
+async function returnBook(id, btn){
+  btnLoad(btn, "...");
+  btn.disabled = true;
+  const res = await apiFetch(`/borrow/return/${id}`, { method:"POST" });
+  if(res.ok){
+    removeItem("borrow-" + id);
+    decBadge("issuedBadge");
+    toast("Book returned successfully!", "success");
+  } else {
+    toast("Failed to return book", "error");
+    btnReset(btn);
+    btn.disabled = false;
+  }
+}
+
+/* ── HELPERS ── */
+function removeItem(id){
+  const el = document.getElementById(id);
+  if(!el) return;
+  el.classList.add("removing");
+  setTimeout(()=>{
+    el.remove();
+    ["requestList","issuedList"].forEach(lid => {
+      const panel = document.getElementById(lid);
+      if(panel && panel.children.length === 0){
+        const msgs = { requestList:"No pending requests", issuedList:"No books currently issued" };
+        const icons = { requestList:"✅", issuedList:"📭" };
+        panel.innerHTML = `<div class="empty-state"><div class="e-icon">${icons[lid]}</div><div class="e-text">${msgs[lid]}</div></div>`;
+      }
     });
+  }, 320);
+}
 
-    alert("Book Returned Successfully");
-
-    // 🔥 RELOAD DATA FROM BACKEND
-    location.reload();
+function decBadge(id){
+  const el = document.getElementById(id);
+  const v = parseInt(el.textContent) - 1;
+  el.textContent = Math.max(0, v);
 }
 </script>
-
 </body>
 </html>

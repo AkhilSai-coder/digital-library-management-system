@@ -18,11 +18,7 @@
   --button:#243b5a;
 }
 
-*{
-  margin:0;
-  padding:0;
-  box-sizing:border-box;
-}
+*{ margin:0; padding:0; box-sizing:border-box; }
 
 body{
   font-family:'Inter',sans-serif;
@@ -30,7 +26,6 @@ body{
   color:#1f2937;
 }
 
-/* Container */
 .container{
   max-width:1200px;
   margin:auto;
@@ -98,15 +93,18 @@ select{
   box-shadow:0 20px 45px rgba(0,0,0,0.08);
 }
 
-.card-icon{
-  font-size:22px;
-  margin-bottom:12px;
-}
+.card-icon{ font-size:22px; margin-bottom:12px; }
 
 .card h3{
   font-size:18px;
   font-weight:600;
   margin-bottom:6px;
+}
+
+.card .meta{
+  font-size:13px;
+  color:var(--muted);
+  margin-bottom:4px;
 }
 
 .author{
@@ -115,7 +113,7 @@ select{
   margin-bottom:18px;
 }
 
-/* Button */
+/* Request Button States */
 .request-btn{
   padding:10px 18px;
   border-radius:8px;
@@ -137,20 +135,24 @@ select{
   transform:scale(0.97);
 }
 
-/* Responsive */
-@media(max-width:768px){
-  .filters{
-    flex-direction:column;
-  }
+/* Already requested state */
+.request-btn.already-requested{
+  background:#6b7280;
+  cursor:not-allowed;
+  transform:none !important;
+}
 
-  .search,
-  select{
-    width:100%;
-  }
+/* Unavailable state */
+.request-btn.unavailable{
+  background:#9ca3af;
+  cursor:not-allowed;
+  transform:none !important;
+}
 
-  .container{
-    padding:40px 15px;
-  }
+/* Loading state */
+.request-btn.loading{
+  opacity:0.7;
+  cursor:not-allowed;
 }
 
 .back-btn{
@@ -165,88 +167,113 @@ select{
   transition:0.2s ease;
 }
 
-.back-btn:hover{
-  background:#1c2f4a;
+.back-btn:hover{ background:#1c2f4a; }
+
+/* Responsive */
+@media(max-width:768px){
+  .filters{ flex-direction:column; }
+  .search, select{ width:100%; }
+  .container{ padding:40px 15px; }
 }
 </style>
 </head>
 
 <body>
 
+<script src="js/toast.js"></script>
 <script src="js/auth.js"></script>
 
 <div class="container">
 
   <button class="back-btn" onclick="goBack()">← Back to Dashboard</button>
 
-<h1>Book Catalog</h1>
+  <h1>Book Catalog</h1>
 
-<!-- FILTERS -->
-<div class="filters">
-  <input id="searchInput" class="search"
-         placeholder="🔍 Search by title, author...">
+  <!-- FILTERS -->
+  <div class="filters">
+    <input id="searchInput" class="search" placeholder="🔍 Search by title, author...">
 
-  <select id="deptFilter">
-    <option value="all">All Departments</option>
-    <option value="CSE">CSE</option>
-    <option value="ECE">ECE</option>
-  </select>
+    <select id="deptFilter">
+      <option value="all">All Departments</option>
+      <option value="CSE">CSE</option>
+      <option value="ECE">ECE</option>
+      <option value="MECH">Mech</option>
+      <option value="CIVIL">Civil</option>
+      <option value="EEE">EEE</option>
+      <option value="IT">IT</option>
+      <option value="GENERAL">General</option>
+    </select>
 
-  <select id="catFilter">
-    <option value="all">All Categories</option>
-    <option value="Algorithms">Algorithms</option>
-    <option value="Operating Systems">Operating Systems</option>
-    <option value="AI/ML">AI/ML</option>
-    <option value="Electronics">Electronics</option>
-  </select>
+    <select id="catFilter">
+      <option value="all">All Categories</option>
+      <option value="Algorithms">Algorithms</option>
+      <option value="Operating Systems">Operating Systems</option>
+      <option value="AI/ML">AI/ML</option>
+      <option value="Electronics">Electronics</option>
+    </select>
+  </div>
+
+  <div id="bookGrid" class="grid"></div>
+
 </div>
-
-<div id="bookGrid" class="grid"></div>
 
 <script>
 
-let allBooks = []; // Store all books globally
+let allBooks = [];
+let myRequestedBookIds = new Set(); // ✅ Track books already requested by this user
 
-document.addEventListener("DOMContentLoaded", () => {
-    loadBooks();
+document.addEventListener("DOMContentLoaded", async () => {
+    await loadMyRequests(); // Load existing requests FIRST
+    await loadBooks();      // Then load books (so buttons render correctly)
 
-    // Search listener
-    document.getElementById("searchInput")
-        .addEventListener("keyup", applyFilters);
-
-    // Department filter
-    document.getElementById("deptFilter")
-        .addEventListener("change", applyFilters);
-
-    // Category filter
-    document.getElementById("catFilter")
-        .addEventListener("change", applyFilters);
+    document.getElementById("searchInput").addEventListener("keyup", applyFilters);
+    document.getElementById("deptFilter").addEventListener("change", applyFilters);
+    document.getElementById("catFilter").addEventListener("change", applyFilters);
 });
+
+
+/* ================= LOAD MY EXISTING REQUESTS ================= */
+
+async function loadMyRequests(){
+
+    const token = localStorage.getItem("token");
+
+    try {
+        const response = await fetch(
+            "https://library-backend-1-e3r2.onrender.com/request/my",
+            { headers: { "Authorization": "Bearer " + token } }
+        );
+
+        if(response.ok){
+            const requests = await response.json();
+            // Store IDs of books with PENDING requests
+            requests.forEach(r => {
+                if(r.status === "PENDING"){
+                    myRequestedBookIds.add(r.book.id);
+                }
+            });
+        }
+    } catch(e){
+        console.error("Could not load my requests", e);
+    }
+}
 
 
 /* ================= LOAD BOOKS ================= */
 
-async function loadBooks() {
+async function loadBooks(){
 
     const token = localStorage.getItem("token");
 
     const response = await fetch(
         "https://library-backend-1-e3r2.onrender.com/books",
-        {
-            headers: {
-                "Authorization": "Bearer " + token
-            }
-        }
+        { headers: { "Authorization": "Bearer " + token } }
     );
 
-    if(!response.ok){
-        alert("Failed to load books");
-        return;
-    }
+    if(!response.ok){ toast("Failed to load books", "error"); return; }
 
-    const books = await response.json();
-    allBooks = books; // Save globally
-    renderBooks(books);
+    allBooks = await response.json();
+    renderBooks(allBooks);
 }
 
 
@@ -258,20 +285,44 @@ function renderBooks(books){
     grid.innerHTML = "";
 
     if(books.length === 0){
-        grid.innerHTML = "<p>No books found.</p>";
+        grid.innerHTML = "<p style='color:#6b7280;'>No books found.</p>";
         return;
     }
 
     books.forEach(book => {
 
+        const alreadyRequested = myRequestedBookIds.has(book.id);
+        const unavailable = !book.available;
+
+        let btnClass = "request-btn";
+        let btnText = "Request";
+        let btnDisabled = "";
+
+        if(alreadyRequested){
+            btnClass = "request-btn already-requested";
+            btnText = "✓ Already Requested";
+            btnDisabled = "disabled";
+        } else if(unavailable){
+            btnClass = "request-btn unavailable";
+            btnText = "Not Available";
+            btnDisabled = "disabled";
+        }
+
         grid.innerHTML += `
         <div class="card">
             <div class="card-icon">📘</div>
             <h3>${book.title}</h3>
-            <div class="author">${book.author}</div>
-            <button class="request-btn"
+            <div class="author">${book.authors || book.author || "Unknown Author"}</div>
+            ${book.branch ? `<div class="meta">🏫 ${book.branch}</div>` : ""}
+            ${book.publisher ? `<div class="meta">🏢 ${book.publisher}</div>` : ""}
+            ${book.year ? `<div class="meta">📅 ${book.year}</div>` : ""}
+            <br>
+            <button
+                id="btn-${book.id}"
+                class="${btnClass}"
+                ${btnDisabled}
                 onclick="requestBook(${book.id})">
-                Request
+                ${btnText}
             </button>
         </div>
         `;
@@ -279,33 +330,23 @@ function renderBooks(books){
 }
 
 
-/* ================= SEARCH + FILTER LOGIC ================= */
+/* ================= SEARCH + FILTER ================= */
 
 function applyFilters(){
 
-    const searchValue = document
-        .getElementById("searchInput")
-        .value
-        .toLowerCase();
-
-    const selectedDept = document
-        .getElementById("deptFilter")
-        .value;
-
-    const selectedCategory = document
-        .getElementById("catFilter")
-        .value;
+    const searchValue = document.getElementById("searchInput").value.toLowerCase();
+    const selectedDept = document.getElementById("deptFilter").value;
+    const selectedCategory = document.getElementById("catFilter").value;
 
     const filtered = allBooks.filter(book => {
 
         const matchesSearch =
-            book.title.toLowerCase().includes(searchValue) ||
-            book.author.toLowerCase().includes(searchValue) ||
-            book.id.toString().includes(searchValue);
+            (book.title && book.title.toLowerCase().includes(searchValue)) ||
+            ((book.authors || book.author || "").toLowerCase().includes(searchValue));
 
         const matchesDept =
             selectedDept === "all" ||
-            (book.dept && book.dept === selectedDept);
+            (book.branch && book.branch === selectedDept);
 
         const matchesCategory =
             selectedCategory === "all" ||
@@ -320,24 +361,61 @@ function applyFilters(){
 
 /* ================= REQUEST BOOK ================= */
 
-async function requestBook(bookId) {
+async function requestBook(bookId){
+
+    // ✅ Frontend guard — prevent duplicate request
+    if(myRequestedBookIds.has(bookId)){
+        toast("You have already requested this book. Please wait for librarian approval.", "info");
+        return;
+    }
 
     const token = localStorage.getItem("token");
+    const btn = document.getElementById("btn-" + bookId);
 
-    const response = await fetch(
-        `https://library-backend-1-e3r2.onrender.com/request/${bookId}`,
-        {
-            method: "POST",
-            headers: {
-                "Authorization": "Bearer " + token
+    // Show loading
+    btn.classList.add("loading");
+    btn.disabled = true;
+    btn.innerText = "Sending...";
+
+    try {
+        const response = await fetch(
+            `https://library-backend-1-e3r2.onrender.com/request/${bookId}`,
+            {
+                method: "POST",
+                headers: { "Authorization": "Bearer " + token }
+            }
+        );
+
+        if(response.ok){
+            // ✅ Mark as requested so button stays disabled
+            myRequestedBookIds.add(bookId);
+            btn.className = "request-btn already-requested";
+            btn.innerText = "✓ Already Requested";
+            btn.disabled = true;
+            toast("✅ Request sent to Librarian!", "success");
+        } else {
+            const err = await response.text();
+            // Handle backend duplicate error too
+            if(err.includes("already requested")){
+                myRequestedBookIds.add(bookId);
+                btn.className = "request-btn already-requested";
+                btn.innerText = "✓ Already Requested";
+                btn.disabled = true;
+                toast("You have already requested this book.", "info");
+            } else {
+                btn.classList.remove("loading");
+                btn.disabled = false;
+                btn.innerText = "Request";
+                toast("Request failed: " + err, "error");
             }
         }
-    );
 
-    if (response.ok) {
-        alert("Request sent to Librarian!");
-    } else {
-        alert("Request failed");
+    } catch(e){
+        console.error(e);
+        btn.classList.remove("loading");
+        btn.disabled = false;
+        btn.innerText = "Request";
+        toast("Server error. Please try again.", "error");
     }
 }
 
@@ -346,15 +424,10 @@ async function requestBook(bookId) {
 
 function goBack(){
     const role = localStorage.getItem("role");
-    if(role === "ROLE_STUDENT"){
-        window.location.href = "student-dashboard.html";
-    } else if(role === "ROLE_FACULTY"){
-        window.location.href = "faculty-dashboard.html";
-    } else if(role === "ROLE_LIBRARIAN"){
-        window.location.href = "librarian-dashboard.html";
-    } else {
-        window.location.href = "login.html";
-    }
+    if(role === "STUDENT")       window.location.href = "student-dashboard.html";
+    else if(role === "FACULTY")  window.location.href = "faculty-dashboard.html";
+    else if(role === "LIBRARIAN")window.location.href = "librarian-dashboard.html";
+    else                         window.location.href = "login.html";
 }
 
 </script>
