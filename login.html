@@ -4,226 +4,368 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Login | GRIET Central Library</title>
-<link rel="stylesheet" href="css/style.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
-body{
-  margin:0;
-  font-family:"Inter",sans-serif;
-  background:linear-gradient(135deg,#0f2d52,#1a3a6b,#0b1c33);
-  display:flex; align-items:center; justify-content:center; min-height:100vh;
-  overflow:hidden;
+:root{
+  --navy:#0c1f3f; --navy2:#142952; --crimson:#b30000; --red:#e10600;
+  --gold:#c9a84c; --muted:#64748b; --text:#1a1a2e;
 }
-body::before{
-  content:""; position:absolute; width:700px; height:700px;
-  background:radial-gradient(circle,rgba(179,0,0,0.3),transparent 70%);
-  top:-200px; right:-200px; filter:blur(80px); animation:floatGlow 8s ease-in-out infinite alternate;
-}
-body::after{
-  content:""; position:absolute; width:500px; height:500px;
-  background:radial-gradient(circle,rgba(30,58,138,0.4),transparent 70%);
-  bottom:-150px; left:-100px; filter:blur(80px); animation:floatGlow 10s ease-in-out infinite alternate-reverse;
-}
-@keyframes floatGlow{ from{transform:translateY(0)} to{transform:translateY(30px)} }
+*{margin:0;padding:0;box-sizing:border-box;}
+html,body{height:100%;font-family:'DM Sans',sans-serif;overflow:hidden;}
 
-.home-btn{
-  position:fixed; top:25px; left:30px; color:#fff; font-size:13px; font-weight:600;
-  padding:8px 18px; border:1px solid rgba(255,255,255,0.25); border-radius:30px;
-  transition:0.3s; z-index:10; backdrop-filter:blur(10px); background:rgba(255,255,255,0.05);
+/* ── LAYOUT ── */
+.page{display:grid;grid-template-columns:1fr 1fr;height:100vh;}
+
+/* ── LEFT PANEL ── */
+.left{position:relative;overflow:hidden;}
+.left-img{position:absolute;inset:0;background:url('image/lib new 3.jpg') center/cover no-repeat;transform:scale(1.06);animation:kz 14s ease forwards;}
+@keyframes kz{to{transform:scale(1);}}
+.left-ov{position:absolute;inset:0;background:linear-gradient(160deg,rgba(12,31,63,.92) 30%,rgba(179,0,0,.6));}
+.left-body{position:relative;z-index:2;height:100%;display:flex;flex-direction:column;justify-content:space-between;padding:48px;}
+
+/* LOGO */
+.left-logo{display:flex;align-items:center;gap:14px;}
+.left-logo img{height:48px;filter:brightness(0) invert(1);opacity:.95;}
+.left-logo-text .name{font-family:'Playfair Display',serif;font-size:18px;font-weight:700;color:#fff;line-height:1.2;}
+.left-logo-text .sub{font-size:11px;color:rgba(255,255,255,.55);letter-spacing:.5px;}
+
+/* HERO TEXT */
+.left-hero{flex:1;display:flex;flex-direction:column;justify-content:center;}
+.left-tag{display:inline-block;padding:5px 16px;background:rgba(201,168,76,.18);border:1px solid rgba(201,168,76,.4);border-radius:30px;color:var(--gold);font-size:11px;font-weight:700;letter-spacing:2.5px;margin-bottom:22px;width:fit-content;}
+.left-hero h1{font-family:'Playfair Display',serif;font-size:50px;font-weight:900;color:#fff;line-height:1.1;margin-bottom:16px;}
+.left-hero h1 em{color:var(--gold);font-style:italic;}
+.left-hero p{font-size:15.5px;color:rgba(255,255,255,.65);line-height:1.78;max-width:380px;}
+
+/* STATS CHIPS */
+.left-stats{display:flex;gap:12px;flex-wrap:wrap;}
+.lstat{background:rgba(255,255,255,.09);backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,.14);border-radius:14px;padding:16px 22px;text-align:center;}
+.lstat .v{font-family:'Playfair Display',serif;font-size:24px;font-weight:700;color:var(--gold);}
+.lstat .l{font-size:10.5px;color:rgba(255,255,255,.55);letter-spacing:.8px;margin-top:3px;}
+
+/* ── RIGHT PANEL ── */
+.right{background:#f6f8fc;display:flex;flex-direction:column;justify-content:center;align-items:center;padding:56px 64px;overflow-y:auto;}
+.right-inner{width:100%;max-width:380px;}
+
+/* BACK LINK */
+.back-link{display:inline-flex;align-items:center;gap:7px;font-size:13px;font-weight:600;color:var(--muted);text-decoration:none;margin-bottom:36px;transition:.2s;}
+.back-link:hover{color:var(--navy);}
+.back-link svg{transition:.2s;}
+.back-link:hover svg{transform:translateX(-3px);}
+
+/* FORM HEADER */
+.form-icon{width:58px;height:58px;background:linear-gradient(135deg,var(--navy),var(--navy2));border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:26px;margin-bottom:20px;transition:.4s;}
+.form-title{font-family:'Playfair Display',serif;font-size:30px;font-weight:700;color:var(--navy);margin-bottom:6px;}
+.form-sub{font-size:14px;color:var(--muted);margin-bottom:32px;line-height:1.6;}
+
+/* ROLE SELECTOR */
+.role-tabs{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:28px;background:#eef2f7;padding:5px;border-radius:13px;}
+.rtab{padding:10px 6px;border:none;border-radius:9px;background:transparent;cursor:pointer;font-size:12.5px;font-weight:600;color:var(--muted);transition:.25s;display:flex;flex-direction:column;align-items:center;gap:4px;font-family:'DM Sans',sans-serif;}
+.rtab .tic{font-size:20px;}
+.rtab:hover{color:var(--navy);}
+.rtab.on{background:#fff;color:var(--navy);box-shadow:0 3px 12px rgba(0,0,0,.1);}
+.rtab.on .tic{filter:none;}
+
+/* INPUTS */
+.field{position:relative;margin-bottom:16px;}
+.field label{display:block;font-size:12.5px;font-weight:600;color:var(--navy);margin-bottom:7px;letter-spacing:.3px;}
+.field input{
+  width:100%;padding:13px 16px;border:1.5px solid #e2e8f0;border-radius:12px;
+  font-size:14px;font-family:'DM Sans',sans-serif;background:#fff;color:var(--text);
+  transition:.25s;
 }
-.home-btn:hover{ background:#b30000; border-color:#b30000; }
+.field input:focus{outline:none;border-color:var(--navy);box-shadow:0 0 0 3px rgba(12,31,63,.08);background:#fff;}
+.field input.err{border-color:#ef4444;box-shadow:0 0 0 3px rgba(239,68,68,.08);}
+.field .eye{position:absolute;right:14px;top:37px;cursor:pointer;color:var(--muted);font-size:16px;user-select:none;transition:.2s;}
+.field .eye:hover{color:var(--navy);}
 
-.wrapper{ width:100%; max-width:1050px; padding:40px 20px; text-align:center; color:#fff; position:relative; z-index:1; }
+/* ERROR MSG */
+.err-msg{font-size:12.5px;color:#ef4444;margin:-8px 0 14px;display:none;align-items:center;gap:6px;}
+.err-msg.show{display:flex;}
 
-.logo{ font-size:44px; margin-bottom:14px; }
-h1{ font-size:34px; font-weight:700; margin-bottom:8px; letter-spacing:-0.5px; }
-.sub{ font-size:15px; opacity:0.7; margin-bottom:55px; }
-
-.role-cards{ display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:24px; }
-
-.role-card{
-  background:rgba(255,255,255,0.07); border:1px solid rgba(255,255,255,0.12);
-  padding:40px 24px; border-radius:20px; cursor:pointer; transition:0.4s;
-  backdrop-filter:blur(16px);
-}
-.role-card:hover{
-  transform:translateY(-10px); background:rgba(255,255,255,0.13);
-  box-shadow:0 25px 60px rgba(0,0,0,0.3); border-color:rgba(255,255,255,0.25);
-}
-.role-card .icon{ font-size:52px; margin-bottom:18px; }
-.role-card h3{ font-size:18px; font-weight:600; letter-spacing:0.5px; }
-.role-card p{ font-size:13px; opacity:0.6; margin-top:6px; }
-
-/* MODAL */
-.modal{
-  position:fixed; inset:0; background:rgba(0,0,0,0.6);
-  display:none; align-items:center; justify-content:center; z-index:100;
-  backdrop-filter:blur(6px);
-}
-.modal.open{ display:flex; }
-.modal-box{
-  width:420px; background:#fff; padding:40px; border-radius:24px;
-  box-shadow:0 40px 100px rgba(0,0,0,0.35); animation:slideUp 0.35s cubic-bezier(0.175,0.885,0.32,1.275);
-}
-@keyframes slideUp{ from{opacity:0;transform:translateY(30px)} to{opacity:1;transform:translateY(0)} }
-
-.modal-box .modal-icon{ font-size:36px; text-align:center; margin-bottom:8px; }
-.modal-box h3{ color:#0f2d52; font-size:20px; font-weight:700; margin-bottom:24px; text-align:center; }
-
-.input-group{ position:relative; margin-bottom:16px; }
-.input-group input{
-  width:100%; padding:14px 16px; border:1.5px solid #e5e7eb; border-radius:12px;
-  font-size:14px; transition:0.3s; box-sizing:border-box; background:#fafafa;
-}
-.input-group input:focus{ outline:none; border-color:#0f2d52; background:#fff; box-shadow:0 0 0 3px rgba(15,45,82,0.1); }
-.input-group label{
-  position:absolute; left:16px; top:50%; transform:translateY(-50%);
-  font-size:14px; color:#9ca3af; pointer-events:none; transition:0.2s;
-}
-.input-group input:focus ~ label,
-.input-group input:not(:placeholder-shown) ~ label{
-  top:0; font-size:11px; background:#fff; padding:0 4px; color:#0f2d52;
-}
-
-.inline-error{ font-size:13px; color:#ef4444; margin:-8px 0 12px; display:none; }
-.inline-error.show{ display:block; }
-
-.modal-actions{ display:flex; gap:12px; margin-top:8px; }
+/* LOGIN BTN */
 .btn-login{
-  flex:2; padding:14px; background:linear-gradient(135deg,#0f2d52,#1e3a8a);
-  color:#fff; border:none; border-radius:12px; font-size:15px; font-weight:600;
-  cursor:pointer; transition:0.3s;
+  width:100%;padding:15px;background:linear-gradient(135deg,var(--navy),var(--navy2));
+  color:#fff;border:none;border-radius:13px;font-size:15px;font-weight:700;
+  cursor:pointer;transition:.3s;font-family:'DM Sans',sans-serif;
+  display:flex;align-items:center;justify-content:center;gap:10px;margin-top:8px;
 }
-.btn-login:hover{ transform:translateY(-2px); box-shadow:0 10px 25px rgba(15,45,82,0.3); }
-.btn-login:disabled{ opacity:0.7; cursor:not-allowed; transform:none; }
-.btn-cancel{ flex:1; padding:14px; background:#f1f5f9; border:none; border-radius:12px; cursor:pointer; font-size:14px; }
-.btn-cancel:hover{ background:#e2e8f0; }
+.btn-login:hover{background:linear-gradient(135deg,var(--navy2),#1d4ed8);transform:translateY(-2px);box-shadow:0 12px 28px rgba(12,31,63,.28);}
+.btn-login:active{transform:translateY(0);}
+.btn-login:disabled{opacity:.7;cursor:not-allowed;transform:none;box-shadow:none;}
 
-@media(max-width:600px){ .modal-box{ width:92%; padding:28px; } }
+/* DIVIDER */
+.divider{display:flex;align-items:center;gap:12px;margin:20px 0;color:#cbd5e1;font-size:12px;}
+.divider::before,.divider::after{content:"";flex:1;height:1px;background:#e5e7eb;}
+
+/* CREDENTIALS HINT */
+.hint-box{background:#f8fafc;border:1px solid #e5e7eb;border-radius:12px;padding:14px 16px;font-size:12.5px;color:var(--muted);line-height:1.8;}
+.hint-box strong{color:var(--navy);}
+
+/* SUCCESS OVERLAY */
+.success-ov{
+  position:fixed;inset:0;background:rgba(12,31,63,.96);z-index:999;
+  display:none;flex-direction:column;align-items:center;justify-content:center;
+  color:#fff;text-align:center;
+}
+.success-ov.show{display:flex;animation:fadeIn .4s ease;}
+@keyframes fadeIn{from{opacity:0;}to{opacity:1;}}
+.success-ring{width:80px;height:80px;border-radius:50%;background:linear-gradient(135deg,#059669,#047857);display:flex;align-items:center;justify-content:center;font-size:36px;margin-bottom:20px;animation:pop .4s cubic-bezier(.175,.885,.32,1.275);}
+@keyframes pop{from{transform:scale(0);}to{transform:scale(1);}}
+.success-ov h2{font-family:'Playfair Display',serif;font-size:28px;margin-bottom:8px;}
+.success-ov p{font-size:14.5px;opacity:.7;}
+.success-bar{width:200px;height:3px;background:rgba(255,255,255,.15);border-radius:3px;margin-top:28px;overflow:hidden;}
+.success-fill{height:100%;background:var(--gold);border-radius:3px;animation:fill 1.2s ease forwards;}
+@keyframes fill{from{width:0;}to{width:100%;}}
+
+/* TOAST */
+#toast-root{position:fixed;top:22px;right:22px;z-index:9999;display:flex;flex-direction:column;gap:9px;}
+.tst{padding:12px 18px;border-radius:12px;font-size:13.5px;font-weight:500;color:#fff;display:flex;align-items:center;gap:10px;box-shadow:0 16px 40px rgba(0,0,0,.18);animation:tIn .3s ease;min-width:260px;}
+.tst.out{animation:tOut .3s ease forwards;}
+.tst.success{background:linear-gradient(135deg,#059669,#047857);}
+.tst.error{background:linear-gradient(135deg,#dc2626,#b91c1c);}
+.tst.info{background:linear-gradient(135deg,#1d4ed8,#1e3a8a);}
+@keyframes tIn{from{opacity:0;transform:translateX(40px);}to{opacity:1;transform:translateX(0);}}
+@keyframes tOut{to{opacity:0;transform:translateX(40px);}}
+
+/* SPINNER */
+@keyframes spin{to{transform:rotate(360deg);}}
+.spin{animation:spin .7s linear infinite;display:inline-block;width:17px;height:17px;border:2.5px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;}
+
+/* MOBILE */
+@media(max-width:820px){
+  html,body{overflow:auto;}
+  .page{grid-template-columns:1fr;height:auto;}
+  .left{height:280px;display:block;}
+  .left-hero,.left-stats{display:none;}
+  .left-logo{padding:28px 28px 0;}
+  .left-body{padding:0;}
+  .right{padding:36px 28px;min-height:calc(100vh - 280px);}
+  .right-inner{max-width:100%;}
+}
 </style>
 </head>
 <body>
-<script src="js/toast.js"></script>
 
-<a href="index.html" class="home-btn">← Home</a>
+<div id="toast-root"></div>
 
-<div class="wrapper">
-  <div class="logo">📚</div>
-  <h1>GRIET Central Library</h1>
-  <p class="sub">Secure access for Students, Faculty & Librarians</p>
-
-  <div class="role-cards">
-    <div class="role-card" onclick="openLogin('STUDENT')">
-      <div class="icon">🎓</div>
-      <h3>Student</h3>
-      <p>Access catalogue & borrowed books</p>
-    </div>
-    <div class="role-card" onclick="openLogin('FACULTY')">
-      <div class="icon">👨‍🏫</div>
-      <h3>Faculty</h3>
-      <p>Extended borrowing privileges</p>
-    </div>
-    <div class="role-card" onclick="openLogin('LIBRARIAN')">
-      <div class="icon">🏛️</div>
-      <h3>Librarian</h3>
-      <p>Full administrative access</p>
-    </div>
-  </div>
+<!-- SUCCESS OVERLAY -->
+<div class="success-ov" id="successOv">
+  <div class="success-ring">✓</div>
+  <h2 id="successTitle">Welcome Back!</h2>
+  <p id="successSub">Redirecting to your dashboard…</p>
+  <div class="success-bar"><div class="success-fill"></div></div>
 </div>
 
-<div class="modal" id="loginModal">
-  <div class="modal-box">
-    <div class="modal-icon" id="modalIcon"></div>
-    <h3 id="loginRoleTitle"></h3>
-    <div class="input-group">
-      <input id="userid" placeholder=" " autocomplete="username">
-      <label>Roll No / Employee ID</label>
+<div class="page">
+
+  <!-- LEFT PANEL -->
+  <div class="left">
+    <div class="left-img"></div>
+    <div class="left-ov"></div>
+    <div class="left-body">
+      <div class="left-logo">
+        <img src="griet_logo.webp" alt="GRIET">
+        <div class="left-logo-text">
+          <div class="name">GRIET Central Library</div>
+          <div class="sub">Knowledge · Innovation · Excellence</div>
+        </div>
+      </div>
+
+      <div class="left-hero">
+        <div class="left-tag">NAAC A++ · EST. 1997</div>
+        <h1>Your Gateway<br>to <em>Knowledge</em></h1>
+        <p>Access 1,30,000+ books, 6,500 eBooks and 21,500+ eJournals — all from your personalised library portal.</p>
+      </div>
+
+      <div class="left-stats">
+        <div class="lstat"><div class="v">1.3L+</div><div class="l">PRINT BOOKS</div></div>
+        <div class="lstat"><div class="v">6,500+</div><div class="l">EBOOKS</div></div>
+        <div class="lstat"><div class="v">21,500+</div><div class="l">EJOURNALS</div></div>
+      </div>
     </div>
-    <div class="input-group">
-      <input id="password" type="password" placeholder=" " autocomplete="current-password">
-      <label>Password</label>
-    </div>
-    <div class="inline-error" id="loginError"></div>
-    <div class="modal-actions">
-      <button class="btn-login" id="loginBtn" onclick="doLogin()">Login</button>
-      <button class="btn-cancel" onclick="closeModal()">Cancel</button>
+  </div>
+
+  <!-- RIGHT PANEL -->
+  <div class="right">
+    <div class="right-inner">
+
+      <a href="index.html" class="back-link">
+        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
+        Back to Home
+      </a>
+
+      <div class="form-icon" id="formIcon">📚</div>
+      <div class="form-title" id="formTitle">Welcome Back</div>
+      <div class="form-sub" id="formSub">Select your role and sign in to continue</div>
+
+      <!-- ROLE TABS -->
+      <div class="role-tabs">
+        <button class="rtab on" data-role="STUDENT" onclick="selectRole('STUDENT',this)">
+          <span class="tic">🎓</span>Student
+        </button>
+        <button class="rtab" data-role="FACULTY" onclick="selectRole('FACULTY',this)">
+          <span class="tic">👨‍🏫</span>Faculty
+        </button>
+        <button class="rtab" data-role="LIBRARIAN" onclick="selectRole('LIBRARIAN',this)">
+          <span class="tic">🏛️</span>Librarian
+        </button>
+      </div>
+
+      <!-- ID FIELD -->
+      <div class="field">
+        <label id="idLabel" for="userid">Roll No / College ID</label>
+        <input id="userid" type="text" placeholder="e.g. 22341A0501" autocomplete="username">
+      </div>
+
+      <!-- PASSWORD FIELD -->
+      <div class="field">
+        <label for="password">Password</label>
+        <input id="password" type="password" placeholder="Enter your password" autocomplete="current-password">
+        <span class="eye" id="eyeToggle" onclick="toggleEye()" title="Show/hide">👁</span>
+      </div>
+
+      <!-- ERROR -->
+      <div class="err-msg" id="errMsg">
+        <svg width="14" height="14" fill="none" stroke="#ef4444" stroke-width="2.5" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg>
+        <span id="errText"></span>
+      </div>
+
+      <!-- SUBMIT -->
+      <button class="btn-login" id="loginBtn" onclick="doLogin()">
+        <span id="btnText">Sign In</span>
+      </button>
+
+      <div class="divider">or sign in with demo credentials</div>
+
+      <div class="hint-box" id="hintBox">
+        <strong>Student demo:</strong> 22341A0501 / 1234<br>
+        <strong>Faculty demo:</strong> FAC001 / 1234<br>
+        <strong>Librarian demo:</strong> LIB001 / 1234
+      </div>
+
     </div>
   </div>
 </div>
 
 <script>
-let selectedRole = "";
-const roleIcons = { STUDENT:"🎓", FACULTY:"👨‍🏫", LIBRARIAN:"🏛️" };
+let selectedRole = 'STUDENT';
 
-function openLogin(role){
+const roleConfig = {
+  STUDENT:  { icon:'🎓', title:'Student Login',   sub:'Sign in to browse the catalogue, borrow books and track your reading.', label:'Roll No / College ID', placeholder:'e.g. 22341A0501' },
+  FACULTY:  { icon:'👨‍🏫', title:'Faculty Login',   sub:'Sign in for extended borrowing privileges and research resource access.', label:'Employee ID', placeholder:'e.g. FAC001' },
+  LIBRARIAN:{ icon:'🏛️', title:'Librarian Login', sub:'Sign in for full administrative control over the library system.', label:'Librarian ID', placeholder:'e.g. LIB001' }
+};
+
+function selectRole(role, el){
   selectedRole = role;
-  document.getElementById("loginRoleTitle").innerText = "Login as " + role.charAt(0) + role.slice(1).toLowerCase();
-  document.getElementById("modalIcon").innerText = roleIcons[role];
-  document.getElementById("userid").value = "";
-  document.getElementById("password").value = "";
-  showError("");
-  document.getElementById("loginModal").classList.add("open");
-  setTimeout(()=> document.getElementById("userid").focus(), 100);
+  document.querySelectorAll('.rtab').forEach(t=>t.classList.remove('on'));
+  el.classList.add('on');
+  const cfg = roleConfig[role];
+  document.getElementById('formIcon').textContent = cfg.icon;
+  document.getElementById('formTitle').textContent = cfg.title;
+  document.getElementById('formSub').textContent = cfg.sub;
+  document.getElementById('idLabel').textContent = cfg.label;
+  document.getElementById('userid').placeholder = cfg.placeholder;
+  document.getElementById('userid').value = '';
+  document.getElementById('password').value = '';
+  clearErr();
+  document.getElementById('userid').focus();
 }
 
-function closeModal(){ document.getElementById("loginModal").classList.remove("open"); }
-
-function showError(msg){
-  const el = document.getElementById("loginError");
-  el.textContent = msg;
-  el.classList.toggle("show", !!msg);
+function toggleEye(){
+  const pw = document.getElementById('password');
+  const eye = document.getElementById('eyeToggle');
+  if(pw.type === 'password'){ pw.type='text'; eye.textContent='🙈'; }
+  else{ pw.type='password'; eye.textContent='👁'; }
 }
 
-// Close on backdrop click
-document.getElementById("loginModal").addEventListener("click", function(e){
-  if(e.target === this) closeModal();
-});
+function showErr(msg){
+  document.getElementById('errText').textContent = msg;
+  document.getElementById('errMsg').classList.add('show');
+  document.getElementById('userid').classList.toggle('err', msg.toLowerCase().includes('id') || msg.toLowerCase().includes('credential'));
+  document.getElementById('password').classList.toggle('err', msg.toLowerCase().includes('password') || msg.toLowerCase().includes('credential'));
+}
 
-// Enter key
-document.addEventListener("keydown", e => {
-  if(e.key === "Escape") closeModal();
-  if(e.key === "Enter" && document.getElementById("loginModal").classList.contains("open")) doLogin();
+function clearErr(){
+  document.getElementById('errMsg').classList.remove('show');
+  document.getElementById('userid').classList.remove('err');
+  document.getElementById('password').classList.remove('err');
+}
+
+function setLoading(loading){
+  const btn = document.getElementById('loginBtn');
+  const txt = document.getElementById('btnText');
+  if(loading){
+    btn.disabled = true;
+    txt.innerHTML = '<span class="spin"></span> Signing in…';
+  } else {
+    btn.disabled = false;
+    txt.innerHTML = 'Sign In';
+  }
+}
+
+function showSuccess(role){
+  const names = {STUDENT:'Student', FACULTY:'Faculty', LIBRARIAN:'Librarian'};
+  document.getElementById('successTitle').textContent = `Welcome, ${names[role]}!`;
+  document.getElementById('successSub').textContent = 'Redirecting to your dashboard…';
+  document.getElementById('successOv').classList.add('show');
+}
+
+function toast(msg, type='info', dur=3500){
+  const el = document.createElement('div');
+  el.className = `tst ${type}`;
+  const icons = {success:'✅',error:'❌',info:'ℹ️'};
+  el.innerHTML = `<span>${icons[type]||'💬'}</span><span>${msg}</span>`;
+  document.getElementById('toast-root').appendChild(el);
+  setTimeout(()=>{ el.classList.add('out'); setTimeout(()=>el.remove(), 320); }, dur);
+}
+
+// Enter key support
+document.addEventListener('keydown', e => {
+  if(e.key === 'Enter') doLogin();
 });
 
 async function doLogin(){
-  const collegeId = document.getElementById("userid").value.trim();
-  const password  = document.getElementById("password").value.trim();
-  const btn = document.getElementById("loginBtn");
+  clearErr();
+  const collegeId = document.getElementById('userid').value.trim();
+  const password  = document.getElementById('password').value;
 
-  showError("");
+  if(!collegeId){ showErr('Please enter your ID'); document.getElementById('userid').focus(); return; }
+  if(!password){ showErr('Please enter your password'); document.getElementById('password').focus(); return; }
 
-  if(!collegeId || !password){ showError("Please enter your credentials"); return; }
-
-  btnLoad(btn, "Signing in...");
+  setLoading(true);
 
   try {
-    const res = await fetch("https://library-backend-1-e3r2.onrender.com/auth/login", {
-      method:"POST",
-      headers:{ "Content-Type":"application/json" },
+    const res = await fetch('https://library-backend-1-e3r2.onrender.com/auth/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ collegeId, password, role: selectedRole })
     });
 
     if(!res.ok){
-      const err = await res.json().catch(()=>({error:"Invalid credentials"}));
-      showError(err.error || "Invalid credentials");
-      btnReset(btn);
+      let errMsg = 'Invalid credentials. Please try again.';
+      try { const j = await res.json(); errMsg = j.error || j.message || errMsg; } catch{}
+      showErr(errMsg);
+      setLoading(false);
       return;
     }
 
     const token = await res.text();
-    localStorage.setItem("token", token);
-    localStorage.setItem("role", selectedRole);
+    localStorage.setItem('token', token);
+    localStorage.setItem('role', selectedRole);
 
-    toast("Welcome back! Redirecting...", "success");
+    showSuccess(selectedRole);
 
     setTimeout(()=>{
-      if(selectedRole === "LIBRARIAN")      window.location.href = "librarian-dashboard.html";
-      else if(selectedRole === "FACULTY")   window.location.href = "faculty-dashboard.html";
-      else                                  window.location.href = "student-dashboard.html";
-    }, 900);
+      if(selectedRole === 'LIBRARIAN')     window.location.href = 'librarian-dashboard.html';
+      else if(selectedRole === 'FACULTY')  window.location.href = 'faculty-dashboard.html';
+      else                                 window.location.href = 'student-dashboard.html';
+    }, 1400);
 
   } catch(e){
-    showError("Server unreachable. Please try again.");
-    btnReset(btn);
+    showErr('Server unreachable — please check your connection.');
+    setLoading(false);
   }
 }
 </script>
