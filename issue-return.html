@@ -223,7 +223,7 @@ document.addEventListener("DOMContentLoaded", async function(){
                 <div class="list-item">
                     <div>
                         <b>${req.book.title}</b><br>
-                        <small>${req.userEmail}</small>
+                        <small>${req.user.collegeId}</small>
                     </div>
                     <div>
                         <button class="btn"
@@ -265,7 +265,7 @@ document.addEventListener("DOMContentLoaded", async function(){
           <div class="list-item">
               <div>
                   <b>${b.book.title}</b><br>
-                  <small>${b.user.email} • Due: ${b.dueDate}</small>
+                  <small>${b.user.collegeId} • Due: ${b.dueDate}</small>
               </div>
               <div>
                   <button class="btn return"

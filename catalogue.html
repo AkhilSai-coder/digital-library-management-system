@@ -345,16 +345,14 @@ async function requestBook(bookId) {
 /* ================= BACK BUTTON ================= */
 
 function goBack(){
-
     const role = localStorage.getItem("role");
-
-    if(role === "STUDENT"){
+    if(role === "ROLE_STUDENT"){
         window.location.href = "student-dashboard.html";
-    }
-    else if(role === "FACULTY"){
+    } else if(role === "ROLE_FACULTY"){
         window.location.href = "faculty-dashboard.html";
-    }
-    else{
+    } else if(role === "ROLE_LIBRARIAN"){
+        window.location.href = "librarian-dashboard.html";
+    } else {
         window.location.href = "login.html";
     }
 }

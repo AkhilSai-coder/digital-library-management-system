@@ -497,7 +497,7 @@ async function saveBook(){
     }
 
     const response = await fetch(
-        "https://library-backend-1-e3r2.onrender.com/books",
+        "https://library-backend-1-e3r2.onrender.com/books/admin/add-book",
         {
             method: "POST",
             headers: {
@@ -525,21 +525,10 @@ async function saveBook(){
 
 /* ================= DELETE BOOK ================= */
 
+/* ================= DELETE BOOK ================= */
+
 async function deleteBook(id){
-
-    const token = localStorage.getItem("token");
-
-    await fetch(
-        `https://library-backend-1-e3r2.onrender.com/books/${id}`,
-        {
-            method: "DELETE",
-            headers: {
-                "Authorization": "Bearer " + token
-            }
-        }
-    );
-
-    loadBooks(); // Reload after delete
+    alert("Book deletion is not supported. Please contact the system administrator.");
 }
 
 

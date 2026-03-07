@@ -261,7 +261,7 @@ async function loadActive(){
   tableBody.innerHTML = "";
 
   const activeBooks = borrows.filter(b =>
-      b.user.email === userId && !b.returned
+      b.user.collegeId === userId && !b.returned
   );
 
   if(activeBooks.length === 0){
@@ -309,7 +309,7 @@ async function loadHistory(){
   tableBody.innerHTML = "";
 
   const historyBooks = borrows.filter(b =>
-      b.user.email === userId && b.returned
+      b.user.collegeId === userId && b.returned
   );
 
   if(historyBooks.length === 0){
@@ -401,7 +401,7 @@ async function issueOffline(){
   const token = localStorage.getItem("token");
 
   const response = await fetch(
-    `https://library-backend-1-e3r2.onrender.com/borrow/issue/${bookId}/${userId}`,
+    `https://library-backend-1-e3r2.onrender.com/borrow/issue?bookId=${bookId}&collegeId=${userId}`,
     {
       method: "POST",
       headers: {

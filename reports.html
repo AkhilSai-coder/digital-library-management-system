@@ -208,66 +208,95 @@ document.addEventListener("DOMContentLoaded", function(){
 </div>
 
 <script>
-/* BOOKS BY DEPARTMENT */
-new Chart(document.getElementById("deptBar"), {
-  type: "bar",
-  data: {
-    labels: ["CSE","ECE","Mech","Civil","General"],
-    datasets: [{
-      data: [32,24,20,14,16],
-      backgroundColor: "#0f172a"
-    }]
-  },
-  options:{ plugins:{legend:{display:false}} }
-});
+const BASE = "https://library-backend-1-e3r2.onrender.com";
 
-/* DEPARTMENT DISTRIBUTION */
-new Chart(document.getElementById("deptPie"), {
-  type: "pie",
-  data: {
-    labels: ["CSE","ECE","Mech","Civil","General"],
-    datasets: [{
-      data: [32,24,20,14,16],
-      backgroundColor: ["#0f172a","#64748b","#f1f5f9","#ef4444","#e2e8f0"]
-    }]
-  }
-});
+document.addEventListener("DOMContentLoaded", async function(){
 
-/* MOST BORROWED BOOKS */
-new Chart(document.getElementById("borrowedBar"), {
-  type: "bar",
-  data: {
-    labels: [
-      "Introduction to Algorithms",
-      "Operating System Concepts",
-      "Digital Design",
-      "Engineering Mechanics",
-      "Data Structures"
-    ],
-    datasets: [{
-      data: [10,9,9,8,8],
-      backgroundColor:"#64748b"
-    }]
-  },
-  options:{
-    indexAxis:"y",
-    plugins:{legend:{display:false}}
-  }
-});
+    const token = localStorage.getItem("token");
+    if(!token){ window.location.href = "login.html"; return; }
 
-/* OVERDUE TREND */
-new Chart(document.getElementById("overdueLine"), {
-  type:"line",
-  data:{
-    labels:["Oct","Nov","Dec","Jan","Feb"],
-    datasets:[{
-      data:[2,5,3,4,3],
-      borderColor:"#ef4444",
-      tension:0.4,
-      fill:false
-    }]
-  },
-  options:{plugins:{legend:{display:false}}}
+    const headers = { "Authorization": "Bearer " + token };
+
+    try {
+
+        /* === MOST BORROWED BOOKS === */
+        const borrowedRes = await fetch(BASE + "/reports/most-borrowed", { headers });
+        const borrowedData = borrowedRes.ok ? await borrowedRes.json() : [];
+
+        new Chart(document.getElementById("borrowedBar"), {
+            type: "bar",
+            data: {
+                labels: borrowedData.map(b => b.title),
+                datasets: [{
+                    data: borrowedData.map(b => b.borrowCount),
+                    backgroundColor: "#64748b"
+                }]
+            },
+            options: {
+                indexAxis: "y",
+                plugins: { legend: { display: false } }
+            }
+        });
+
+        /* === BORROW TREND === */
+        const trendRes = await fetch(BASE + "/reports/borrow-trend", { headers });
+        const trendData = trendRes.ok ? await trendRes.json() : [];
+
+        new Chart(document.getElementById("overdueLine"), {
+            type: "line",
+            data: {
+                labels: trendData.map(t => t.month),
+                datasets: [{
+                    label: "Borrows",
+                    data: trendData.map(t => t.borrowCount),
+                    borderColor: "#0f2d52",
+                    tension: 0.4,
+                    fill: false
+                }]
+            },
+            options: { plugins: { legend: { display: false } } }
+        });
+
+        /* === OVERVIEW — books by dept (from /books) === */
+        const booksRes = await fetch(BASE + "/books", { headers });
+        const books = booksRes.ok ? await booksRes.json() : [];
+
+        const deptCount = {};
+        books.forEach(b => {
+            const d = b.dept || "General";
+            deptCount[d] = (deptCount[d] || 0) + 1;
+        });
+
+        const deptLabels = Object.keys(deptCount);
+        const deptValues = Object.values(deptCount);
+        const deptColors = ["#0f172a","#64748b","#b30000","#ef4444","#e2e8f0","#1e3a8a","#475569"];
+
+        new Chart(document.getElementById("deptBar"), {
+            type: "bar",
+            data: {
+                labels: deptLabels,
+                datasets: [{
+                    data: deptValues,
+                    backgroundColor: "#0f172a"
+                }]
+            },
+            options: { plugins: { legend: { display: false } } }
+        });
+
+        new Chart(document.getElementById("deptPie"), {
+            type: "pie",
+            data: {
+                labels: deptLabels,
+                datasets: [{
+                    data: deptValues,
+                    backgroundColor: deptColors
+                }]
+            }
+        });
+
+    } catch(err) {
+        console.error("Reports load error:", err);
+    }
 });
 </script>
 
