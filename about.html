@@ -1,8 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<script>!function(){var t=localStorage.getItem("griet_theme")||(window.matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light");document.documentElement.setAttribute("data-theme",t)}();</script>
-
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>About | GRIET Central Library</title>
@@ -174,6 +172,5 @@ function animateNum(el){const target=+(el.dataset.target||0);let cur=0;const inc
 const co=new IntersectionObserver(e=>e.forEach(en=>{if(en.isIntersecting){animateNum(en.target);co.unobserve(en.target);}}),{threshold:0.5});
 document.querySelectorAll(".counter").forEach(el=>co.observe(el));
 </script>
-<script src="js/theme.js"></script>
 </body>
 </html>

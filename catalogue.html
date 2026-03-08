@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<script>!function(){var t=localStorage.getItem("griet_theme")||(window.matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light");document.documentElement.setAttribute("data-theme",t)}();</script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Book Catalogue | GRIET Central Library</title>
@@ -413,35 +412,6 @@ a { text-decoration:none; color:inherit; }
 .toast.error   { background:linear-gradient(135deg,#dc2626,#ef4444); }
 .toast.info    { background:linear-gradient(135deg,var(--navy),var(--navy2)); }
 @keyframes toastIn { from{opacity:0;transform:translateY(12px)} to{opacity:1;transform:none} }
-@keyframes shimmer { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
-/* ── DARK THEME CATALOGUE OVERRIDES ── */
-[data-theme="dark"] body { background:var(--bg); }
-[data-theme="dark"] .cat-hero { background:linear-gradient(135deg,#0d1117 0%,#161b22 60%,#1a2030 100%); }
-[data-theme="dark"] .sidebar { background:var(--surface); border-color:var(--border); }
-[data-theme="dark"] .sidebar-head { background:linear-gradient(135deg,#161b22,#1c2128); }
-[data-theme="dark"] .sidebar-section { border-color:var(--border); }
-[data-theme="dark"] .filter-option { color:var(--text); }
-[data-theme="dark"] .filter-option:hover { background:var(--bg2); }
-[data-theme="dark"] .avail-toggle { background:var(--bg2); }
-[data-theme="dark"] .search-wrap { background:var(--surface); border-color:var(--border); }
-[data-theme="dark"] .search-wrap input { background:var(--surface); color:var(--text); }
-[data-theme="dark"] .sort-select { background:var(--surface); color:var(--text); border-color:var(--border); }
-[data-theme="dark"] .book-card { background:var(--surface); border-color:var(--border); }
-[data-theme="dark"] .book-title { color:var(--text); }
-[data-theme="dark"] .book-tag { background:var(--bg2); color:var(--text2); border-color:var(--border); }
-[data-theme="dark"] .book-footer { border-color:var(--border); }
-[data-theme="dark"] .detail-btn { border-color:var(--border); color:var(--muted); }
-[data-theme="dark"] .detail-btn:hover { background:var(--bg2); border-color:var(--navy); color:var(--navy); }
-[data-theme="dark"] .modal { background:var(--surface); }
-[data-theme="dark"] .modal-detail { background:var(--bg2); border-color:var(--border); }
-[data-theme="dark"] .modal-detail-val { color:var(--text); }
-[data-theme="dark"] .modal-title { color:var(--text); }
-[data-theme="dark"] .back-btn { background:var(--surface); border-color:var(--border); color:var(--text); }
-[data-theme="dark"] .page-btn { background:var(--surface); border-color:var(--border); color:var(--text); }
-[data-theme="dark"] .page-btn.active { background:linear-gradient(135deg,#1f3a5f,#2d5a9e); border-color:transparent; }
-[data-theme="dark"] .empty-state h3 { color:var(--text); }
-[data-theme="dark"] .results-count b { color:var(--text); }
-
 
 /* ── FOOTER ── */
 .site-footer { background:var(--navy); color:rgba(255,255,255,0.4); text-align:center; padding:32px; font-size:13px; }
@@ -605,20 +575,12 @@ a { text-decoration:none; color:inherit; }
 <script src="js/toast.js"></script>
 <script src="js/auth.js"></script>
 <script>
-// ─── STATE ───
 let allBooks = [];
 let myRequestedBookIds = new Set();
 let currentView = 'grid';
 let showAvailOnly = false;
 let currentPage = 1;
 const PAGE_SIZE = 12;
-
-// ─── SCALABILITY CONFIG ───
-const CACHE_KEY  = 'griet_books_cache';
-const CACHE_TIME = 'griet_books_time';
-const CACHE_TTL  = 60 * 1000; // 60 seconds
-let isLoading = false;
-let searchDebounceTimer = null;
 
 const deptIcons = {CSE:'💻',ECE:'📡',MECH:'⚙️',CIVIL:'🏗️',EEE:'⚡',IT:'🖥️',AIML:'🤖',GENERAL:'📚'};
 const coverColors = {
@@ -632,20 +594,10 @@ const coverColors = {
   GENERAL:'linear-gradient(135deg,#1a1a2e,#2d2d4e)',
 };
 
-// ─── INIT ───
 document.addEventListener("DOMContentLoaded", async () => {
-  // 1. Show cached data INSTANTLY — zero wait
-  loadFromCache();
-
-  // 2. Fetch fresh data + requests in parallel
-  await Promise.all([loadMyRequests(), loadBooks()]);
-
-  // 3. Debounced search — no lag on fast typing
-  document.getElementById("searchInput").addEventListener("input", () => {
-    clearTimeout(searchDebounceTimer);
-    searchDebounceTimer = setTimeout(() => { currentPage=1; renderFiltered(); }, 220);
-  });
-
+  await loadMyRequests();
+  await loadBooks();
+  document.getElementById("searchInput").addEventListener("input", renderFiltered);
   document.getElementById("sortSelect").addEventListener("change", renderFiltered);
   document.querySelectorAll('input[name="dept"], input[name="cat"]').forEach(el => {
     el.addEventListener("change", () => { currentPage=1; renderFiltered(); updateFilterChips(); });
@@ -653,67 +605,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   document.getElementById("modalOverlay").addEventListener("click", (e) => {
     if(e.target === document.getElementById("modalOverlay")) closeModal();
   });
-
-  // 4. Auto-refresh every 60s — no manual reload ever needed
-  setInterval(silentRefresh, CACHE_TTL);
-
-  // 5. Refresh when user comes back to this tab
-  document.addEventListener("visibilitychange", () => {
-    if(document.visibilityState === "visible") silentRefresh();
-  });
 });
-
-// ─── LOAD FROM CACHE (instant) ───
-function loadFromCache(){
-  try {
-    const cached = sessionStorage.getItem(CACHE_KEY);
-    if(cached){
-      allBooks = JSON.parse(cached);
-      updateHeroStats(); renderFiltered();
-    }
-  } catch(e){}
-}
-
-// ─── SILENT BACKGROUND REFRESH ───
-async function silentRefresh(){
-  if(isLoading) return;
-  const cachedTime = parseInt(sessionStorage.getItem(CACHE_TIME)||"0");
-  if(Date.now() - cachedTime < CACHE_TTL) return; // still fresh, skip
-  await loadBooks(true);
-}
-
-// ─── FLOATING REFRESH BADGE ───
-function showRefreshBadge(msg){
-  let badge = document.getElementById("refreshBadge");
-  if(!badge){
-    badge = document.createElement("div");
-    badge.id = "refreshBadge";
-    badge.style.cssText = "position:fixed;top:84px;right:20px;background:var(--navy);color:#fff;padding:8px 16px;border-radius:20px;font-size:12px;font-weight:600;z-index:999;opacity:0;transition:opacity 0.3s;box-shadow:0 4px 14px rgba(0,0,0,0.2)";
-    document.body.appendChild(badge);
-  }
-  badge.textContent = msg;
-  badge.style.opacity = "1";
-  setTimeout(()=>{ badge.style.opacity="0"; }, 2500);
-}
-
-// ─── SKELETON LOADER (no blank screen flash) ───
-function showSkeletons(){
-  const grid = document.getElementById("bookGrid");
-  grid.innerHTML = "";
-  grid.className = "book-grid";
-  for(let i=0;i<PAGE_SIZE;i++){
-    const s = document.createElement("div");
-    s.className = "book-card";
-    s.innerHTML = `
-      <div style="height:150px;background:linear-gradient(90deg,#e2e8f0 25%,#f1f5f9 50%,#e2e8f0 75%);background-size:200% 100%;animation:shimmer 1.4s infinite"></div>
-      <div style="padding:18px 20px">
-        <div style="height:18px;background:#e2e8f0;border-radius:6px;margin-bottom:10px;width:80%;animation:shimmer 1.4s infinite"></div>
-        <div style="height:13px;background:#e2e8f0;border-radius:6px;margin-bottom:16px;width:55%;animation:shimmer 1.4s infinite"></div>
-        <div style="height:36px;background:#e2e8f0;border-radius:9px;animation:shimmer 1.4s infinite"></div>
-      </div>`;
-    grid.appendChild(s);
-  }
-}
 
 async function loadMyRequests(){
   const token = localStorage.getItem("token");
@@ -725,33 +617,15 @@ async function loadMyRequests(){
   } catch(e){ console.error(e); }
 }
 
-// ─── LOAD BOOKS with cache + smart diff ───
-async function loadBooks(silent=false){
-  if(isLoading) return;
-  isLoading = true;
-  if(!silent && !sessionStorage.getItem(CACHE_KEY)) showSkeletons();
+async function loadBooks(){
   const token = localStorage.getItem("token");
   const headers = token ? {"Authorization":"Bearer "+token} : {};
   try {
     const r = await fetch("https://library-backend-1-e3r2.onrender.com/books", {headers});
-    if(!r.ok){ if(!silent){ showToast("Failed to load books","error"); showDemo(); } isLoading=false; return; }
-    const fresh = await r.json();
-    // Only re-render if data actually changed — prevents unnecessary flicker
-    const freshStr = JSON.stringify(fresh);
-    if(freshStr !== sessionStorage.getItem(CACHE_KEY)){
-      allBooks = fresh;
-      sessionStorage.setItem(CACHE_KEY, freshStr);
-      sessionStorage.setItem(CACHE_TIME, Date.now());
-      updateHeroStats(); renderFiltered();
-      if(silent) showRefreshBadge("✓ Books updated");
-    } else {
-      sessionStorage.setItem(CACHE_TIME, Date.now());
-      if(silent) showRefreshBadge("✓ Up to date");
-    }
-  } catch(e){
-    if(!silent) showDemo();
-  }
-  isLoading = false;
+    if(!r.ok){ showToast("Failed to load books","error"); showDemo(); return; }
+    allBooks = await r.json();
+  } catch(e){ showDemo(); }
+  updateHeroStats(); renderFiltered();
 }
 
 function showDemo(){
@@ -987,6 +861,5 @@ function showToast(msg,type="info"){
 }
 
 </script>
-<script src="js/theme.js"></script>
 </body>
 </html>
