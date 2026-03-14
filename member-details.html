@@ -1,449 +1,166 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Member Details</title>
-<link rel="stylesheet" href="css/style.css">
-
-<style>
-body{font-family:Arial;background:#f6f8fb;}
-.container{padding:30px;max-width:1000px;margin:auto;}
-
-.member-card{
-  display:flex;
-  gap:30px;
-  background:white;
-  padding:20px;
-  border-radius:10px;
-  border:1px solid #ddd;
-  margin-bottom:20px;
-}
-
-.photo{
-  width:140px;
-  height:160px;
-  background:#e2e8f0;
-  border-radius:10px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-size:14px;
-  color:#555;
-}
-
-.tabs{
-  display:flex;
-  gap:10px;
-  margin-bottom:20px;
-}
-
-.tab{
-  padding:8px 16px;
-  background:#e2e8f0;
-  border-radius:6px;
-  cursor:pointer;
-}
-
-.tab.active{
-  background:#1f3a5f;
-  color:white;
-}
-
-.card{
-  background:white;
-  padding:20px;
-  border-radius:10px;
-  border:1px solid #ddd;
-}
-
-table{
-  width:100%;
-  border-collapse:collapse;
-}
-
-th,td{
-  padding:10px;
-  border-bottom:1px solid #eee;
-}
-
-.btn{
-  padding:6px 12px;
-  background:#1f3a5f;
-  color:white;
-  border:none;
-  border-radius:6px;
-  cursor:pointer;
-}
-
-.issue-box{
-  margin-top:20px;
-}
-
-.suggestions{
-  border:1px solid #ddd;
-  max-height:120px;
-  overflow-y:auto;
-  background:white;
-  margin-top:5px;
-}
-
-.suggestions div{
-  padding:8px;
-  cursor:pointer;
-}
-
-.suggestions div:hover{
-  background:#f1f5f9;
-}
-
-/* ================= RESPONSIVE ================= */
-
-@media (max-width: 992px){
-
-  .member-card{
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-  }
-
-  .photo{
-    width:120px;
-    height:140px;
-  }
-
-}
-
-/* ================= MOBILE ================= */
-
-@media (max-width: 768px){
-
-  .container{
-    padding:15px;
-  }
-
-  .tabs{
-    flex-direction: column;
-  }
-
-  .tab{
-    text-align:center;
-  }
-
-  table{
-    display:block;
-    overflow-x:auto;   /* horizontal scroll on small screens */
-  }
-
-  th, td{
-    font-size:13px;
-    padding:8px;
-  }
-
-  .issue-box input{
-    width:100%;
-    padding:10px;
-  }
-
-  .btn{
-    width:100%;
-    margin-top:10px;
-  }
-
-}
-
-</style>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Member Details | GRIET Central Library</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="css/theme.css">
 </head>
-
 <body>
-
-<script src="js/auth.js"></script>
-
-<div class="container">
-
-<div id="memberSection"></div>
-
-<div class="tabs">
-  <div class="tab active" id="activeTab">Active</div>
-  <div class="tab" id="historyTab">History</div>
-</div>
-
-<div class="card">
-  <table>
-    <thead>
-      <tr>
-        <th>Book</th>
-        <th>Issue Date</th>
-        <th>Due Date</th>
-        <th>Action</th>
-      </tr>
-    </thead>
-    <tbody id="tableBody"></tbody>
-  </table>
-
-  <!-- OFFLINE ISSUE -->
-  <div class="issue-box" id="issueBox">
-    <h4>Issue Book </h4>
-    <input id="offlineTitle" placeholder="Search Book from Catalogue" onkeyup="searchBook()">
-    <div id="suggestions" class="suggestions"></div>
-    <br>
-    <button class="btn" onclick="issueOffline()">Issue</button>
+<script src="js/toast.js"></script><script src="js/auth.js"></script>
+<div class="dashboard-layout">
+<aside class="sidebar">
+  <div class="sidebar-brand">
+    <div class="brand-tag">GRIET · Hyderabad</div>
+    <div class="brand-name">Central<br>Library</div>
+    <div class="brand-sub">Management System</div>
   </div>
-</div>
-
-</div>
-
-<script>
-
-document.addEventListener("DOMContentLoaded", function(){
-
-  const member = JSON.parse(localStorage.getItem("selectedMember"));
-  if(!member) return;
-
-  const {userId, userRole} = member;
-
-  const activeTab = document.getElementById("activeTab");
-  const historyTab = document.getElementById("historyTab");
-  const issueBox = document.getElementById("issueBox");
-
-  let branch = userId.includes("CS") ? "CSE" :
-               userId.includes("EC") ? "ECE" :
-               userId.includes("ME") ? "MECH" :
-               "General";
-
-  document.getElementById("memberSection").innerHTML = `
-    <div class="member-card">
-      <div class="photo">Photo</div>
-      <div>
-        <h3>${userId}</h3>
-        <p><b>Role:</b> ${userRole}</p>
-        <p><b>Branch:</b> ${branch}</p>
-      </div>
+  <nav>
+    <div class="sidebar-sep">Main</div>
+    <a href="librarian-dashboard.html">⊞&nbsp; Dashboard</a>
+    <a href="catalogue.html">◫&nbsp; Book Catalogue</a>
+    <a href="book-management.html">+&nbsp; Add / Manage Books</a>
+    <div class="sidebar-sep">Circulation</div>
+    <a href="issue-return.html">⇄&nbsp; Issue &amp; Return</a>
+    <a href="fine-management.html">₹&nbsp; Fine Management</a>
+    <div class="sidebar-sep">Users</div>
+    <a href="members.html">◎&nbsp; Members</a>
+    <a class="active">≡&nbsp; Member Details</a>
+    <a href="reports.html">↗&nbsp; Reports</a>
+  </nav>
+  <div class="sidebar-footer">
+    <a href="change-password.html">⚙&nbsp; Settings</a>
+    <a onclick="logout()" style="cursor:pointer;">→&nbsp; Logout</a>
+  </div>
+</aside>
+<main class="main">
+  <div class="top-bar">
+    <div>
+      <div class="page-eyebrow">Users</div>
+      <h1 id="memberTitle">Member Details</h1>
     </div>
-  `;
+    <div class="top-bar-right">
+      <button class="btn btn-ghost btn-sm" onclick="window.location.href='members.html'">← Back to Members</button>
+    </div>
+  </div>
 
+  <div class="box" style="margin-bottom:22px;">
+    <div class="box-body" style="padding:22px;" id="memberCard">
+      <div style="color:var(--muted);font-size:14px;">Loading member…</div>
+    </div>
+  </div>
+
+  <div class="tabs">
+    <button class="tab active" id="activeTab" onclick="loadActive()">Active Books</button>
+    <button class="tab" id="historyTab" onclick="loadHistory()">History</button>
+  </div>
+
+  <div class="box">
+    <div class="box-body table-wrap">
+      <table><thead><tr><th>Book</th><th>Issue Date</th><th>Due Date</th><th>Action</th></tr></thead>
+      <tbody id="tableBody"></tbody></table>
+    </div>
+  </div>
+
+  <div class="box">
+    <div class="box-header"><span class="box-title">Issue Book to Member</span></div>
+    <div class="box-body" style="padding:20px;">
+      <div class="search-row" style="margin-bottom:10px;">
+        <div class="search-wrap" style="flex:1;">
+          <input type="text" id="bookSearch" placeholder="Search book from catalogue…" oninput="searchBook()">
+          <button>🔍</button>
+        </div>
+        <button class="btn btn-navy" onclick="issueOffline()">Issue Book</button>
+      </div>
+      <div id="suggestions" style="border:1px solid var(--border);border-radius:8px;max-height:120px;overflow-y:auto;display:none;background:var(--white);"></div>
+    </div>
+  </div>
+</main>
+</div>
+<script>
+checkAuth();
+const BASE="https://library-backend-1-e3r2.onrender.com";
+const member=JSON.parse(localStorage.getItem("selectedMember")||"{}");
+
+document.addEventListener("DOMContentLoaded",function(){
+  if(!member.userId){window.location.href="members.html";return;}
+  document.getElementById("memberTitle").textContent=member.userId;
+  document.getElementById("memberCard").innerHTML=`
+    <div style="display:flex;gap:24px;align-items:center;flex-wrap:wrap;">
+      <div style="width:64px;height:64px;background:var(--navy);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:28px;color:#fff;">👤</div>
+      <div>
+        <div style="font-family:'Libre Baskerville',serif;font-size:20px;font-weight:700;color:var(--navy);">${member.userId}</div>
+        <div style="margin-top:6px;display:flex;gap:10px;">
+          <span class="role-badge">${member.userRole}</span>
+          <span class="badge b-info">${member.userId.includes("CS")?"CSE":member.userId.includes("EC")?"ECE":"General"}</span>
+        </div>
+      </div>
+    </div>`;
   loadActive();
-
-  activeTab.onclick = function(){
-    activeTab.classList.add("active");
-    historyTab.classList.remove("active");
-    issueBox.style.display = "block";
-    loadActive();
-  };
-
-  historyTab.onclick = function(){
-    historyTab.classList.add("active");
-    activeTab.classList.remove("active");
-    issueBox.style.display = "none";
-    loadHistory();
-  };
-
 });
 
-/* =======================
-   LOAD ACTIVE
-======================= */
 async function loadActive(){
-
-  const member = JSON.parse(localStorage.getItem("selectedMember"));
-  const {userId} = member;
-
-  const token = localStorage.getItem("token");
-
-  const response = await fetch("https://library-backend-1-e3r2.onrender.com/borrow/all", {
-    headers: {
-      "Authorization": "Bearer " + token
-    }
-  });
-
-  const borrows = response.ok ? await response.json() : [];
-
-  const tableBody = document.getElementById("tableBody");
-  tableBody.innerHTML = "";
-
-  const activeBooks = borrows.filter(b =>
-      b.user.collegeId === userId && !b.returned
-  );
-
-  if(activeBooks.length === 0){
-    tableBody.innerHTML =
-      `<tr><td colspan="4">No active books</td></tr>`;
-    return;
-  }
-
-  activeBooks.forEach(b => {
-    tableBody.innerHTML += `
-      <tr>
-        <td>${b.book.title}</td>
-        <td>${b.issueDate}</td>
-        <td>${b.dueDate}</td>
-        <td>
-          <button class="btn"
-            onclick="returnBook(${b.id})">
-            Return
-          </button>
-        </td>
-      </tr>
-    `;
-  });
+  document.getElementById("activeTab").classList.add("active");
+  document.getElementById("historyTab").classList.remove("active");
+  const token=localStorage.getItem("token");
+  const r=await fetch(BASE+"/borrow/all",{headers:{"Authorization":"Bearer "+token}});
+  const borrows=r.ok?await r.json():[];
+  const active=borrows.filter(b=>b.user.collegeId===member.userId&&!b.returned);
+  const tb=document.getElementById("tableBody");
+  if(!active.length){tb.innerHTML=`<tr><td colspan="4" style="text-align:center;padding:32px;color:var(--muted);">No active books</td></tr>`;return;}
+  tb.innerHTML=active.map(b=>`<tr>
+    <td><strong>${b.book.title}</strong></td><td>${b.issueDate}</td><td>${b.dueDate}</td>
+    <td><button class="btn btn-warn btn-sm" onclick="returnBook(${b.id})">Return</button></td>
+  </tr>`).join("");
 }
 
-/* =======================
-   LOAD HISTORY
-======================= */
 async function loadHistory(){
-
-  const member = JSON.parse(localStorage.getItem("selectedMember"));
-  const {userId} = member;
-
-  const token = localStorage.getItem("token");
-
-  const response = await fetch("https://library-backend-1-e3r2.onrender.com/borrow/all", {
-    headers: {
-      "Authorization": "Bearer " + token
-    }
-  });
-
-  const borrows = response.ok ? await response.json() : [];
-
-  const tableBody = document.getElementById("tableBody");
-  tableBody.innerHTML = "";
-
-  const historyBooks = borrows.filter(b =>
-      b.user.collegeId === userId && b.returned
-  );
-
-  if(historyBooks.length === 0){
-    tableBody.innerHTML =
-      `<tr><td colspan="4">No history</td></tr>`;
-    return;
-  }
-
-  historyBooks.forEach(b => {
-    tableBody.innerHTML += `
-      <tr>
-        <td>${b.book.title}</td>
-        <td>${b.issueDate}</td>
-        <td>${b.dueDate}</td>
-        <td>Returned</td>
-      </tr>
-    `;
-  });
+  document.getElementById("historyTab").classList.add("active");
+  document.getElementById("activeTab").classList.remove("active");
+  const token=localStorage.getItem("token");
+  const r=await fetch(BASE+"/borrow/all",{headers:{"Authorization":"Bearer "+token}});
+  const borrows=r.ok?await r.json():[];
+  const hist=borrows.filter(b=>b.user.collegeId===member.userId&&b.returned);
+  const tb=document.getElementById("tableBody");
+  if(!hist.length){tb.innerHTML=`<tr><td colspan="4" style="text-align:center;padding:32px;color:var(--muted);">No history</td></tr>`;return;}
+  tb.innerHTML=hist.map(b=>`<tr><td><strong>${b.book.title}</strong></td><td>${b.issueDate}</td><td>${b.dueDate}</td><td><span class="badge b-returned">Returned</span></td></tr>`).join("");
 }
-/* =======================
-   SEARCH CATALOGUE
-======================= */
+
+async function returnBook(id){
+  const token=localStorage.getItem("token");
+  const r=await fetch(`${BASE}/borrow/return/${id}`,{method:"POST",headers:{"Authorization":"Bearer "+token}});
+  if(r.ok){toast("Book returned!","success");loadActive();}else toast("Failed","error");
+}
+
 async function searchBook(){
-
-  const query = document
-      .getElementById("offlineTitle")
-      .value
-      .toLowerCase();
-
-  const suggestionsBox = document.getElementById("suggestions");
-  suggestionsBox.innerHTML = "";
-
-  if(query.length < 1) return;
-
-  const token = localStorage.getItem("token");
-
-  const response = await fetch(
-      "https://library-backend-1-e3r2.onrender.com/books",
-      {
-        headers: {
-          "Authorization": "Bearer " + token
-        }
-      }
-  );
-
-  const books = response.ok ? await response.json() : [];
-
-  const results = books.filter(book =>
-      book.title.toLowerCase().includes(query)
-  );
-
-  results.forEach(book=>{
-    suggestionsBox.innerHTML += `
-      <div onclick="selectBook('${book.title}', ${book.id})">
-        ${book.title}
-      </div>
-    `;
-  });
+  const q=document.getElementById("bookSearch").value.toLowerCase();
+  const sg=document.getElementById("suggestions");
+  sg.style.display="none";sg.innerHTML="";
+  if(q.length<2)return;
+  const token=localStorage.getItem("token");
+  const r=await fetch(`${BASE}/books?q=${encodeURIComponent(q)}&size=10`,{headers:{"Authorization":"Bearer "+token}});
+  const data=r.ok?await r.json():[];
+  const books=data.content||data;
+  if(!books.length)return;
+  sg.style.display="block";
+  sg.innerHTML=books.map(b=>`<div style="padding:10px 14px;cursor:pointer;font-size:13.5px;border-bottom:1px solid var(--border);" onmousedown="selectBook('${b.title.replace(/'/g,"\\'")}',${b.id})">${b.title}</div>`).join("");
 }
 
-function selectBook(title, id){
-
-  const input = document.getElementById("offlineTitle");
-
-  input.value = title;
-
-  // 🔥 store book id properly
-  input.dataset.bookId = id;
-
-  document.getElementById("suggestions").innerHTML = "";
+function selectBook(title,id){
+  document.getElementById("bookSearch").value=title;
+  document.getElementById("bookSearch").dataset.bookId=id;
+  document.getElementById("suggestions").style.display="none";
 }
 
-/* =======================
-   ISSUE OFFLINE
-======================= */
 async function issueOffline(){
-
-  const member = JSON.parse(localStorage.getItem("selectedMember"));
-  const {userId} = member;
-
-  const input = document.getElementById("offlineTitle");
-  const bookId = input.dataset.bookId;
-
-  if(!bookId){
-    toast("⚠ Please select book from suggestions list", "info");
-    return;
-  }
-
-  const token = localStorage.getItem("token");
-
-  const response = await fetch(
-    `https://library-backend-1-e3r2.onrender.com/borrow/issue?bookId=${bookId}&collegeId=${userId}`,
-    {
-      method: "POST",
-      headers: {
-        "Authorization": "Bearer " + token
-      }
-    }
-  );
-
-  if(response.ok){
-    toast("Book issued successfully", "success");
-
-    input.value = "";
-    input.dataset.bookId = "";
-
-    loadActive();
-  } else {
-    const msg = await response.text();
-    toast("Issue failed: " + msg, "error");
-  }
-}
-/* =======================
-   RETURN BOOK
-======================= */
-async function returnBook(borrowId){
-
-  const token = localStorage.getItem("token");
-
-  await fetch(
-    `https://library-backend-1-e3r2.onrender.com/borrow/return/${borrowId}`,
-    {
-      method: "POST",
-      headers: {
-        "Authorization": "Bearer " + token
-      }
-    }
-  );
-
-  toast("Book returned successfully", "success");
-
-  loadActive();
+  const inp=document.getElementById("bookSearch");
+  const bookId=inp.dataset.bookId;
+  if(!bookId){toast("Select a book from the list","info");return;}
+  const token=localStorage.getItem("token");
+  const r=await fetch(`${BASE}/borrow/issue?bookId=${bookId}&collegeId=${member.userId}`,{method:"POST",headers:{"Authorization":"Bearer "+token}});
+  if(r.ok){toast("Book issued!","success");inp.value="";inp.dataset.bookId="";loadActive();}
+  else{const m=await r.text();toast("Failed: "+m,"error");}
 }
 </script>
-
 </body>
 </html>

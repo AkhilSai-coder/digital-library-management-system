@@ -1,370 +1,75 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>My Books | Faculty | GRIET Library</title>
-<link rel="stylesheet" href="css/style.css">
-
-<style>
-
-.dashboard-layout{
-  display:flex;
-  min-height:100vh;
-}
-
-/* SIDEBAR */
-.sidebar{
-  width:260px;
-  background:linear-gradient(180deg,#0f2d52,#0b1f3a);
-  flex-shrink:0;
-  color:#fff;
-  padding:25px 20px;
-}
-
-.sidebar h3{
-  font-size:18px;
-  margin-bottom:30px;
-  font-weight:600;
-}
-
-.sidebar a{
-  display:block;
-  padding:12px 15px;
-  margin-bottom:8px;
-  text-decoration:none;
-  color:#dbeafe;
-  border-radius:8px;
-  font-size:14px;
-  transition:0.2s ease;
-}
-
-.sidebar a:hover,
-.sidebar a.active{
-    background:#b30000;
-    color:#fff;
-    transform:translateX(5px);
-}
-
-/* MAIN */
-.main{
-  flex:1;
-  padding:30px;
-}
-
-h1{
-  font-size:28px;
-  color:#1f3a5f;
-  margin-bottom:20px;
-}
-
-/* TABS */
-.tabs{
-  display:flex;
-  gap:10px;
-  background:#eef2f6;
-  padding:6px;
-  border-radius:10px;
-  width:fit-content;
-  margin-bottom:20px;
-}
-
-.tab{
-  padding:8px 16px;
-  border-radius:8px;
-  font-size:14px;
-  cursor:pointer;
-  color:#475569;
-}
-
-.tab.active{
-  background:#fff;
-  font-weight:bold;
-  color:#111827;
-}
-
-/* CARD */
-.card{
-  background:#fff;
-  border:1px solid #e5e7eb;
-  border-radius:12px;
-  padding:10px 0;
-}
-
-table{
-  width:100%;
-  border-collapse:collapse;
-}
-
-th, td{
-  padding:14px 20px;
-  border-bottom:1px solid #f1f5f9;
-  text-align:left;
-  font-size:14px;
-}
-
-th{
-  color:#64748b;
-}
-
-.status-active{
-  background:#eef7ff;
-  color:#1f3a5f;
-  padding:4px 12px;
-  border-radius:20px;
-  font-size:12px;
-}
-
-.status-overdue{
-  background:#ef4444;
-  color:#fff;
-  padding:4px 12px;
-  border-radius:20px;
-  font-size:12px;
-}
-
-.status-returned{
-  background:#2df1b9;
-  padding:4px 12px;
-  border-radius:20px;
-  font-size:12px;
-}
-
-.empty{
-  text-align:center;
-  padding:30px;
-  color:#64748b;
-}
-
-/* ================= MOBILE ================= */
-@media (max-width:768px){
-
-  .dashboard-layout{
-    flex-direction:column;
-  }
-
-  /* Sidebar becomes horizontal navbar */
-  .sidebar{
-  width:100%;
-  height:auto;
-  display:flex;
-  flex-direction:row;
-  align-items:center;
-  justify-content:flex-start;
-  overflow-x:auto;
-  gap:8px;
-  padding:10px;
-  background:linear-gradient(90deg,#0f2d52,#0b1f3a);
-}
-
-  .sidebar h3{
-    display:none;
-  }
-
-  .sidebar a{
-  display:inline-flex;
-  align-items:center;
-  white-space:nowrap;
-  padding:8px 14px;
-  font-size:13px;
-  border-radius:6px;
-  margin:0;
-}
-
-  /* hide scrollbar for clean UI */
-  .sidebar::-webkit-scrollbar{
-    display:none;
-  }
-
-  .main{
-    width:100%;
-    padding:15px;
-  }
-
-  h1{
-    font-size:20px;
-  }
-
-  /* Tabs responsive */
-  .tabs{
-    width:100%;
-  }
-
-  .tab{
-    flex:1;
-    text-align:center;
-  }
-
-  /* Table scroll */
-  table{
-    display:block;
-    overflow-x:auto;
-    white-space:nowrap;
-  }
-
-  th, td{
-    font-size:12px;
-    padding:8px;
-  }
-
-}
-
-</style>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>My Books | Faculty | GRIET Central Library</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="css/theme.css">
 </head>
-
 <body>
-
-<script src="js/auth.js"></script>
-<script>protectDashboard("faculty");</script>
-
+<script src="js/toast.js"></script><script src="js/auth.js"></script>
 <div class="dashboard-layout">
-
 <aside class="sidebar">
-  <h3>👨‍🏫 Faculty</h3>
-  <a href="faculty-dashboard.html">Dashboard</a>
-  <a href="catalogue.html">Book Catalog</a>
-  <a class="active">My Books</a>
-  <a href="faculty-fines.html">Fines</a>
-  <a href="faculty-recomendation.html">Recommend Books</a>
-  <a href="change-password.html">Change Password</a>
-  <a onclick="logout()" style="cursor:pointer;">Logout</a>
+  <div class="sidebar-brand">
+    <div class="brand-tag">GRIET · Hyderabad</div>
+    <div class="brand-name">Central<br>Library</div>
+    <div class="brand-sub">Faculty Portal</div>
+  </div>
+  <nav>
+    <div class="sidebar-sep">Menu</div>
+    <a href="faculty-dashboard.html">⊞&nbsp; Dashboard</a>
+    <a href="catalogue.html">◫&nbsp; Book Catalogue</a>
+    <a class="active">📖&nbsp; My Books</a>
+    <a href="faculty-fines.html">₹&nbsp; Fines</a>
+    <a href="faculty-recomendation.html">✦&nbsp; Recommend Books</a>
+  </nav>
+  <div class="sidebar-footer">
+    <a href="change-password.html">⚙&nbsp; Change Password</a>
+    <a onclick="logout()" style="cursor:pointer;">→&nbsp; Logout</a>
+  </div>
 </aside>
-
 <main class="main">
-
-<h1>My Books</h1>
-
-<div class="tabs">
-  <div class="tab active" id="activeTab">Active (0)</div>
-  <div class="tab" id="historyTab">History (0)</div>
-</div>
-
-<div class="card">
-  <table>
-    <thead>
-      <tr>
-        <th>Book</th>
-        <th>Issue Date</th>
-        <th>Due Date</th>
-        <th>Status</th>
-      </tr>
-    </thead>
-    <tbody id="facultyBooksTable"></tbody>
-  </table>
-</div>
-
+  <div class="top-bar"><div><div class="page-eyebrow">Faculty</div><h1>My Books</h1></div></div>
+  <div class="tabs">
+    <button class="tab active" id="activeTab" onclick="showActive()">Active (0)</button>
+    <button class="tab" id="historyTab" onclick="showHistory()">History (0)</button>
+  </div>
+  <div class="box">
+    <div class="box-body table-wrap">
+      <table><thead><tr><th>Book Title</th><th>Issue Date</th><th>Due Date</th><th>Status</th></tr></thead>
+      <tbody id="booksTable"></tbody></table>
+    </div>
+  </div>
 </main>
 </div>
-
 <script>
-document.addEventListener("DOMContentLoaded", loadMyBooks);
-
-let allBorrows = [];
-
+checkAuth();
+let allBorrows=[];
+document.addEventListener("DOMContentLoaded",loadMyBooks);
 async function loadMyBooks(){
-
-    const token = localStorage.getItem("token");
-
-    const response = await fetch("https://library-backend-1-e3r2.onrender.com/borrow/my-books", {
-        headers: {
-            "Authorization": "Bearer " + token
-        }
-    });
-
-    allBorrows = response.ok ? await response.json() : [];
-
-    updateCounts();
-    showActive();
+  const token=localStorage.getItem("token");
+  const r=await fetch("https://library-backend-1-e3r2.onrender.com/borrow/my-books",{headers:{"Authorization":"Bearer "+token}});
+  allBorrows=r.ok?await r.json():[];
+  document.getElementById("activeTab").textContent=`Active (${allBorrows.filter(b=>!b.returned).length})`;
+  document.getElementById("historyTab").textContent=`History (${allBorrows.filter(b=>b.returned).length})`;
+  showActive();
 }
-
-/* ========================= */
-/* SHOW ACTIVE BOOKS */
-/* ========================= */
 function showActive(){
-
-    document.getElementById("activeTab").classList.add("active");
-    document.getElementById("historyTab").classList.remove("active");
-
-    const table = document.getElementById("facultyBooksTable");
-    table.innerHTML = "";
-
-    const activeBooks = allBorrows.filter(b => !b.returned);
-
-    if(activeBooks.length === 0){
-        table.innerHTML = `<tr><td colspan="4" class="empty">No active books</td></tr>`;
-        return;
-    }
-
-    const today = new Date();
-
-    activeBooks.forEach(b => {
-
-        const dueDate = new Date(b.dueDate);
-        let status = "active";
-
-        if(today > dueDate){
-            status = "overdue";
-        }
-
-        table.innerHTML += `
-            <tr>
-                <td><b>${b.book.title}</b></td>
-                <td>${b.issueDate}</td>
-                <td>${b.dueDate}</td>
-                <td><span class="status-${status}">${status}</span></td>
-            </tr>
-        `;
-    });
+  document.getElementById("activeTab").classList.add("active");document.getElementById("historyTab").classList.remove("active");
+  const tb=document.getElementById("booksTable");const active=allBorrows.filter(b=>!b.returned);const today=new Date();
+  if(!active.length){tb.innerHTML=`<tr><td colspan="4" style="text-align:center;padding:32px;color:var(--muted);">No active books</td></tr>`;return;}
+  tb.innerHTML=active.map(b=>{const od=today>new Date(b.dueDate);
+    return `<tr><td><strong>${b.book.title}</strong></td><td>${b.issueDate}</td><td>${b.dueDate}</td>
+    <td><span class="badge ${od?"b-overdue":"b-active"}">${od?"Overdue":"Active"}</span></td></tr>`;
+  }).join("");
 }
-
-/* ========================= */
-/* SHOW HISTORY */
-/* ========================= */
 function showHistory(){
-
-    document.getElementById("historyTab").classList.add("active");
-    document.getElementById("activeTab").classList.remove("active");
-
-    const table = document.getElementById("facultyBooksTable");
-    table.innerHTML = "";
-
-    const historyBooks = allBorrows.filter(b => b.returned);
-
-    if(historyBooks.length === 0){
-        table.innerHTML = `<tr><td colspan="4" class="empty">No history yet</td></tr>`;
-        return;
-    }
-
-    historyBooks.forEach(b => {
-
-        table.innerHTML += `
-            <tr>
-                <td><b>${b.book.title}</b></td>
-                <td>${b.issueDate}</td>
-                <td>${b.dueDate}</td>
-                <td><span class="status-returned">returned</span></td>
-            </tr>
-        `;
-    });
+  document.getElementById("historyTab").classList.add("active");document.getElementById("activeTab").classList.remove("active");
+  const tb=document.getElementById("booksTable");const hist=allBorrows.filter(b=>b.returned);
+  if(!hist.length){tb.innerHTML=`<tr><td colspan="4" style="text-align:center;padding:32px;color:var(--muted);">No history yet</td></tr>`;return;}
+  tb.innerHTML=hist.map(b=>`<tr><td><strong>${b.book.title}</strong></td><td>${b.issueDate}</td><td>${b.dueDate}</td>
+  <td><span class="badge b-returned">Returned</span></td></tr>`).join("");
 }
-
-/* ========================= */
-/* UPDATE COUNTS */
-/* ========================= */
-function updateCounts(){
-
-    const activeCount = allBorrows.filter(b => !b.returned).length;
-    const historyCount = allBorrows.filter(b => b.returned).length;
-
-    document.getElementById("activeTab").innerText = `Active (${activeCount})`;
-    document.getElementById("historyTab").innerText = `History (${historyCount})`;
-}
-
-/* ========================= */
-/* TAB EVENTS */
-/* ========================= */
-document.getElementById("activeTab").onclick = showActive;
-document.getElementById("historyTab").onclick = showHistory;
 </script>
-
 </body>
 </html>

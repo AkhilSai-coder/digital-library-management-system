@@ -1,347 +1,72 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Fines | Faculty | GRIET Library</title>
-<link rel="stylesheet" href="css/style.css">
-
-<style>
-
-/* Layout */
-.dashboard-layout{
-  display:flex;
-  min-height:100vh;
-}
-
-/* Sidebar */
-.sidebar{
-  width:260px;
-  background:linear-gradient(180deg,#0f2d52,#0b1f3a);
-  color:#fff;
-  padding:25px 20px;
-}
-
-.sidebar h3{
-  font-size:18px;
-  margin-bottom:30px;
-  font-weight:600;
-}
-
-.sidebar a{
-  display:block;
-  padding:12px 15px;
-  margin-bottom:8px;
-  text-decoration:none;
-  color:#dbeafe;
-  border-radius:8px;
-  font-size:14px;
-  transition:0.2s ease;
-}
-
-.sidebar a:hover,
-.sidebar a.active{
-    background:#b30000;
-    color:#fff;
-    transform:translateX(5px);
-}
-
-
-/* Main */
-.main{
-  flex:1;
-  padding:30px;
-}
-
-h2{
-  margin-bottom:20px;
-  color:#1f3a5f;
-}
-
-/* Card */
-.card{
-  background:#fff;
-  border:1px solid #e5e7eb;
-  border-radius:10px;
-  padding:25px;
-  margin-bottom:30px;
-}
-
-/* Outstanding */
-.amount{
-  font-size:40px;
-  font-weight:bold;
-  color:#ef4444;
-  margin:10px 0;
-}
-
-.subtext{
-  color:#64748b;
-  font-size:14px;
-}
-
-/* Table */
-table{
-  width:100%;
-  border-collapse:collapse;
-  margin-top:10px;
-}
-
-th, td{
-  padding:14px 10px;
-  border-bottom:1px solid #f1f5f9;
-  text-align:left;
-  font-size:14px;
-}
-
-th{
-  color:#64748b;
-}
-
-.no-data{
-  text-align:center;
-  padding:30px;
-  color:#64748b;
-}
-
-/* ================= RESPONSIVE ================= */
-
-@media (max-width: 992px){
-
-  .dashboard-layout{
-    flex-direction: column;
-  }
-
-  .sidebar{
-    width: 100%;
-    text-align: center;
-  }
-
-  .sidebar a{
-    display: inline-block;
-    margin: 5px;
-  }
-
-  .main{
-    padding: 20px;
-  }
-
-}
-
-/* ================= MOBILE ================= */
-@media (max-width:768px){
-
-  .dashboard-layout{
-    flex-direction:column;
-  }
-
-  /* Sidebar → horizontal top menu */
-  .sidebar{
-    width:100%;
-    display:flex;
-    align-items:center;
-    overflow-x:auto;
-    padding:12px;
-  }
-
-  .sidebar h3{
-    display:none;
-  }
-
-  .sidebar a{
-    white-space:nowrap;
-    margin-right:8px;
-    font-size:12px;
-    padding:8px 10px;
-  }
-
-  .main{
-    padding:15px;
-  }
-
-  h2{
-    font-size:20px;
-  }
-
-  .amount{
-    font-size:28px;
-  }
-
-  table{
-    display:block;
-    overflow-x:auto;
-    white-space:nowrap;
-  }
-
-  th, td{
-    font-size:12px;
-    padding:8px;
-  }
-
-}
-
-.status-pending{
-  background:#ef4444;
-  color:#fff;
-  padding:4px 10px;
-  border-radius:20px;
-  font-size:12px;
-  font-weight:600;
-}
-</style>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Fines | Faculty | GRIET Central Library</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="css/theme.css">
 </head>
-
 <body>
-
-<!-- AUTH -->
-<script src="js/auth.js"></script>
+<script src="js/toast.js"></script><script src="js/auth.js"></script>
+<div class="dashboard-layout">
+<aside class="sidebar">
+  <div class="sidebar-brand">
+    <div class="brand-tag">GRIET · Hyderabad</div>
+    <div class="brand-name">Central<br>Library</div>
+    <div class="brand-sub">Faculty Portal</div>
+  </div>
+  <nav>
+    <div class="sidebar-sep">Menu</div>
+    <a href="faculty-dashboard.html">⊞&nbsp; Dashboard</a>
+    <a href="catalogue.html">◫&nbsp; Book Catalogue</a>
+    <a href="faculty-mybook.html">📖&nbsp; My Books</a>
+    <a class="active">₹&nbsp; Fines</a>
+    <a href="faculty-recomendation.html">✦&nbsp; Recommend Books</a>
+  </nav>
+  <div class="sidebar-footer">
+    <a href="change-password.html">⚙&nbsp; Change Password</a>
+    <a onclick="logout()" style="cursor:pointer;">→&nbsp; Logout</a>
+  </div>
+</aside>
+<main class="main">
+  <div class="top-bar"><div><div class="page-eyebrow">Faculty</div><h1>Fines</h1></div></div>
+  <div class="summary-card">
+    <h3>Outstanding Amount</h3>
+    <div class="fine-amount" id="fineAmount">₹0</div>
+    <div class="fine-sub" id="fineSub">0 pending fine(s) · ₹5/day</div>
+  </div>
+  <div class="box">
+    <div class="box-header"><span class="box-title">Fine History</span></div>
+    <div class="box-body table-wrap">
+      <table><thead><tr><th>Book</th><th>Overdue By</th><th>Fine</th><th>Due Date</th><th>Status</th></tr></thead>
+      <tbody id="fineTable"></tbody></table>
+    </div>
+  </div>
+</main>
+</div>
 <script>
-document.addEventListener("DOMContentLoaded", loadFines);
-
+checkAuth();
+document.addEventListener("DOMContentLoaded",loadFines);
 async function loadFines(){
-
-  const token = localStorage.getItem("token");
-
-  if(!token){
-    window.location.href = "login.html";
-    return;
-  }
-
-  try {
-
-    const response = await fetch(
-      "https://library-backend-1-e3r2.onrender.com/borrow/my-books",
-      {
-        headers: {
-          "Authorization": "Bearer " + token
+  const token=localStorage.getItem("token");
+  if(!token){window.location.href="login.html";return;}
+  const r=await fetch("https://library-backend-1-e3r2.onrender.com/borrow/my-books",{headers:{"Authorization":"Bearer "+token}});
+  const borrows=r.ok?await r.json():[];
+  const tb=document.getElementById("fineTable");
+  const today=new Date();let total=0,count=0;tb.innerHTML="";
+  borrows.forEach(b=>{
+    if(!b.returned){const due=new Date(b.dueDate);
+      if(today>due){const days=Math.floor((today-due)/(1000*60*60*24));const fine=days*5;
+        if(fine>0){total+=fine;count++;
+          tb.innerHTML+=`<tr><td><strong>${b.book.title}</strong></td><td>${days} day(s)</td><td><strong>₹${fine}</strong></td><td>${b.dueDate}</td><td><span class="badge b-overdue">Pending</span></td></tr>`;
         }
       }
-    );
-
-    if(!response.ok){
-      throw new Error("Failed to fetch borrows");
     }
-
-    const borrows = await response.json();
-
-    const table = document.querySelector("table");
-    const amountDiv = document.querySelector(".amount");
-    const subText = document.querySelector(".subtext");
-
-    let totalFine = 0;
-    let fineCount = 0;
-
-    table.innerHTML = `
-      <tr>
-        <th>Book</th>
-        <th>Reason</th>
-        <th>Amount</th>
-        <th>Due Date</th>
-        <th>Status</th>
-      </tr>
-    `;
-
-    const today = new Date();
-
-    borrows.forEach(b => {
-
-      const dueDate = new Date(b.dueDate);
-
-      if(today > dueDate){
-
-        const diffTime = today - dueDate;
-        const overdueDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
-
-        const fine = overdueDays * 5; // ₹5 per day for faculty
-
-        if(fine > 0){
-
-          totalFine += fine;
-          fineCount++;
-
-          table.innerHTML += `
-            <tr>
-              <td><strong>${b.book.title}</strong></td>
-              <td>Overdue - ${overdueDays} day(s)</td>
-              <td>₹${fine}</td>
-              <td>${b.dueDate}</td>
-              <td><span class="status-pending">Pending</span></td>
-            </tr>
-          `;
-        }
-      }
-
-    });
-
-    amountDiv.innerText = "₹" + totalFine;
-    subText.innerText = fineCount + " pending fine(s)";
-
-    if(fineCount === 0){
-      table.innerHTML += `
-        <tr>
-          <td colspan="5" class="no-data">
-            🎉 No fines. You're all clear!
-          </td>
-        </tr>
-      `;
-    }
-
-  } catch(error){
-    console.error(error);
-  }
+  });
+  if(count===0)tb.innerHTML=`<tr><td colspan="5" style="text-align:center;padding:32px;color:var(--muted);">🎉 No fines — you're all clear!</td></tr>`;
+  document.getElementById("fineAmount").textContent="₹"+total;
+  document.getElementById("fineSub").textContent=count+" pending fine(s) · ₹5/day";
 }
 </script>
-
-<div class="dashboard-layout">
-
-  <!-- SIDEBAR -->
-  <aside class="sidebar">
-    <h3>👨‍🏫 Faculty</h3>
-    <a href="faculty-dashboard.html">Dashboard</a>
-    <a href="catalogue.html">Book Catalog</a>
-    <a href="faculty-mybook.html">My Books</a>
-    <a class="active">Fines</a>
-    <a href="faculty-recomendation.html">Recommend Books</a>
-    <a href="change-password.html">Change Password</a>
-  <a onclick="logout()" style="cursor:pointer;">Logout</a>
-  </aside>
-
-  <!-- MAIN -->
-  <main class="main">
-
-    <h2>Fines</h2>
-
-    <!-- Outstanding Amount -->
-    <div class="card">
-      <h3>Outstanding Amount</h3>
-      <div class="amount">₹0</div>
-      <div class="subtext">0 pending fine(s)</div>
-    </div>
-
-    <!-- Fine History -->
-    <div class="card">
-  <h3>Fine History</h3>
-
-  <div style="overflow-x:auto;">
-    <table>
-        <tr>
-          <th>Book</th>
-          <th>Reason</th>
-          <th>Amount</th>
-          <th>Date</th>
-          <th>Status</th>
-        </tr>
-
-        <tr>
-          <td colspan="5" class="no-data">No fines</td>
-        </tr>
-
-          </table>
-  </div>
-</div>
-
-  </main>
-</div>
-
 </body>
 </html>

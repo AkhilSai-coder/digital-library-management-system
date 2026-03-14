@@ -1,335 +1,71 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Recommend Books | Faculty</title>
-<link rel="stylesheet" href="css/style.css">
-
-<style>
-
-.status{
-  padding:4px 10px;
-  border-radius:20px;
-  font-size:12px;
-  font-weight:500;
-  text-transform:capitalize;
-}
-
-.status.pending{
-  background:#fff3cd;
-  color:#856404;
-}
-
-.status.approved{
-  background:#d4edda;
-  color:#155724;
-}
-
-.status.rejected{
-  background:#f8d7da;
-  color:#721c24;
-}
-
-/* Layout */
-.dashboard-layout{
-  display:flex;
-  min-height:100vh;
-}
-
-/* Sidebar */
-.sidebar{
-  width:260px;
-  background:linear-gradient(180deg,#0f2d52,#0b1f3a);
-  color:#fff;
-  padding:25px 20px;
-}
-
-.sidebar h3{
-  font-size:18px;
-  margin-bottom:30px;
-  font-weight:600;
-}
-
-.sidebar a{
-  display:block;
-  padding:12px 15px;
-  margin-bottom:8px;
-  text-decoration:none;
-  color:#dbeafe;
-  border-radius:8px;
-  font-size:14px;
-  transition:0.2s ease;
-}
-
-.sidebar a:hover,
-.sidebar a.active{
-    background:#b30000;
-    color:#fff;
-    transform:translateX(5px);
-}
-
-
-/* Main */
-.main{
-  flex:1;
-  padding:30px;
-}
-
-h2{
-  margin-bottom:20px;
-  color:#1f3a5f;
-}
-
-/* Card */
-.card{
-  background:#fff;
-  border:1px solid #e5e7eb;
-  border-radius:10px;
-  padding:20px;
-  margin-bottom:25px;
-}
-
-.card h3{
-  margin-bottom:20px;
-}
-
-/* Form */
-.form-row{
-  display:flex;
-  gap:20px;
-  margin-bottom:15px;
-}
-
-input, textarea{
-  width:100%;
-  padding:12px;
-  border:1px solid #e5e7eb;
-  border-radius:8px;
-  font-size:14px;
-}
-
-textarea{
-  resize:vertical;
-  height:100px;
-}
-
-button{
-  background:#0f172a;
-  color:#fff;
-  padding:12px 22px;
-  border:none;
-  border-radius:8px;
-  font-size:14px;
-  cursor:pointer;
-}
-
-button:hover{
-  opacity:0.9;
-}
-
-/* Table */
-table{
-  width:100%;
-  border-collapse:collapse;
-}
-
-th, td{
-  padding:14px 10px;
-  border-bottom:1px solid #f1f5f9;
-  text-align:left;
-  font-size:14px;
-}
-
-th{
-  color:#64748b;
-}
-
-.status{
-  padding:4px 12px;
-  border-radius:20px;
-  background:#f1f5f9;
-  font-size:12px;
-}
-
-/* ================= RESPONSIVE ================= */
-
-@media (max-width: 992px){
-
-  .dashboard-layout{
-    flex-direction: column;
-  }
-
-  .sidebar{
-    width: 100%;
-    text-align: center;
-  }
-
-  .sidebar a{
-    display: inline-block;
-    margin: 5px;
-  }
-
-  .main{
-    padding: 20px;
-  }
-
-}
-
-/* ================= MOBILE ================= */
-@media (max-width:768px){
-
-  .dashboard-layout{
-    flex-direction:column;
-  }
-
-  /* Sidebar → horizontal scroll top nav */
-  .sidebar{
-    width:100%;
-    display:flex;
-    align-items:center;
-    overflow-x:auto;
-    padding:12px;
-  }
-
-  .sidebar h3{
-    display:none;
-  }
-
-  .sidebar a{
-    white-space:nowrap;
-    margin-right:8px;
-    font-size:12px;
-    padding:8px 10px;
-  }
-
-  .main{
-    padding:15px;
-  }
-
-  h2{
-    font-size:20px;
-    margin-bottom:15px;
-  }
-
-  .card{
-    padding:15px;
-  }
-
-  /* Form adjustments */
-  .form-row{
-    flex-direction:column;
-    gap:10px;
-  }
-
-  input, textarea{
-    font-size:13px;
-    padding:10px;
-  }
-
-  textarea{
-    height:90px;
-  }
-
-  button{
-    width:100%;
-    padding:10px;
-    font-size:13px;
-  }
-
-  /* Table scroll */
-  table{
-    display:block;
-    overflow-x:auto;
-    white-space:nowrap;
-  }
-
-  th, td{
-    font-size:12px;
-    padding:8px;
-  }
-
-}
-</style>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Recommend Books | Faculty | GRIET Central Library</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="css/theme.css">
 </head>
-
 <body>
-
-<!-- AUTH -->
-<script src="js/auth.js"></script>
-<script>
-protectDashboard("faculty");
-</script>
-
+<script src="js/toast.js"></script><script src="js/auth.js"></script>
 <div class="dashboard-layout">
-
-  <!-- SIDEBAR -->
-  <aside class="sidebar">
-    <h3>👨‍🏫 Faculty</h3>
-    <a href="faculty-dashboard.html">Dashboard</a>
-    <a href="catalogue.html">Book Catalog</a>
-    <a href="faculty-mybook.html">My Books</a>
-    <a href="faculty-fines.html">Fines</a>
-    <a class="active">Recommend Books</a>
-    <a href="change-password.html">Change Password</a>
-  <a onclick="logout()" style="cursor:pointer;">Logout</a>
-  </aside>
-
-  <!-- MAIN -->
-  <main class="main">
-
-    <h2>Recommend Books</h2>
-
-    <!-- New Recommendation -->
-    <div class="card">
-      <h3>New Recommendation</h3>
-
-      <div class="form-row">
-        <div style="flex:1">
-          <label>Book Title</label>
-          <input type="text" placeholder="Enter book title">
-        </div>
-
-        <div style="flex:1">
-          <label>Author</label>
-          <input type="text" placeholder="Enter author name">
-        </div>
-      </div>
-
-      <div style="margin-bottom:15px;">
-        <label>Reason / Justification</label>
-        <textarea placeholder="Why should the library acquire this book?"></textarea>
-      </div>
-
-      <button>Submit Recommendation</button>
-    </div>
-
-    <!-- Your Recommendations -->
-    <div class="card">
-  <h3>Your Recommendations</h3>
-
-  <div style="overflow-x:auto;">
-    <table>
-        <tr>
-          <th>Title</th>
-          <th>Author</th>
-          <th>Date</th>
-          <th>Status</th>
-        </tr>
-
-        <tr>
-          <td><b>Deep Learning</b></td>
-          <td>Ian Goodfellow</td>
-          <td>2026-01-20</td>
-          <td><span class="status">pending</span></td>
-        </tr>
-
-          </table>
+<aside class="sidebar">
+  <div class="sidebar-brand">
+    <div class="brand-tag">GRIET · Hyderabad</div>
+    <div class="brand-name">Central<br>Library</div>
+    <div class="brand-sub">Faculty Portal</div>
   </div>
+  <nav>
+    <div class="sidebar-sep">Menu</div>
+    <a href="faculty-dashboard.html">⊞&nbsp; Dashboard</a>
+    <a href="catalogue.html">◫&nbsp; Book Catalogue</a>
+    <a href="faculty-mybook.html">📖&nbsp; My Books</a>
+    <a href="faculty-fines.html">₹&nbsp; Fines</a>
+    <a class="active">✦&nbsp; Recommend Books</a>
+  </nav>
+  <div class="sidebar-footer">
+    <a href="change-password.html">⚙&nbsp; Change Password</a>
+    <a onclick="logout()" style="cursor:pointer;">→&nbsp; Logout</a>
+  </div>
+</aside>
+<main class="main">
+  <div class="top-bar"><div><div class="page-eyebrow">Faculty</div><h1>Recommend Books</h1><p>Suggest books for the library to acquire</p></div></div>
+  <div class="box" style="margin-bottom:22px;">
+    <div class="box-header"><span class="box-title">New Recommendation</span></div>
+    <div class="box-body" style="padding:22px;">
+      <div class="field-grid">
+        <div class="form-group"><label class="form-label">Book Title *</label><input class="form-control" id="recTitle" placeholder="Enter book title"></div>
+        <div class="form-group"><label class="form-label">Author *</label><input class="form-control" id="recAuthor" placeholder="Author name"></div>
+        <div class="form-group full"><label class="form-label">Reason / Justification</label><textarea class="form-control" id="recReason" rows="3" placeholder="Why should the library acquire this book?"></textarea></div>
+      </div>
+      <div style="margin-top:8px;"><button class="btn btn-navy" onclick="submitRec()">Submit Recommendation</button></div>
+    </div>
+  </div>
+  <div class="box">
+    <div class="box-header"><span class="box-title">Your Recommendations</span></div>
+    <div class="box-body table-wrap">
+      <table>
+        <thead><tr><th>Title</th><th>Author</th><th>Date</th><th>Status</th></tr></thead>
+        <tbody id="recTable">
+          <tr><td><strong>Deep Learning</strong></td><td>Ian Goodfellow</td><td>2026-01-20</td><td><span class="badge b-pending">Pending</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</main>
 </div>
-
-  </main>
-</div>
-
+<script>
+checkAuth();
+function submitRec(){
+  const t=document.getElementById("recTitle").value.trim();
+  const a=document.getElementById("recAuthor").value.trim();
+  if(!t||!a){toast("Title and Author are required","info");return;}
+  const tb=document.getElementById("recTable");
+  const today=new Date().toISOString().split("T")[0];
+  tb.innerHTML=`<tr><td><strong>${t}</strong></td><td>${a}</td><td>${today}</td><td><span class="badge b-pending">Pending</span></td></tr>`+tb.innerHTML;
+  document.getElementById("recTitle").value="";document.getElementById("recAuthor").value="";document.getElementById("recReason").value="";
+  toast("Recommendation submitted!","success");
+}
+</script>
 </body>
 </html>

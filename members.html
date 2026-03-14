@@ -1,256 +1,100 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Members | GRIET Library</title>
-<link rel="stylesheet" href="css/style.css">
-
-<style>
-
-.dashboard-layout { display:flex; min-height:100vh; }
-
-.sidebar{
-  width:260px;
-  background:linear-gradient(180deg,#0f2d52,#0b1f3a);
-  color:#fff;
-  padding:25px 20px;
-}
-
-.sidebar h3{
-  font-size:18px;
-  margin-bottom:30px;
-  font-weight:600;
-}
-
-.sidebar a{
-  display:block;
-  padding:12px 15px;
-  margin-bottom:8px;
-  text-decoration:none;
-  color:#dbeafe;
-  border-radius:8px;
-  font-size:14px;
-  transition:0.2s ease;
-}
-
-.sidebar a:hover,
-.sidebar a.active{
-    background:#b30000;
-    color:#fff;
-    transform:translateX(5px);
-}
-
-
-.main { flex:1; padding:30px; }
-
-.page-title {
-  font-size:26px;
-  color:#1f3a5f;
-  margin-bottom:20px;
-}
-
-.search-box{
-  width:300px;
-  padding:10px;
-  border-radius:8px;
-  border:1px solid #ccc;
-  margin-bottom:20px;
-}
-
-.card {
-  background:#fff;
-  border:1px solid #e5e7eb;
-  border-radius:10px;
-  padding:20px;
-}
-
-table {
-  width:100%;
-  border-collapse:collapse;
-}
-
-th, td {
-  padding:14px;
-  border-bottom:1px solid #eee;
-  text-align:left;
-  font-size:14px;
-}
-
-.role-badge {
-  padding:4px 12px;
-  border-radius:20px;
-  font-size:12px;
-  background:#f1f5f9;
-}
-
-.view-link {
-  color:#1f3a5f;
-  font-weight:bold;
-  cursor:pointer;
-}
-
-/* ================= TABLE SCROLL ================= */
-
-@media (max-width: 992px){
-
-  .search-box{
-    width:100%;
-  }
-
-  table{
-    display:block;
-    overflow-x:auto;   /* horizontal scroll on tablet */
-    white-space:nowrap;
-  }
-
-}
-
-/* ================= MOBILE ================= */
-
-@media (max-width: 768px){
-
-  .dashboard-layout{
-    flex-direction:column;
-  }
-
-  .sidebar{
-    width:100%;
-    display:flex;
-    overflow-x:auto;
-    padding:15px;
-  }
-
-  .sidebar a{
-    margin-right:10px;
-    white-space:nowrap;
-  }
-
-  .main{
-    padding:15px;
-  }
-
-  .page-title{
-    font-size:20px;
-  }
-
-  th, td{
-    padding:10px;
-    font-size:13px;
-  }
-
-}
-
-</style>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Members | GRIET Central Library</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="css/theme.css">
 </head>
-
 <body>
-
-<script src="js/toast.js"></script>
-<script src="js/auth.js"></script>
-
+<script src="js/toast.js"></script><script src="js/auth.js"></script>
 <div class="dashboard-layout">
-
 <aside class="sidebar">
-  <h3>📚 Library</h3>
-  <a href="librarian-dashboard.html">Dashboard</a>
-  <a href="book-management.html">Book Management</a>
-  <a href="issue-return.html">Issue & Return</a>
-  <a class="active">Members</a>
-  <a href="reports.html">Reports</a>
-  <a href="fine-management.html">Fine Management</a>
-  <a href="change-password.html">Change Password</a>
-  <a onclick="logout()" style="cursor:pointer;">Logout</a>
+  <div class="sidebar-brand">
+    <div class="brand-tag">GRIET · Hyderabad</div>
+    <div class="brand-name">Central<br>Library</div>
+    <div class="brand-sub">Management System</div>
+  </div>
+  <nav>
+    <div class="sidebar-sep">Main</div>
+    <a href="librarian-dashboard.html">⊞&nbsp; Dashboard</a>
+    <a href="catalogue.html">◫&nbsp; Book Catalogue</a>
+    <a href="book-management.html">+&nbsp; Add / Manage Books</a>
+    <div class="sidebar-sep">Circulation</div>
+    <a href="issue-return.html">⇄&nbsp; Issue &amp; Return</a>
+    <a href="fine-management.html">₹&nbsp; Fine Management</a>
+    <div class="sidebar-sep">Users</div>
+    <a class="active">◎&nbsp; Members</a>
+    <a href="member-details.html">≡&nbsp; Member Details</a>
+    <a href="reports.html">↗&nbsp; Reports</a>
+  </nav>
+  <div class="sidebar-footer">
+    <a href="change-password.html">⚙&nbsp; Settings</a>
+    <a onclick="logout()" style="cursor:pointer;">→&nbsp; Logout</a>
+  </div>
 </aside>
-
 <main class="main">
-
-<div class="page-title">Members</div>
-
-<!-- 🔍 SEARCH BOX ADDED -->
-<input type="text" id="searchInput" class="search-box"
-       placeholder="Search by Roll No / User ID">
-
-<div class="card">
-<table>
-<thead>
-<tr>
-  <th>User ID</th>
-  <th>Role</th>
-  <th>Active Issues</th>
-  <th>History</th>
-  <th>View</th>
-</tr>
-</thead>
-<tbody id="membersTable"></tbody>
-</table>
-</div>
-
+  <div class="top-bar">
+    <div>
+      <div class="page-eyebrow">Users</div>
+      <h1>Members</h1>
+      <p>All registered students and faculty</p>
+    </div>
+  </div>
+  <div class="search-row">
+    <div class="search-wrap">
+      <input type="text" id="searchInput" placeholder="Search by Roll No / User ID…">
+      <button>🔍</button>
+    </div>
+  </div>
+  <div class="box">
+    <div class="box-header">
+      <span class="box-title">All Members</span>
+      <span class="badge b-info" id="memberCount">0 members</span>
+    </div>
+    <div class="box-body table-wrap">
+      <table>
+        <thead><tr><th>User ID</th><th>Role</th><th>Active Issues</th><th>History</th><th>View</th></tr></thead>
+        <tbody id="membersTable"></tbody>
+      </table>
+    </div>
+  </div>
 </main>
 </div>
-
 <script>
-document.addEventListener("DOMContentLoaded", loadMembers);
+checkAuth();
+let allMembers=[];
+document.addEventListener("DOMContentLoaded",loadMembers);
 
-async function loadMembers() {
-
-    const token = localStorage.getItem("token");
-
-const response = await fetch("https://library-backend-1-e3r2.onrender.com/members", {
-    headers: {
-        "Authorization": "Bearer " + token
-    }
-});
-
-const members = response.ok ? await response.json() : [];
-
-    const table = document.getElementById("membersTable");
-    table.innerHTML = "";
-
-    members.forEach(m => {
-        table.innerHTML += `
-            <tr>
-                <td>${m.userId}</td>
-                <td>
-                    <span class="role-badge">${m.role}</span>
-                </td>
-                <td>${m.activeCount}</td>
-                <td>${m.historyCount}</td>
-                <td>
-                    <span class="view-link"
-                        onclick="openMember('${m.userId}', '${m.role}')">
-                        View
-                    </span>
-                </td>
-            </tr>
-        `;
-    });
+async function loadMembers(){
+  const token=localStorage.getItem("token");
+  const r=await fetch("https://library-backend-1-e3r2.onrender.com/members",{headers:{"Authorization":"Bearer "+token}});
+  allMembers=r.ok?await r.json():[];
+  renderMembers(allMembers);
 }
 
-  /* 🔍 SEARCH FUNCTION */
-  const searchInput = document.getElementById("searchInput");
+function renderMembers(members){
+  const tb=document.getElementById("membersTable");
+  document.getElementById("memberCount").textContent=members.length+" members";
+  if(!members.length){tb.innerHTML=`<tr><td colspan="5" style="text-align:center;padding:32px;color:var(--muted);">No members found</td></tr>`;return;}
+  tb.innerHTML=members.map(m=>`<tr>
+    <td><strong>${m.userId}</strong></td>
+    <td><span class="role-badge">${m.role}</span></td>
+    <td>${m.activeCount}</td>
+    <td>${m.historyCount}</td>
+    <td><button class="btn btn-ghost btn-sm" onclick="openMember('${m.userId}','${m.role}')">View →</button></td>
+  </tr>`).join("");
+}
 
-searchInput.addEventListener("keyup", function(){
-
-    const value = searchInput.value.toLowerCase();
-    const rows = document.querySelectorAll("#membersTable tr");
-
-    rows.forEach(row => {
-        const userId = row.children[0].innerText.toLowerCase();
-        row.style.display = userId.includes(value) ? "" : "none";
-    });
-
+document.getElementById("searchInput").addEventListener("input",function(){
+  const v=this.value.toLowerCase();
+  renderMembers(allMembers.filter(m=>m.userId.toLowerCase().includes(v)));
 });
 
-function openMember(userId, userRole){
-
-  localStorage.setItem("selectedMember",
-    JSON.stringify({userId, userRole})
-  );
-
-  window.location.href = "member-details.html";
+function openMember(userId,userRole){
+  localStorage.setItem("selectedMember",JSON.stringify({userId,userRole}));
+  window.location.href="member-details.html";
 }
 </script>
-
 </body>
 </html>
