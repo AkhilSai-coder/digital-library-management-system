@@ -141,8 +141,7 @@ document.addEventListener("DOMContentLoaded",()=>{
 
 async function loadBooks(){
   const token=localStorage.getItem("token");
-  const r=await fetch("https://library-backend-1-e3r2.onrender.com/books",{headers:{"Authorization":"Bearer "+token}});
-  if(!r.ok){toast("Failed to load books","error");return;}
+  const r=await fetch("https://library-backend-1-e3r2.onrender.com/books?page=0&size=100",{headers:{"Authorization":"Bearer "+token}});  if(!r.ok){toast("Failed to load books","error");return;}
   const data=await r.json();
   allBooks=data.content||data;
   renderBooks(allBooks);

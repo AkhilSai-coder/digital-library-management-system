@@ -621,30 +621,15 @@ async function loadBooks(){
   const token = localStorage.getItem("token");
   const headers = token ? {"Authorization":"Bearer "+token} : {};
   try {
-    const r = await fetch("https://library-backend-1-e3r2.onrender.com/books", {headers});
+    const r = await fetch("https://library-backend-1-e3r2.onrender.com/books?page=0&size=100", {headers});
     if(!r.ok){ showToast("Failed to load books","error"); showDemo(); return; }
-    allBooks = await r.json();
-  } catch(e){ showDemo(); }
+    const data = await r.json();
+    allBooks = Array.isArray(data) ? data : (data.content || []);
+    console.log("Books loaded:", allBooks.length);
+  } catch(e){ console.error("loadBooks error:", e); showDemo(); }
   updateHeroStats(); renderFiltered();
 }
 
-function showDemo(){
-  allBooks = [
-    {id:1,title:"Introduction to Algorithms",authors:"Cormen, Leiserson, Rivest",branch:"CSE",category:"Algorithms",publisher:"MIT Press",year:2022,available:true},
-    {id:2,title:"Computer Organization and Architecture",authors:"William Stallings",branch:"CSE",category:"Operating Systems",publisher:"Pearson",year:2021,available:false},
-    {id:3,title:"Artificial Intelligence: A Modern Approach",authors:"Russell & Norvig",branch:"AIML",category:"AI/ML",publisher:"Prentice Hall",year:2023,available:true},
-    {id:4,title:"Digital Signal Processing",authors:"Proakis & Manolakis",branch:"ECE",category:"Electronics",publisher:"Prentice Hall",year:2020,available:true},
-    {id:5,title:"Engineering Mathematics",authors:"B.S. Grewal",branch:"GENERAL",category:"Mathematics",publisher:"Khanna Publishers",year:2022,available:true},
-    {id:6,title:"Electrical Machines",authors:"I.J. Nagrath & D.P. Kothari",branch:"EEE",category:"Electronics",publisher:"McGraw Hill",year:2021,available:false},
-    {id:7,title:"Fluid Mechanics",authors:"Frank White",branch:"MECH",category:"Physics",publisher:"McGraw Hill",year:2020,available:true},
-    {id:8,title:"Structural Analysis",authors:"R.C. Hibbeler",branch:"CIVIL",category:"Mathematics",publisher:"Pearson",year:2022,available:true},
-    {id:9,title:"Machine Learning",authors:"Tom Mitchell",branch:"AIML",category:"AI/ML",publisher:"McGraw Hill",year:2023,available:true},
-    {id:10,title:"Data Structures and Algorithms",authors:"Mark Allen Weiss",branch:"CSE",category:"Algorithms",publisher:"Addison Wesley",year:2021,available:true},
-    {id:11,title:"VLSI Design",authors:"Neil Weste & David Harris",branch:"ECE",category:"Electronics",publisher:"Addison Wesley",year:2022,available:false},
-    {id:12,title:"Thermodynamics",authors:"Cengel & Boles",branch:"MECH",category:"Physics",publisher:"McGraw Hill",year:2020,available:true},
-  ];
-  updateHeroStats(); renderFiltered();
-}
 
 function updateHeroStats(){
   document.getElementById("totalCount").textContent = allBooks.length.toLocaleString();
@@ -717,7 +702,7 @@ function renderBooks(books){
       </div>
       <div class="book-body">
         <div class="book-title">${book.title||"Unknown Title"}</div>
-        <div class="book-author">${book.author||"Unknown Author"}</div>
+        <div class="book-author">${book.author||book.authors||"Unknown Author"}</div>
         <div class="book-meta">
           ${book.category?`<span class="book-tag cat">${book.category}</span>`:""}
           ${book.year?`<span class="book-tag">📅 ${book.year}</span>`:""}

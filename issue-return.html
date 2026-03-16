@@ -44,7 +44,6 @@
       <button class="btn btn-ghost btn-sm" onclick="loadAll()">↻ Refresh</button>
     </div>
   </div>
-
   <div class="grid-2">
     <div class="panel">
       <div class="panel-header">
@@ -128,16 +127,29 @@ async function approveRequest(id,btn){
 async function rejectRequest(id,btn){
   btn.disabled=true;btn.textContent="...";
   document.querySelectorAll(`#req-${id} .btn`).forEach(b=>b.disabled=true);
-  const res=await apiFetch(`/request/reject/${id}`,{method:"POST",body:JSON.stringify({reason:""})});
+  const res=await apiFetch(`/request/reject/${id}`,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({reason:""})});
   if(res.ok){removeItem("req-"+id);decBadge("reqBadge");toast("Request rejected","info");}
   else{toast("Failed to reject","error");btn.disabled=false;btn.textContent="Reject";}
 }
 
 async function returnBook(id,btn){
   btn.disabled=true;btn.textContent="...";
-  const res=await apiFetch(`/borrow/return/${id}`,{method:"POST"});
-  if(res.ok){removeItem("borrow-"+id);decBadge("issuedBadge");toast("Book returned successfully!","success");}
-  else{toast("Failed to return book","error");btn.disabled=false;btn.textContent="Return";}
+  try{
+    const res=await apiFetch(`/borrow/return/${id}`,{method:"POST"});
+    if(res.ok){
+      removeItem("borrow-"+id);
+      decBadge("issuedBadge");
+      toast("Book returned successfully!","success");
+      loadIssued();
+    } else {
+      const err=await res.text().catch(()=>"Unknown error");
+      toast("Return failed: "+err,"error");
+      btn.disabled=false;btn.textContent="Return";
+    }
+  } catch(e){
+    toast("Server error. Try again.","error");
+    btn.disabled=false;btn.textContent="Return";
+  }
 }
 
 function removeItem(id){
