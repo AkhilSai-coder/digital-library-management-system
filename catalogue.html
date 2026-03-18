@@ -430,6 +430,14 @@ a { text-decoration:none; color:inherit; }
   .header-inner { padding:0 20px; }
   .site-nav .nav-link { display:none; }
 }
+
+/* ── GRIET LOGO IN SIDEBAR ── */
+.sidebar-logo{display:flex;align-items:center;gap:10px;padding:18px 22px 0;margin-bottom:0;}
+.sidebar-logo img{height:36px;filter:brightness(0) invert(1);opacity:0.88;}
+.sidebar-logo-text{display:flex;flex-direction:column;}
+.sidebar-logo-text .sl-name{font-size:13px;font-weight:700;color:#fff;letter-spacing:0.2px;line-height:1.2;}
+.sidebar-logo-text .sl-sub{font-size:9.5px;color:rgba(255,255,255,0.4);letter-spacing:0.5px;margin-top:1px;}
+
 </style>
 </head>
 <body>
@@ -454,10 +462,10 @@ a { text-decoration:none; color:inherit; }
 <header class="site-header">
   <div class="header-inner">
     <a href="index.html" class="logo">
-      <img src="griet_logo.webp" alt="GRIET">
+      <img src="griet_logo.webp" alt="GRIET" style="height:100px;width:auto;flex-shrink:0;">
       <div class="logo-text">
-        <div class="logo-name">GRIET Library</div>
-        <div class="logo-sub">Central Knowledge Hub</div>
+        <div class="logo-name"></div>
+        <div class="logo-sub">Central </div>
       </div>
     </a>
     <nav class="site-nav">
@@ -496,6 +504,14 @@ a { text-decoration:none; color:inherit; }
 
   <!-- SIDEBAR -->
   <aside class="sidebar">
+  <div class="sidebar-logo">
+    <img src="griet_logo.webp" alt="GRIET" style="height:100px;width:auto;flex-shrink:0;">
+    <div class="sidebar-logo-text">
+      <div class="sl-name"></div>
+      <div class="sl-sub"></div>
+    </div>
+  </div>
+
     <div class="sidebar-head">
       <h3>🔎 Filters</h3>
       <p>Refine your search</p>
