@@ -6,7 +6,6 @@
 <title>Book Catalogue | GRIET Central Library</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Outfit:wght@300;400;500;600;700&display=swap');
-
 :root {
   --navy:    #081c3a;
   --navy2:   #0d2a57;
@@ -22,21 +21,11 @@
   --border2: #edf2f7;
   --shadow:  rgba(8,28,58,0.10);
   --shadow-deep: rgba(8,28,58,0.18);
-  /* map forest/emerald to navy/crimson so old references still work */
-  --forest:  #0f2d52;
-  --forest2: #1f3a5f;
-  --forest3: #0d2a57;
-  --emerald: #b30000;
-  --emerald2:#8f0000;
-  --ivory:   #f5f6f9;
-  --ivory2:  #edf2f7;
 }
-
 * { margin:0; padding:0; box-sizing:border-box; }
 html { scroll-behavior:smooth; }
 body { font-family:'Outfit',sans-serif; background:var(--bg); color:var(--text); overflow-x:hidden; }
 a { text-decoration:none; color:inherit; }
-
 ::-webkit-scrollbar { width:5px; }
 ::-webkit-scrollbar-track { background:#f1f5f9; }
 ::-webkit-scrollbar-thumb { background:var(--navy2); border-radius:3px; }
@@ -71,9 +60,10 @@ a { text-decoration:none; color:inherit; }
   height: 72px;
 }
 .logo { display:flex; align-items:center; gap:14px; }
-.logo img { height:44px; }
-.logo-name { font-family:'Cormorant Garamond',serif; font-size:20px; font-weight:700; color:var(--navy); line-height:1.1; }
-.logo-sub { font-size:10.5px; color:var(--muted); letter-spacing:0.5px; margin-top:1px; }
+.logo img { height:48px; width:auto; object-fit:contain; }
+.logo-text { display:flex; flex-direction:column; }
+.logo-name { font-family:'Cormorant Garamond',serif; font-size:19px; font-weight:700; color:var(--navy); line-height:1.1; }
+.logo-sub { font-size:10px; color:var(--muted); letter-spacing:0.5px; margin-top:1px; }
 .site-nav { display:flex; align-items:center; gap:4px; }
 .nav-link { padding:8px 16px; font-size:14px; font-weight:500; color:var(--navy); border-radius:9px; transition:all 0.2s; position:relative; }
 .nav-link:hover { color:var(--crimson); background:rgba(179,0,0,0.05); }
@@ -85,19 +75,13 @@ a { text-decoration:none; color:inherit; }
 /* ── PAGE HERO ── */
 .cat-hero {
   background: linear-gradient(135deg, var(--navy) 0%, var(--navy2) 60%, #0f3060 100%);
-  padding: 80px 0 60px;
+  padding: 70px 0 50px;
   position: relative; overflow: hidden;
 }
 .cat-hero::before {
   content:""; position:absolute; inset:0;
   background: radial-gradient(ellipse at 80% 50%, rgba(201,168,76,0.1) 0%, transparent 60%),
               radial-gradient(ellipse at 20% 80%, rgba(179,0,0,0.2) 0%, transparent 50%);
-  pointer-events:none;
-}
-.cat-hero::after {
-  content:""; position:absolute; top:-80px; right:-80px;
-  width:400px; height:400px;
-  background:radial-gradient(circle, rgba(201,168,76,0.07), transparent 70%);
   pointer-events:none;
 }
 .cat-hero-inner {
@@ -115,12 +99,12 @@ a { text-decoration:none; color:inherit; }
 .cat-hero-badge::before { content:"◆"; font-size:6px; }
 .cat-hero-text h1 {
   font-family:'Cormorant Garamond',serif;
-  font-size:clamp(36px,5vw,58px);
+  font-size:clamp(34px,5vw,54px);
   font-weight:700; color:#fff;
   line-height:1.05; letter-spacing:-0.5px; margin-bottom:14px;
 }
 .cat-hero-text h1 em { color:var(--gold2); font-style:italic; }
-.cat-hero-text p { color:rgba(255,255,255,0.65); font-size:15.5px; max-width:440px; line-height:1.75; }
+.cat-hero-text p { color:rgba(255,255,255,0.65); font-size:15px; max-width:440px; line-height:1.75; }
 .cat-hero-stats { display:flex; gap:0; flex-shrink:0; }
 .cat-hstat {
   padding:20px 28px; text-align:center;
@@ -133,7 +117,7 @@ a { text-decoration:none; color:inherit; }
 .cat-hstat-label { font-size:10px; color:rgba(255,255,255,0.5); margin-top:4px; letter-spacing:1px; text-transform:uppercase; }
 
 /* ── BACK ROW ── */
-.back-row { max-width:1240px; margin:0 auto; padding:28px 56px 0; }
+.back-row { max-width:1240px; margin:0 auto; padding:24px 56px 0; }
 .back-btn {
   display:inline-flex; align-items:center; gap:8px;
   padding:10px 20px; border:1.5px solid var(--border);
@@ -145,9 +129,9 @@ a { text-decoration:none; color:inherit; }
 
 /* ── MAIN LAYOUT ── */
 .cat-main {
-  max-width:1240px; margin:0 auto; padding:36px 56px 80px;
-  display:grid; grid-template-columns: 270px 1fr;
-  gap:32px; align-items:start;
+  max-width:1240px; margin:0 auto; padding:32px 56px 80px;
+  display:grid; grid-template-columns: 260px 1fr;
+  gap:28px; align-items:start;
 }
 
 /* ── SIDEBAR ── */
@@ -157,77 +141,107 @@ a { text-decoration:none; color:inherit; }
   box-shadow:0 8px 40px var(--shadow);
   position:sticky; top:92px; overflow:hidden;
 }
-.sidebar-head {
-  padding:20px 22px;
+
+/* Sidebar branding — compact strip */
+.sidebar-brand {
+  padding:16px 20px;
   background:linear-gradient(135deg, var(--navy), var(--navy2));
+  display:flex; align-items:center; gap:12px;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+.sidebar-brand img {
+  height:36px; width:36px; object-fit:contain;
+  border-radius:8px; background:#fff; padding:3px; flex-shrink:0;
+}
+.sidebar-brand-text .sb-name {
+  font-family:'Cormorant Garamond',serif;
+  font-size:14px; font-weight:700; color:#fff; line-height:1.2;
+}
+.sidebar-brand-text .sb-sub {
+  font-size:9.5px; color:rgba(255,255,255,0.45);
+  letter-spacing:0.5px; margin-top:2px;
+}
+
+.sidebar-head {
+  padding:16px 20px 14px;
+  background:linear-gradient(135deg, #0d2a57, #1a3f6e);
   color:#fff;
 }
-.sidebar-head h3 { font-family:'Cormorant Garamond',serif; font-size:18px; font-weight:700; }
-.sidebar-head p { font-size:12px; opacity:0.55; margin-top:3px; }
-.sidebar-section { padding:18px 22px; border-bottom:1px solid var(--border2); }
+.sidebar-head h3 { font-size:14px; font-weight:600; display:flex; align-items:center; gap:7px; }
+.sidebar-head p { font-size:11px; opacity:0.5; margin-top:3px; }
+
+.sidebar-section { padding:16px 20px; border-bottom:1px solid var(--border2); }
 .sidebar-section:last-child { border-bottom:none; }
-.sidebar-label { font-size:9.5px; font-weight:700; letter-spacing:3px; text-transform:uppercase; color:var(--muted); margin-bottom:10px; }
-.filter-group { display:flex; flex-direction:column; gap:6px; }
+.sidebar-label {
+  font-size:9px; font-weight:700; letter-spacing:3px;
+  text-transform:uppercase; color:var(--muted); margin-bottom:10px;
+}
+.filter-group { display:flex; flex-direction:column; gap:3px; }
 .filter-option {
-  display:flex; align-items:center; gap:10px;
-  padding:8px 10px; border-radius:9px;
+  display:flex; align-items:center; gap:9px;
+  padding:7px 10px; border-radius:8px;
   cursor:pointer; transition:0.15s;
-  font-size:13.5px; color:var(--text);
+  font-size:13px; color:var(--text);
 }
 .filter-option:hover { background:var(--bg); }
-.filter-option input[type="radio"] { accent-color:var(--crimson); width:15px; height:15px; cursor:pointer; }
+.filter-option input[type="radio"] {
+  accent-color:var(--crimson); width:14px; height:14px; cursor:pointer; flex-shrink:0;
+}
 .filter-option.active { background:rgba(179,0,0,0.07); color:var(--crimson); font-weight:600; }
 
 .avail-toggle {
   display:flex; align-items:center; justify-content:space-between;
-  padding:11px 14px; background:var(--bg); border-radius:11px; cursor:pointer;
+  padding:10px 13px; background:var(--bg); border-radius:10px; cursor:pointer;
+  border:1.5px solid var(--border2); transition:0.2s;
 }
-.avail-toggle span { font-size:13.5px; font-weight:500; }
+.avail-toggle:hover { border-color:var(--navy); }
+.avail-toggle span { font-size:13px; font-weight:500; }
 .toggle-switch {
-  width:42px; height:24px; background:var(--border);
-  border-radius:12px; position:relative; transition:0.2s; cursor:pointer;
+  width:40px; height:22px; background:var(--border);
+  border-radius:11px; position:relative; transition:0.25s; cursor:pointer; flex-shrink:0;
 }
 .toggle-switch.on { background:var(--crimson); }
 .toggle-switch::after {
   content:""; position:absolute; top:3px; left:3px;
-  width:18px; height:18px; background:#fff; border-radius:50%; transition:0.2s;
+  width:16px; height:16px; background:#fff; border-radius:50%; transition:0.25s;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.2);
 }
 .toggle-switch.on::after { left:21px; }
 
 .apply-btn {
-  width:100%; padding:12px;
+  width:100%; padding:11px;
   background:linear-gradient(135deg, var(--navy), var(--navy2));
-  color:#fff; border:none; border-radius:11px;
-  font-size:14px; font-weight:600; cursor:pointer;
-  transition:0.2s; font-family:'Outfit',sans-serif; margin-top:4px;
+  color:#fff; border:none; border-radius:10px;
+  font-size:13.5px; font-weight:600; cursor:pointer;
+  transition:0.2s; font-family:'Outfit',sans-serif; margin-top:2px;
 }
 .apply-btn:hover { background:var(--crimson); }
 
 /* ── SEARCH BAR ── */
-.search-row { display:flex; gap:12px; margin-bottom:24px; align-items:center; }
+.search-row { display:flex; gap:12px; margin-bottom:22px; align-items:center; }
 .search-wrap {
   flex:1; display:flex; background:var(--surface);
   border:1.5px solid var(--border); border-radius:12px; overflow:hidden; transition:0.2s;
 }
 .search-wrap:focus-within { border-color:var(--navy); box-shadow:0 0 0 3px rgba(8,28,58,0.08); }
 .search-wrap input {
-  flex:1; padding:14px 18px; border:none; outline:none;
-  font-size:14.5px; font-family:'Outfit',sans-serif; color:var(--text); background:transparent;
+  flex:1; padding:13px 18px; border:none; outline:none;
+  font-size:14px; font-family:'Outfit',sans-serif; color:var(--text); background:transparent;
 }
 .search-wrap button {
-  padding:0 22px; background:linear-gradient(135deg, var(--navy), var(--navy2));
+  padding:0 20px; background:linear-gradient(135deg, var(--navy), var(--navy2));
   color:#fff; border:none; cursor:pointer; font-size:16px; transition:0.2s;
 }
 .search-wrap button:hover { background:var(--crimson); }
 .sort-select {
-  padding:12px 16px; border:1.5px solid var(--border); border-radius:11px;
-  font-family:'Outfit',sans-serif; font-size:13.5px; background:var(--surface);
-  color:var(--text); cursor:pointer; outline:none; transition:0.2s;
+  padding:12px 14px; border:1.5px solid var(--border); border-radius:11px;
+  font-family:'Outfit',sans-serif; font-size:13px; background:var(--surface);
+  color:var(--text); cursor:pointer; outline:none; transition:0.2s; white-space:nowrap;
 }
 .sort-select:focus { border-color:var(--navy); }
 
 /* ── RESULTS META ── */
-.results-meta { display:flex; align-items:center; justify-content:space-between; margin-bottom:20px; }
+.results-meta { display:flex; align-items:center; justify-content:space-between; margin-bottom:18px; }
 .results-count { font-size:13.5px; color:var(--muted); }
 .results-count b { color:var(--navy); }
 .view-toggle { display:flex; gap:6px; }
@@ -239,39 +253,38 @@ a { text-decoration:none; color:inherit; }
 }
 .view-btn.active { background:var(--navy); color:#fff; border-color:var(--navy); }
 
-/* ── ACTIVE FILTERS ── */
-.active-filters { display:flex; flex-wrap:wrap; gap:8px; margin-bottom:18px; }
+/* ── ACTIVE FILTER CHIPS ── */
+.active-filters { display:flex; flex-wrap:wrap; gap:8px; margin-bottom:16px; }
 .filter-chip {
   display:inline-flex; align-items:center; gap:7px;
   padding:5px 13px; border-radius:20px;
   background:rgba(179,0,0,0.08); border:1px solid rgba(179,0,0,0.18);
-  color:var(--crimson); font-size:12.5px; font-weight:600;
+  color:var(--crimson); font-size:12px; font-weight:600;
 }
 .chip-remove { cursor:pointer; font-size:11px; opacity:0.6; }
 .chip-remove:hover { opacity:1; }
 
 /* ── BOOK GRID ── */
-.book-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); gap:22px; }
+.book-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(270px,1fr)); gap:20px; }
 .book-grid.list-view { grid-template-columns:1fr; }
 
 /* ── BOOK CARD ── */
 .book-card {
   background:var(--surface); border-radius:16px;
   border:1px solid var(--border2);
-  box-shadow:0 6px 28px var(--shadow);
+  box-shadow:0 4px 20px var(--shadow);
   transition:0.3s; position:relative; overflow:hidden;
   display:flex; flex-direction:column;
 }
-.book-card:hover { transform:translateY(-7px); box-shadow:0 24px 60px var(--shadow-deep); border-color:rgba(8,28,58,0.15); }
+.book-card:hover { transform:translateY(-6px); box-shadow:0 20px 50px var(--shadow-deep); border-color:rgba(8,28,58,0.15); }
 .book-card::before {
   content:""; position:absolute; top:0; left:0; right:0; height:3px;
   background:linear-gradient(90deg, var(--navy), var(--crimson), var(--gold));
   transform:scaleX(0); transform-origin:left; transition:0.3s;
 }
 .book-card:hover::before { transform:scaleX(1); }
-
 .book-cover {
-  height:150px; display:flex; align-items:center; justify-content:center;
+  height:148px; display:flex; align-items:center; justify-content:center;
   position:relative; overflow:hidden;
 }
 .book-cover-pattern {
@@ -279,15 +292,15 @@ a { text-decoration:none; color:inherit; }
   background-image:repeating-linear-gradient(45deg,#fff 0,#fff 1px,transparent 0,transparent 50%);
   background-size:14px 14px;
 }
-.book-cover-icon { font-size:50px; position:relative; z-index:1; filter:drop-shadow(0 4px 10px rgba(0,0,0,0.3)); }
+.book-cover-icon { font-size:48px; position:relative; z-index:1; filter:drop-shadow(0 4px 10px rgba(0,0,0,0.3)); }
 .book-cover-dept {
-  position:absolute; top:12px; right:12px;
+  position:absolute; top:11px; right:11px;
   background:rgba(201,168,76,0.2); border:1px solid rgba(201,168,76,0.4);
   color:var(--gold2); font-size:9px; font-weight:700;
-  letter-spacing:2px; padding:4px 11px; border-radius:20px; text-transform:uppercase;
+  letter-spacing:2px; padding:4px 10px; border-radius:20px; text-transform:uppercase;
 }
 .book-avail-dot {
-  position:absolute; bottom:12px; left:12px;
+  position:absolute; bottom:11px; left:11px;
   display:flex; align-items:center; gap:6px;
   font-size:11px; font-weight:600; color:#fff;
 }
@@ -301,22 +314,20 @@ a { text-decoration:none; color:inherit; }
   0%,100%{box-shadow:0 0 0 3px rgba(34,197,94,0.25)}
   50%{box-shadow:0 0 0 6px rgba(34,197,94,0.1)}
 }
-
-.book-body { padding:18px 20px; flex:1; display:flex; flex-direction:column; }
-.book-title { font-family:'Cormorant Garamond',serif; font-size:17px; font-weight:700; color:var(--navy); margin-bottom:6px; line-height:1.35; }
-.book-author { font-size:13px; color:var(--muted); margin-bottom:12px; }
-.book-meta { display:flex; flex-wrap:wrap; gap:6px; margin-bottom:14px; }
+.book-body { padding:16px 18px; flex:1; display:flex; flex-direction:column; }
+.book-title { font-family:'Cormorant Garamond',serif; font-size:16.5px; font-weight:700; color:var(--navy); margin-bottom:5px; line-height:1.35; }
+.book-author { font-size:12.5px; color:var(--muted); margin-bottom:11px; }
+.book-meta { display:flex; flex-wrap:wrap; gap:5px; margin-bottom:13px; }
 .book-tag {
-  padding:4px 11px; border-radius:20px;
-  font-size:11px; font-weight:600;
+  padding:3px 10px; border-radius:20px;
+  font-size:10.5px; font-weight:600;
   background:var(--bg); color:var(--navy); border:1px solid var(--border);
 }
 .book-tag.cat { background:rgba(179,0,0,0.07); color:var(--crimson); border-color:rgba(179,0,0,0.15); }
-.book-footer { margin-top:auto; padding-top:12px; border-top:1px solid var(--border2); display:flex; gap:9px; }
-
+.book-footer { margin-top:auto; padding-top:11px; border-top:1px solid var(--border2); display:flex; gap:8px; }
 .req-btn {
   flex:1; padding:10px; border:none; border-radius:9px;
-  font-size:13.5px; font-weight:600; cursor:pointer; transition:0.2s;
+  font-size:13px; font-weight:600; cursor:pointer; transition:0.2s;
   font-family:'Outfit',sans-serif;
   background:linear-gradient(135deg, var(--navy), var(--navy2)); color:#fff;
 }
@@ -326,7 +337,6 @@ a { text-decoration:none; color:inherit; }
 .req-btn.unavail { background:var(--bg); color:var(--muted); border:1.5px solid var(--border); cursor:not-allowed; }
 .req-btn.unavail:hover { transform:none; }
 .req-btn.loading { opacity:0.6; cursor:not-allowed; }
-
 .detail-btn {
   width:38px; height:38px; flex-shrink:0;
   border:1.5px solid var(--border); border-radius:9px;
@@ -338,10 +348,10 @@ a { text-decoration:none; color:inherit; }
 
 /* ── LIST VIEW ── */
 .book-grid.list-view .book-card { flex-direction:row; align-items:stretch; }
-.book-grid.list-view .book-cover { width:130px; height:auto; flex-shrink:0; }
-.book-grid.list-view .book-cover-icon { font-size:38px; }
-.book-grid.list-view .book-body { flex-direction:row; align-items:center; gap:20px; flex-wrap:wrap; }
-.book-grid.list-view .book-title { font-size:15px; min-width:180px; flex:1; }
+.book-grid.list-view .book-cover { width:120px; height:auto; flex-shrink:0; }
+.book-grid.list-view .book-cover-icon { font-size:36px; }
+.book-grid.list-view .book-body { flex-direction:row; align-items:center; gap:18px; flex-wrap:wrap; }
+.book-grid.list-view .book-title { font-size:15px; min-width:160px; flex:1; }
 .book-grid.list-view .book-meta { margin-bottom:0; }
 .book-grid.list-view .book-footer { margin-top:0; padding-top:0; border-top:none; flex-shrink:0; }
 
@@ -351,7 +361,7 @@ a { text-decoration:none; color:inherit; }
 .empty-state h3 { font-family:'Cormorant Garamond',serif; font-size:22px; color:var(--navy); margin-bottom:8px; }
 
 /* ── PAGINATION ── */
-.pagination { display:flex; align-items:center; justify-content:center; gap:7px; margin-top:40px; }
+.pagination { display:flex; align-items:center; justify-content:center; gap:7px; margin-top:36px; }
 .page-btn {
   width:38px; height:38px; border-radius:9px;
   border:1.5px solid var(--border); background:var(--surface);
@@ -388,7 +398,7 @@ a { text-decoration:none; color:inherit; }
   border:none; border-radius:9px; color:#fff; font-size:15px;
   cursor:pointer; display:flex; align-items:center; justify-content:center;
 }
-.modal-body { padding:28px; }
+.modal-body { padding:26px; }
 .modal-title { font-family:'Cormorant Garamond',serif; font-size:24px; font-weight:700; color:var(--navy); margin-bottom:7px; line-height:1.25; }
 .modal-author { font-size:14px; color:var(--muted); margin-bottom:18px; }
 .modal-tags { display:flex; flex-wrap:wrap; gap:7px; margin-bottom:20px; }
@@ -414,7 +424,7 @@ a { text-decoration:none; color:inherit; }
 @keyframes toastIn { from{opacity:0;transform:translateY(12px)} to{opacity:1;transform:none} }
 
 /* ── FOOTER ── */
-.site-footer { background:var(--navy); color:rgba(255,255,255,0.4); text-align:center; padding:32px; font-size:13px; }
+.site-footer { background:var(--navy); color:rgba(255,255,255,0.4); text-align:center; padding:28px; font-size:13px; }
 .site-footer em { color:var(--gold2); font-style:normal; }
 
 /* ── RESPONSIVE ── */
@@ -430,19 +440,11 @@ a { text-decoration:none; color:inherit; }
   .header-inner { padding:0 20px; }
   .site-nav .nav-link { display:none; }
 }
-
-/* ── GRIET LOGO IN SIDEBAR ── */
-.sidebar-logo{display:flex;align-items:center;gap:10px;padding:18px 22px 0;margin-bottom:0;}
-.sidebar-logo img{height:36px;filter:brightness(0) invert(1);opacity:0.88;}
-.sidebar-logo-text{display:flex;flex-direction:column;}
-.sidebar-logo-text .sl-name{font-size:13px;font-weight:700;color:#fff;letter-spacing:0.2px;line-height:1.2;}
-.sidebar-logo-text .sl-sub{font-size:9.5px;color:rgba(255,255,255,0.4);letter-spacing:0.5px;margin-top:1px;}
-
 </style>
 </head>
 <body>
 
-<!-- ANNOUNCE -->
+<!-- ANNOUNCE TICKER -->
 <div class="announce">
   <div class="announce-track">
     <span>New arrivals added weekly</span>
@@ -462,10 +464,10 @@ a { text-decoration:none; color:inherit; }
 <header class="site-header">
   <div class="header-inner">
     <a href="index.html" class="logo">
-  <img src="GRIET_Logo.png" alt="GRIET" style="height:100px; width: 260px;; flex-shrink:0; background-color: white; padding: 5px;">    <div class="sidebar-logo-text">
+      <img src="GRIET_Logo.png" alt="GRIET Logo">
       <div class="logo-text">
         <div class="logo-name"></div>
-        <div class="logo-sub">Central </div>
+        <div class="logo-sub"></div>
       </div>
     </a>
     <nav class="site-nav">
@@ -473,7 +475,7 @@ a { text-decoration:none; color:inherit; }
       <a href="about.html" class="nav-link">About</a>
       <a href="service.html" class="nav-link">Services</a>
       <a href="catalogue.html" class="nav-link active">Catalogue</a>
-      <a href="login.html" id="loginNav" class="nav-login">Login →</a>
+      <a href="login.html" id="loginNav" class="nav-login">Dashboard →</a>
     </nav>
   </div>
 </header>
@@ -487,14 +489,23 @@ a { text-decoration:none; color:inherit; }
       <p>Explore our comprehensive collection of academic titles, journals and digital resources. Request books directly from your dashboard.</p>
     </div>
     <div class="cat-hero-stats">
-      <div class="cat-hstat"><div class="cat-hstat-num" id="totalCount">—</div><div class="cat-hstat-label">Total Books</div></div>
-      <div class="cat-hstat"><div class="cat-hstat-num" id="availCount">—</div><div class="cat-hstat-label">Available</div></div>
-      <div class="cat-hstat"><div class="cat-hstat-num" id="deptCount">—</div><div class="cat-hstat-label">Departments</div></div>
+      <div class="cat-hstat">
+        <div class="cat-hstat-num" id="totalCount">—</div>
+        <div class="cat-hstat-label">Total Books</div>
+      </div>
+      <div class="cat-hstat">
+        <div class="cat-hstat-num" id="availCount">—</div>
+        <div class="cat-hstat-label">Available</div>
+      </div>
+      <div class="cat-hstat">
+        <div class="cat-hstat-num" id="deptCount">—</div>
+        <div class="cat-hstat-label">Departments</div>
+      </div>
     </div>
   </div>
 </div>
 
-<!-- BACK -->
+<!-- BACK BUTTON -->
 <div class="back-row">
   <button class="back-btn" onclick="window.location.href='index.html'">← Back to Home</button>
 </div>
@@ -502,20 +513,25 @@ a { text-decoration:none; color:inherit; }
 <!-- MAIN -->
 <div class="cat-main">
 
-  <!-- SIDEBAR -->
+  <!-- ── SIDEBAR ── -->
   <aside class="sidebar">
-  <div class="sidebar-logo">
-<img src="GRIET_Logo.png" alt="GRIET" style="height:100px; width: 260px;; flex-shrink:0; background-color: white; padding: 5px;">    <div class="sidebar-logo-text">
-    <div class="sidebar-logo-text">
-      <div class="sl-name"></div>
-      <div class="sl-sub"></div>
-    </div>
-  </div>
 
+    <!-- Compact brand strip -->
+    <div class="sidebar-brand">
+      <img src="GRIET_Logo.png" alt="GRIET">
+      <div class="sidebar-brand-text">
+        <div class="sb-name">GRIET Central Library</div>
+        <div class="sb-sub">Gokaraju Rangaraju IET</div>
+      </div>
+    </div>
+
+    <!-- Filter heading -->
     <div class="sidebar-head">
       <h3>🔎 Filters</h3>
       <p>Refine your search</p>
     </div>
+
+    <!-- Availability toggle -->
     <div class="sidebar-section">
       <div class="sidebar-label">Availability</div>
       <div class="avail-toggle" onclick="toggleAvail()">
@@ -523,20 +539,24 @@ a { text-decoration:none; color:inherit; }
         <div class="toggle-switch" id="availToggle"></div>
       </div>
     </div>
+
+    <!-- Department filter -->
     <div class="sidebar-section">
-      <div class="sidebar-label">Department</div>
+      <div class="sidebar-label">Department / Branch</div>
       <div class="filter-group">
         <label class="filter-option"><input type="radio" name="dept" value="all" checked> All Departments</label>
-        <label class="filter-option"><input type="radio" name="dept" value="CSE"> CSE</label>
-        <label class="filter-option"><input type="radio" name="dept" value="ECE"> ECE</label>
-        <label class="filter-option"><input type="radio" name="dept" value="MECH"> Mechanical</label>
-        <label class="filter-option"><input type="radio" name="dept" value="CIVIL"> Civil</label>
-        <label class="filter-option"><input type="radio" name="dept" value="EEE"> EEE</label>
-        <label class="filter-option"><input type="radio" name="dept" value="IT"> IT</label>
-        <label class="filter-option"><input type="radio" name="dept" value="AIML"> AI & ML</label>
-        <label class="filter-option"><input type="radio" name="dept" value="GENERAL"> General</label>
+        <label class="filter-option"><input type="radio" name="dept" value="CSE"> 💻 CSE</label>
+        <label class="filter-option"><input type="radio" name="dept" value="ECE"> 📡 ECE</label>
+        <label class="filter-option"><input type="radio" name="dept" value="MECH"> ⚙️ Mechanical</label>
+        <label class="filter-option"><input type="radio" name="dept" value="CIVIL"> 🏗️ Civil</label>
+        <label class="filter-option"><input type="radio" name="dept" value="EEE"> ⚡ EEE</label>
+        <label class="filter-option"><input type="radio" name="dept" value="IT"> 🖥️ IT</label>
+        <label class="filter-option"><input type="radio" name="dept" value="AIML"> 🤖 AI &amp; ML</label>
+        <label class="filter-option"><input type="radio" name="dept" value="GENERAL"> 📚 General</label>
       </div>
     </div>
+
+    <!-- Category filter -->
     <div class="sidebar-section">
       <div class="sidebar-label">Category</div>
       <div class="filter-group">
@@ -549,13 +569,17 @@ a { text-decoration:none; color:inherit; }
         <label class="filter-option"><input type="radio" name="cat" value="Physics"> Physics</label>
       </div>
     </div>
+
+    <!-- Clear filters -->
     <div class="sidebar-section">
-      <button class="apply-btn" onclick="clearFilters()">Clear All Filters</button>
+      <button class="apply-btn" onclick="clearFilters()">✕ Clear All Filters</button>
     </div>
+
   </aside>
 
-  <!-- CONTENT -->
+  <!-- ── CONTENT AREA ── -->
   <div class="cat-content">
+
     <div class="search-row">
       <div class="search-wrap">
         <input type="text" id="searchInput" placeholder="Search by title, author, ISBN…">
@@ -568,29 +592,35 @@ a { text-decoration:none; color:inherit; }
         <option value="avail">Available First</option>
       </select>
     </div>
+
     <div class="active-filters" id="activeFilters"></div>
+
     <div class="results-meta">
       <div class="results-count" id="resultsCount">Loading collection…</div>
       <div class="view-toggle">
-        <button class="view-btn active" id="gridBtn" onclick="setView('grid')" title="Grid">⊞</button>
-        <button class="view-btn" id="listBtn" onclick="setView('list')" title="List">☰</button>
+        <button class="view-btn active" id="gridBtn" onclick="setView('grid')" title="Grid view">⊞</button>
+        <button class="view-btn" id="listBtn" onclick="setView('list')" title="List view">☰</button>
       </div>
     </div>
+
     <div class="book-grid" id="bookGrid"></div>
     <div class="pagination" id="pagination"></div>
+
   </div>
 </div>
 
+<!-- TOAST CONTAINER -->
 <div class="toast-container" id="toastContainer"></div>
+
+<!-- DETAIL MODAL -->
 <div class="modal-overlay" id="modalOverlay">
   <div class="modal" id="modalContent"></div>
 </div>
 
 <footer class="site-footer">© 2026 <em>GRIET Central Library</em> · All Rights Reserved</footer>
 
-<script src="js/toast.js"></script>
-<script src="js/auth.js"></script>
 <script>
+/* ─── Data & State ─── */
 let allBooks = [];
 let myRequestedBookIds = new Set();
 let currentView = 'grid';
@@ -600,28 +630,41 @@ const PAGE_SIZE = 12;
 
 const deptIcons = {CSE:'💻',ECE:'📡',MECH:'⚙️',CIVIL:'🏗️',EEE:'⚡',IT:'🖥️',AIML:'🤖',GENERAL:'📚'};
 const coverColors = {
-  CSE:'linear-gradient(135deg,#081c3a,#0d2a57)',
-  ECE:'linear-gradient(135deg,#0a1f3c,#1a4080)',
-  MECH:'linear-gradient(135deg,#3b1a00,#8b4513)',
-  CIVIL:'linear-gradient(135deg,#2d1a00,#7c4010)',
-  EEE:'linear-gradient(135deg,#1a0d2e,#5b21b6)',
-  IT:'linear-gradient(135deg,#001a2e,#0e4a6e)',
-  AIML:'linear-gradient(135deg,#2d0000,#b30000)',
-  GENERAL:'linear-gradient(135deg,#1a1a2e,#2d2d4e)',
+  CSE:     'linear-gradient(135deg,#081c3a,#0d2a57)',
+  ECE:     'linear-gradient(135deg,#0a1f3c,#1a4080)',
+  MECH:    'linear-gradient(135deg,#3b1a00,#8b4513)',
+  CIVIL:   'linear-gradient(135deg,#2d1a00,#7c4010)',
+  EEE:     'linear-gradient(135deg,#1a0d2e,#5b21b6)',
+  IT:      'linear-gradient(135deg,#001a2e,#0e4a6e)',
+  AIML:    'linear-gradient(135deg,#2d0000,#b30000)',
+  GENERAL: 'linear-gradient(135deg,#1a1a2e,#2d2d4e)',
 };
 
+/* ─── Init ─── */
 document.addEventListener("DOMContentLoaded", async () => {
+  updateLoginNav();
   await loadMyRequests();
   await loadBooks();
-  document.getElementById("searchInput").addEventListener("input", renderFiltered);
+
+  document.getElementById("searchInput").addEventListener("input", () => { currentPage=1; renderFiltered(); });
   document.getElementById("sortSelect").addEventListener("change", renderFiltered);
   document.querySelectorAll('input[name="dept"], input[name="cat"]').forEach(el => {
     el.addEventListener("change", () => { currentPage=1; renderFiltered(); updateFilterChips(); });
   });
-  document.getElementById("modalOverlay").addEventListener("click", (e) => {
+  document.getElementById("modalOverlay").addEventListener("click", e => {
     if(e.target === document.getElementById("modalOverlay")) closeModal();
   });
 });
+
+function updateLoginNav(){
+  const role = localStorage.getItem("role");
+  if(!role) return;
+  const nav = document.getElementById("loginNav");
+  nav.textContent = "Dashboard →";
+  nav.href = role==="LIBRARIAN" ? "librarian-dashboard.html" :
+             role==="FACULTY"   ? "faculty-dashboard.html"   :
+             "student-dashboard.html";
+}
 
 async function loadMyRequests(){
   const token = localStorage.getItem("token");
@@ -629,7 +672,10 @@ async function loadMyRequests(){
   try {
     const r = await fetch("https://library-backend-1-e3r2.onrender.com/request/my",
       {headers:{"Authorization":"Bearer "+token}});
-    if(r.ok){ const data=await r.json(); data.forEach(req=>{ if(req.status==="PENDING") myRequestedBookIds.add(req.book.id); }); }
+    if(r.ok){
+      const data = await r.json();
+      data.forEach(req => { if(req.status==="PENDING") myRequestedBookIds.add(req.book.id); });
+    }
   } catch(e){ console.error(e); }
 }
 
@@ -637,73 +683,91 @@ async function loadBooks(){
   const token = localStorage.getItem("token");
   const headers = token ? {"Authorization":"Bearer "+token} : {};
   try {
-    const r = await fetch("https://library-backend-1-e3r2.onrender.com/books?page=0&size=100", {headers});
-    if(!r.ok){ showToast("Failed to load books","error"); showDemo(); return; }
+    const r = await fetch("https://library-backend-1-e3r2.onrender.com/books?page=0&size=200", {headers});
+    if(!r.ok){ showToast("Failed to load books","error"); loadDemoBooks(); return; }
     const data = await r.json();
     allBooks = Array.isArray(data) ? data : (data.content || []);
-    console.log("Books loaded:", allBooks.length);
-  } catch(e){ console.error("loadBooks error:", e); showDemo(); }
-  updateHeroStats(); renderFiltered();
+  } catch(e){ console.error("loadBooks error:", e); loadDemoBooks(); }
+  updateHeroStats();
+  renderFiltered();
 }
 
+function loadDemoBooks(){
+  const depts = ['CSE','ECE','MECH','CIVIL','EEE','IT','AIML','GENERAL'];
+  const cats  = ['Algorithms','Operating Systems','AI/ML','Electronics','Mathematics','Physics'];
+  allBooks = Array.from({length:50}, (_,i) => ({
+    id: i+1,
+    title: `Book Title ${i+1}`,
+    author: `Author ${i+1}`,
+    branch: depts[i%depts.length],
+    category: cats[i%cats.length],
+    year: 2018+(i%7),
+    publisher: ['Pearson','McGraw Hill','Wiley','O\'Reilly'][i%4],
+    available: i%3!==0
+  }));
+  updateHeroStats();
+  renderFiltered();
+}
 
 function updateHeroStats(){
   document.getElementById("totalCount").textContent = allBooks.length.toLocaleString();
   document.getElementById("availCount").textContent = allBooks.filter(b=>b.available).length.toLocaleString();
-  document.getElementById("deptCount").textContent = new Set(allBooks.map(b=>b.branch).filter(Boolean)).size;
+  document.getElementById("deptCount").textContent  = new Set(allBooks.map(b=>b.branch).filter(Boolean)).size;
 }
 
-// Smart nav - show Dashboard if logged in
-const _role = localStorage.getItem("role");
-if(_role){
-  const nav = document.getElementById("loginNav");
-  nav.textContent = "Dashboard →";
-  nav.href = _role==="LIBRARIAN" ? "librarian-dashboard.html" :
-             _role==="FACULTY"   ? "faculty-dashboard.html"   :
-             "student-dashboard.html";
-}
-
+/* ─── Render ─── */
 function renderFiltered(){
-  const q = document.getElementById("searchInput").value.toLowerCase().trim();
+  const q    = document.getElementById("searchInput").value.toLowerCase().trim();
   const dept = document.querySelector('input[name="dept"]:checked')?.value || "all";
   const cat  = document.querySelector('input[name="cat"]:checked')?.value  || "all";
   const sort = document.getElementById("sortSelect").value;
 
   let books = allBooks.filter(b => {
     const matchQ     = !q || (b.title||"").toLowerCase().includes(q) || (b.author||"").toLowerCase().includes(q);
-    const matchDept  = dept==="all" || (b.branch||"")===dept;
-    const matchCat   = cat==="all"  || (b.category||"")===cat;
+    const matchDept  = dept==="all" || (b.branch||"")=== dept;
+    const matchCat   = cat==="all"  || (b.category||"")=== cat;
     const matchAvail = !showAvailOnly || b.available;
     return matchQ && matchDept && matchCat && matchAvail;
   });
 
-  if(sort==="title-az") books.sort((a,b)=>a.title.localeCompare(b.title));
-  else if(sort==="title-za") books.sort((a,b)=>b.title.localeCompare(a.title));
+  if(sort==="title-az") books.sort((a,b)=>(a.title||"").localeCompare(b.title||""));
+  else if(sort==="title-za") books.sort((a,b)=>(b.title||"").localeCompare(a.title||""));
   else if(sort==="avail") books.sort((a,b)=>b.available-a.available);
 
   const total = books.length;
   const paged = books.slice((currentPage-1)*PAGE_SIZE, currentPage*PAGE_SIZE);
-  document.getElementById("resultsCount").innerHTML = `Showing <b>${paged.length}</b> of <b>${total}</b> book${total!==1?'s':''}`;
-  renderBooks(paged); renderPagination(total);
+  document.getElementById("resultsCount").innerHTML =
+    `Showing <b>${paged.length}</b> of <b>${total}</b> book${total!==1?'s':''}`;
+
+  renderBooks(paged);
+  renderPagination(total);
 }
 
 function renderBooks(books){
   const grid = document.getElementById("bookGrid");
   grid.innerHTML = "";
-  grid.className = "book-grid"+(currentView==="list"?" list-view":"");
+  grid.className = "book-grid" + (currentView==="list" ? " list-view" : "");
+
   if(!books.length){
-    grid.innerHTML = `<div class="empty-state"><div class="empty-icon">📭</div><h3>No Books Found</h3><p>Try adjusting your search or filters.</p></div>`;
+    grid.innerHTML = `<div class="empty-state">
+      <div class="empty-icon">📭</div>
+      <h3>No Books Found</h3>
+      <p>Try adjusting your search or filters.</p>
+    </div>`;
     return;
   }
+
   books.forEach(book => {
-    const dept = book.branch||"GENERAL";
-    const icon = deptIcons[dept]||"📚";
-    const bg   = coverColors[dept]||coverColors.GENERAL;
+    const dept = book.branch || "GENERAL";
+    const icon = deptIcons[dept] || "📚";
+    const bg   = coverColors[dept] || coverColors.GENERAL;
     const isRequested = myRequestedBookIds.has(book.id);
     const isUnavail   = !book.available;
-    let btnCls="req-btn", btnTxt="Request";
+
+    let btnCls = "req-btn", btnTxt = "Request";
     if(isRequested){ btnCls="req-btn requested"; btnTxt="✓ Requested"; }
     else if(isUnavail){ btnCls="req-btn unavail"; btnTxt="Not Available"; }
+
     const card = document.createElement("div");
     card.className = "book-card";
     card.innerHTML = `
@@ -713,19 +777,21 @@ function renderBooks(books){
         <div class="book-cover-dept">${dept}</div>
         <div class="book-avail-dot">
           <div class="avail-indicator ${isUnavail?'unavailable':''}"></div>
-          ${isUnavail?"Checked Out":"Available"}
+          ${isUnavail ? "Checked Out" : "Available"}
         </div>
       </div>
       <div class="book-body">
-        <div class="book-title">${book.title||"Unknown Title"}</div>
-        <div class="book-author">${book.author||book.authors||"Unknown Author"}</div>
+        <div class="book-title">${book.title || "Unknown Title"}</div>
+        <div class="book-author">${book.author || book.authors || "Unknown Author"}</div>
         <div class="book-meta">
-          ${book.category?`<span class="book-tag cat">${book.category}</span>`:""}
-          ${book.year?`<span class="book-tag">📅 ${book.year}</span>`:""}
-          ${book.publisher?`<span class="book-tag">${book.publisher.split(" ")[0]}</span>`:""}
+          ${book.category ? `<span class="book-tag cat">${book.category}</span>` : ""}
+          ${book.year     ? `<span class="book-tag">📅 ${book.year}</span>` : ""}
+          ${book.publisher? `<span class="book-tag">${book.publisher.split(" ")[0]}</span>` : ""}
         </div>
         <div class="book-footer">
-          <button class="${btnCls}" id="btn-${book.id}" ${isRequested||isUnavail?"disabled":""} onclick="requestBook(${book.id},event)">${btnTxt}</button>
+          <button class="${btnCls}" id="btn-${book.id}"
+            ${isRequested||isUnavail?"disabled":""}
+            onclick="requestBook(${book.id},event)">${btnTxt}</button>
           <button class="detail-btn" onclick="showDetail(${book.id})" title="Details">ℹ</button>
         </div>
       </div>`;
@@ -734,32 +800,40 @@ function renderBooks(books){
 }
 
 function renderPagination(total){
-  const pages = Math.ceil(total/PAGE_SIZE);
+  const pages = Math.ceil(total / PAGE_SIZE);
   const el = document.getElementById("pagination");
   el.innerHTML = "";
-  if(pages<=1) return;
+  if(pages <= 1) return;
+
   const prev = document.createElement("button");
-  prev.className="page-btn"; prev.textContent="‹"; prev.disabled=currentPage===1;
+  prev.className="page-btn"; prev.textContent="‹"; prev.disabled=(currentPage===1);
   prev.onclick=()=>{ currentPage--; renderFiltered(); scrollTo({top:300,behavior:"smooth"}); };
   el.appendChild(prev);
+
   for(let i=1;i<=pages;i++){
-    const b=document.createElement("button");
-    b.className="page-btn"+(i===currentPage?" active":"");
-    b.textContent=i;
-    b.onclick=(()=>{const pg=i;return()=>{currentPage=pg;renderFiltered();scrollTo({top:300,behavior:"smooth"});};})();
+    const b = document.createElement("button");
+    b.className = "page-btn" + (i===currentPage?" active":"");
+    b.textContent = i;
+    b.onclick = (p => ()=>{ currentPage=p; renderFiltered(); scrollTo({top:300,behavior:"smooth"}); })(i);
     el.appendChild(b);
   }
-  const next=document.createElement("button");
-  next.className="page-btn"; next.textContent="›"; next.disabled=currentPage===pages;
+
+  const next = document.createElement("button");
+  next.className="page-btn"; next.textContent="›"; next.disabled=(currentPage===pages);
   next.onclick=()=>{ currentPage++; renderFiltered(); scrollTo({top:300,behavior:"smooth"}); };
   el.appendChild(next);
 }
 
+/* ─── Request Book ─── */
 async function requestBook(bookId, e){
   if(e) e.stopPropagation();
   if(myRequestedBookIds.has(bookId)){ showToast("Already requested!","info"); return; }
   const token = localStorage.getItem("token");
-  if(!token){ showToast("Login required to request books","error"); setTimeout(()=>window.location.href="login.html",1200); return; }
+  if(!token){
+    showToast("Login required to request books","error");
+    setTimeout(()=>window.location.href="login.html",1200);
+    return;
+  }
   const btn = document.getElementById("btn-"+bookId);
   if(!btn) return;
   btn.classList.add("loading"); btn.disabled=true; btn.textContent="Sending…";
@@ -771,9 +845,10 @@ async function requestBook(bookId, e){
       btn.className="req-btn requested"; btn.textContent="✓ Requested"; btn.disabled=true;
       showToast("✅ Request sent to Librarian!","success");
     } else {
-      const err=await r.text();
+      const err = await r.text();
       if(err.includes("already")){
-        myRequestedBookIds.add(bookId); btn.className="req-btn requested"; btn.textContent="✓ Requested"; btn.disabled=true;
+        myRequestedBookIds.add(bookId);
+        btn.className="req-btn requested"; btn.textContent="✓ Requested"; btn.disabled=true;
         showToast("Already requested","info");
       } else {
         btn.classList.remove("loading"); btn.disabled=false; btn.textContent="Request";
@@ -786,17 +861,19 @@ async function requestBook(bookId, e){
   }
 }
 
+/* ─── Detail Modal ─── */
 function showDetail(bookId){
   const book = allBooks.find(b=>b.id===bookId);
   if(!book) return;
-  const dept=book.branch||"GENERAL";
-  const icon=deptIcons[dept]||"📚";
-  const bg=coverColors[dept]||coverColors.GENERAL;
-  const isRequested=myRequestedBookIds.has(book.id);
-  const isUnavail=!book.available;
-  let btnTxt="Request", btnDis="";
+  const dept = book.branch || "GENERAL";
+  const icon = deptIcons[dept] || "📚";
+  const bg   = coverColors[dept] || coverColors.GENERAL;
+  const isRequested = myRequestedBookIds.has(book.id);
+  const isUnavail   = !book.available;
+  let btnTxt = "Request", btnDis = "";
   if(isRequested){ btnTxt="✓ Already Requested"; btnDis="disabled"; }
   else if(isUnavail){ btnTxt="Currently Unavailable"; btnDis="disabled"; }
+
   document.getElementById("modalContent").innerHTML = `
     <div class="modal-cover" style="background:${bg}">
       <div class="modal-cover-pattern"></div>
@@ -809,13 +886,18 @@ function showDetail(bookId){
       <div class="modal-tags">
         <span class="book-tag cat">${dept}</span>
         ${book.category?`<span class="book-tag cat">${book.category}</span>`:""}
-        <span class="book-tag" style="background:${isUnavail?"rgba(239,68,68,0.1)":"rgba(34,197,94,0.1)"};color:${isUnavail?"#dc2626":"#16a34a"};border-color:${isUnavail?"rgba(239,68,68,0.25)":"rgba(34,197,94,0.25)"}">${isUnavail?"Checked Out":"Available"}</span>
+        <span class="book-tag" style="
+          background:${isUnavail?"rgba(239,68,68,0.1)":"rgba(34,197,94,0.1)"};
+          color:${isUnavail?"#dc2626":"#16a34a"};
+          border-color:${isUnavail?"rgba(239,68,68,0.25)":"rgba(34,197,94,0.25)"}">
+          ${isUnavail?"Checked Out":"Available"}
+        </span>
       </div>
       <div class="modal-details">
         ${book.publisher?`<div class="modal-detail"><div class="modal-detail-label">Publisher</div><div class="modal-detail-val">${book.publisher}</div></div>`:""}
         ${book.year?`<div class="modal-detail"><div class="modal-detail-label">Year</div><div class="modal-detail-val">${book.year}</div></div>`:""}
         <div class="modal-detail"><div class="modal-detail-label">Department</div><div class="modal-detail-val">${dept}</div></div>
-        <div class="modal-detail"><div class="modal-detail-label">Status</div><div class="modal-detail-val">${isUnavail?"Checked Out":"Available"}</div></div>
+        <div class="modal-detail"><div class="modal-detail-label">Status</div><div class="modal-detail-val">${isUnavail?"Checked Out":"✓ Available"}</div></div>
       </div>
       <button class="modal-req-btn" ${btnDis} onclick="requestBook(${book.id},event)">${btnTxt}</button>
     </div>`;
@@ -823,44 +905,59 @@ function showDetail(bookId){
 }
 function closeModal(){ document.getElementById("modalOverlay").classList.remove("open"); }
 
+/* ─── Filters ─── */
 function toggleAvail(){
-  showAvailOnly=!showAvailOnly;
-  document.getElementById("availToggle").classList.toggle("on",showAvailOnly);
-  currentPage=1; renderFiltered(); updateFilterChips();
+  showAvailOnly = !showAvailOnly;
+  document.getElementById("availToggle").classList.toggle("on", showAvailOnly);
+  currentPage = 1; renderFiltered(); updateFilterChips();
 }
 function setView(v){
-  currentView=v;
-  document.getElementById("gridBtn").classList.toggle("active",v==="grid");
-  document.getElementById("listBtn").classList.toggle("active",v==="list");
+  currentView = v;
+  document.getElementById("gridBtn").classList.toggle("active", v==="grid");
+  document.getElementById("listBtn").classList.toggle("active", v==="list");
   renderFiltered();
 }
 function updateFilterChips(){
-  const area=document.getElementById("activeFilters"); area.innerHTML="";
-  const dept=document.querySelector('input[name="dept"]:checked')?.value;
-  const cat=document.querySelector('input[name="cat"]:checked')?.value;
-  if(dept&&dept!=="all") addChip(dept,()=>{document.querySelector('input[name="dept"][value="all"]').checked=true;currentPage=1;renderFiltered();updateFilterChips();});
-  if(cat&&cat!=="all")   addChip(cat, ()=>{document.querySelector('input[name="cat"][value="all"]').checked=true;currentPage=1;renderFiltered();updateFilterChips();});
-  if(showAvailOnly) addChip("Available Only",()=>{toggleAvail();});
-  function addChip(label,removeFn){
-    const c=document.createElement("div"); c.className="filter-chip";
-    c.innerHTML=`${label}<span class="chip-remove" onclick="(${removeFn.toString()})()">✕</span>`;
+  const area = document.getElementById("activeFilters");
+  area.innerHTML = "";
+  const dept = document.querySelector('input[name="dept"]:checked')?.value;
+  const cat  = document.querySelector('input[name="cat"]:checked')?.value;
+  if(dept && dept!=="all") addChip(dept, ()=>{
+    document.querySelector('input[name="dept"][value="all"]').checked=true;
+    currentPage=1; renderFiltered(); updateFilterChips();
+  });
+  if(cat && cat!=="all") addChip(cat, ()=>{
+    document.querySelector('input[name="cat"][value="all"]').checked=true;
+    currentPage=1; renderFiltered(); updateFilterChips();
+  });
+  if(showAvailOnly) addChip("Available Only", ()=>{ toggleAvail(); });
+
+  function addChip(label, removeFn){
+    const c = document.createElement("div");
+    c.className = "filter-chip";
+    c.innerHTML = `${label}<span class="chip-remove" onclick="(${removeFn.toString()})()">✕</span>`;
     area.appendChild(c);
   }
 }
 function clearFilters(){
-  document.querySelector('input[name="dept"][value="all"]').checked=true;
-  document.querySelector('input[name="cat"][value="all"]').checked=true;
+  document.querySelector('input[name="dept"][value="all"]').checked = true;
+  document.querySelector('input[name="cat"][value="all"]').checked  = true;
   if(showAvailOnly) toggleAvail();
-  document.getElementById("searchInput").value="";
-  currentPage=1; renderFiltered(); updateFilterChips();
-}
-function showToast(msg,type="info"){
-  const c=document.getElementById("toastContainer");
-  const t=document.createElement("div"); t.className=`toast ${type}`; t.textContent=msg;
-  c.appendChild(t);
-  setTimeout(()=>{ t.style.opacity="0"; t.style.transform="translateY(12px)"; t.style.transition="0.3s"; setTimeout(()=>t.remove(),300); },3200);
+  document.getElementById("searchInput").value = "";
+  currentPage = 1; renderFiltered(); updateFilterChips();
 }
 
+/* ─── Toast ─── */
+function showToast(msg, type="info"){
+  const c = document.getElementById("toastContainer");
+  const t = document.createElement("div");
+  t.className = `toast ${type}`; t.textContent = msg;
+  c.appendChild(t);
+  setTimeout(()=>{
+    t.style.opacity="0"; t.style.transform="translateY(12px)"; t.style.transition="0.3s";
+    setTimeout(()=>t.remove(), 300);
+  }, 3200);
+}
 </script>
 </body>
 </html>

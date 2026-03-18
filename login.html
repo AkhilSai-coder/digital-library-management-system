@@ -28,11 +28,18 @@ html,body{height:100%;font-family:"Outfit",sans-serif;overflow:hidden;}
 .left-overlay{position:absolute;inset:0;background:linear-gradient(100deg,rgba(6,18,40,0.95) 0%,rgba(6,18,40,0.8) 45%,rgba(6,18,40,0.3) 75%,transparent 100%);}
 .left-body{position:relative;z-index:2;height:100%;display:flex;flex-direction:column;justify-content:space-between;padding:44px;}
 
-/* LOGO */
-.left-logo{display:flex;align-items:center;gap:14px;}
-.left-logo img{height:46px;filter:brightness(50%) invert(100);opacity: 0.9;}
-.left-logo-text .name{font-family:"Cormorant Garamond",serif;font-size:19px;font-weight:700;color:#ffeeee;line-height:1.2;}
-.left-logo-text .sub{font-size:11px;color:rgba(255,255,255,.45);letter-spacing:.5px;}
+/* ── LOGO ──
+   mix-blend-mode:screen makes the white background of the PNG transparent
+   on dark surfaces — the red GRIET seal and text show through naturally,
+   exactly like Image 1 (no white box, no blue tint). */
+.left-logo{display:flex;align-items:center;}
+.left-logo img{
+  height:70px;
+  width:auto;
+  object-fit:contain;
+  mix-blend-mode:screen;
+  filter:brightness(1.15) contrast(1.05) saturate(1.1);
+}
 
 /* HERO TEXT */
 .left-hero{flex:1;display:flex;flex-direction:column;justify-content:center;}
@@ -42,16 +49,16 @@ html,body{height:100%;font-family:"Outfit",sans-serif;overflow:hidden;}
 .left-hero h1 em{color:var(--gold);font-style:italic;display:block;}
 .left-hero p{font-size:15.5px;color:rgba(255,255,255,.62);line-height:1.8;max-width:380px;}
 
+/* QUICK LINKS */
+.left-links{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px;}
+.left-link{padding:7px 16px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);border-radius:20px;font-size:12px;color:rgba(255,255,255,.6);text-decoration:none;transition:0.2s;}
+.left-link:hover{background:rgba(201,168,76,0.15);border-color:rgba(201,168,76,0.3);color:var(--gold2);}
+
 /* STATS */
 .left-stats{display:flex;gap:12px;flex-wrap:wrap;}
 .lstat{background:rgba(255,255,255,.07);backdrop-filter:blur(14px);border:1px solid rgba(255,255,255,.1);border-radius:14px;padding:16px 22px;text-align:center;}
 .lstat .v{font-family:"Cormorant Garamond",serif;font-size:24px;font-weight:700;color:var(--gold2);}
 .lstat .l{font-size:10px;color:rgba(255,255,255,.45);letter-spacing:1px;text-transform:uppercase;margin-top:3px;}
-
-/* QUICK LINKS on left */
-.left-links{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px;}
-.left-link{padding:7px 16px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);border-radius:20px;font-size:12px;color:rgba(255,255,255,.6);text-decoration:none;transition:0.2s;}
-.left-link:hover{background:rgba(201,168,76,0.15);border-color:rgba(201,168,76,0.3);color:var(--gold2);}
 
 /* ── RIGHT PANEL ── */
 .right{background:#f6f8fc;display:flex;flex-direction:column;justify-content:center;align-items:center;padding:48px 60px;overflow-y:auto;}
@@ -129,7 +136,7 @@ html,body{height:100%;font-family:"Outfit",sans-serif;overflow:hidden;}
 @keyframes spin2{to{transform:rotate(360deg);}}
 .spin{animation:spin2 .7s linear infinite;display:inline-block;width:17px;height:17px;border:2.5px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;}
 
-/* MOBILE */
+/* ── MOBILE ── */
 @media(max-width:820px){
   html,body{overflow:auto;}
   .announce{display:none;}
@@ -144,7 +151,6 @@ html,body{height:100%;font-family:"Outfit",sans-serif;overflow:hidden;}
 </style>
 </head>
 <body>
-
 <div id="toast-root"></div>
 
 <!-- SUCCESS OVERLAY -->
@@ -156,30 +162,36 @@ html,body{height:100%;font-family:"Outfit",sans-serif;overflow:hidden;}
 </div>
 
 <!-- ANNOUNCE TICKER -->
-<div class="announce"><div class="announce-track">
-<span>GRIET Central Library &mdash; Est. 1997</span>
-<span>1,30,741 Volumes &middot; 6,396 eBooks &middot; 21,659 eJournals</span>
-<span>NAAC A++ Accredited Institution</span>
-<span>IEEE Xplore &middot; Springer &middot; Knimbus Remote Access</span>
-<span>Mon&ndash;Fri: 9AM&ndash;8PM &middot; Sat: 9AM&ndash;5PM &middot; Closed Sundays</span>
-<span>library@griet.ac.in</span>
-<span>GRIET Central Library &mdash; Est. 1997</span>
-<span>1,30,741 Volumes &middot; 6,396 eBooks &middot; 21,659 eJournals</span>
-<span>NAAC A++ Accredited Institution</span>
-<span>IEEE Xplore &middot; Springer &middot; Knimbus Remote Access</span>
-<span>Mon&ndash;Fri: 9AM&ndash;8PM &middot; Sat: 9AM&ndash;5PM &middot; Closed Sundays</span>
-<span>library@griet.ac.in</span>
-</div></div>
+<div class="announce">
+  <div class="announce-track">
+    <span>GRIET Central Library &mdash; Est. 1997</span>
+    <span>1,30,741 Volumes &middot; 6,396 eBooks &middot; 21,659 eJournals</span>
+    <span>NAAC A++ Accredited Institution</span>
+    <span>IEEE Xplore &middot; Springer &middot; Knimbus Remote Access</span>
+    <span>Mon&ndash;Fri: 9AM&ndash;8PM &middot; Sat: 9AM&ndash;5PM &middot; Closed Sundays</span>
+    <span>library@griet.ac.in</span>
+    <span>GRIET Central Library &mdash; Est. 1997</span>
+    <span>1,30,741 Volumes &middot; 6,396 eBooks &middot; 21,659 eJournals</span>
+    <span>NAAC A++ Accredited Institution</span>
+    <span>IEEE Xplore &middot; Springer &middot; Knimbus Remote Access</span>
+    <span>Mon&ndash;Fri: 9AM&ndash;8PM &middot; Sat: 9AM&ndash;5PM &middot; Closed Sundays</span>
+    <span>library@griet.ac.in</span>
+  </div>
+</div>
 
 <div class="page">
-  <!-- LEFT PANEL -->
+
+  <!-- ══════════ LEFT PANEL ══════════ -->
   <div class="left">
     <div class="left-img"></div>
     <div class="left-overlay"></div>
     <div class="left-body">
+
+      <!-- LOGO: mix-blend-mode:screen removes white bg on the dark panel -->
       <div class="left-logo">
-        <img src="GRIET_Logo.png" alt="GRIET" style="width: 300px; height: 80px;">
+        <img src="GRIET_Logo.png" alt="GRIET Logo">
       </div>
+
       <div class="left-hero">
         <div class="left-badge">NAAC A++ &middot; Est. 1997</div>
         <h1>Your Gateway<br>to <em>Knowledge</em></h1>
@@ -190,24 +202,30 @@ html,body{height:100%;font-family:"Outfit",sans-serif;overflow:hidden;}
           <a href="https://ieeexplore.ieee.org/" target="_blank" class="left-link">&#9889; IEEE Xplore</a>
         </div>
       </div>
+
       <div class="left-stats">
         <div class="lstat"><div class="v">1,30,741</div><div class="l">Print Volumes</div></div>
         <div class="lstat"><div class="v">6,396</div><div class="l">eBooks</div></div>
         <div class="lstat"><div class="v">21,659</div><div class="l">eJournals</div></div>
       </div>
+
     </div>
   </div>
 
-  <!-- RIGHT PANEL -->
+  <!-- ══════════ RIGHT PANEL ══════════ -->
   <div class="right">
     <div class="right-inner">
+
       <a href="index.html" class="back-link">
-        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
+        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+          <path d="M19 12H5M12 5l-7 7 7 7"/>
+        </svg>
         Back to Home
       </a>
+
       <div class="form-icon" id="formIcon">&#128218;</div>
       <div class="form-title" id="formTitle">Welcome Back</div>
-      <div class="form-sub" id="formSub">Select your role and sign in to continue</div>
+      <div class="form-sub"  id="formSub">Select your role and sign in to continue</div>
 
       <!-- COLD START NOTICE -->
       <div class="cold-notice" id="coldNotice">
@@ -240,13 +258,15 @@ html,body{height:100%;font-family:"Outfit",sans-serif;overflow:hidden;}
         <span class="eye" id="eyeToggle" onclick="toggleEye()" title="Show/hide">&#128065;</span>
       </div>
 
-      <!-- ERROR -->
+      <!-- ERROR MESSAGE -->
       <div class="err-msg" id="errMsg">
-        <svg width="14" height="14" fill="none" stroke="#ef4444" stroke-width="2.5" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg>
+        <svg width="14" height="14" fill="none" stroke="#ef4444" stroke-width="2.5" viewBox="0 0 24 24">
+          <circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/>
+        </svg>
         <span id="errText"></span>
       </div>
 
-      <!-- SUBMIT -->
+      <!-- SIGN IN BUTTON -->
       <button class="btn-login" id="loginBtn" onclick="doLogin()">
         <span id="btnText">Sign In &rarr;</span>
       </button>
@@ -255,6 +275,7 @@ html,body{height:100%;font-family:"Outfit",sans-serif;overflow:hidden;}
         <a href="index.html">&#127963; Browse Public Catalogue</a> &nbsp;&middot;&nbsp;
         <a href="mailto:library@griet.ac.in">&#128231; Contact Library</a>
       </div>
+
     </div>
   </div>
 </div>
@@ -262,36 +283,54 @@ html,body{height:100%;font-family:"Outfit",sans-serif;overflow:hidden;}
 <script>
 var selectedRole = "STUDENT";
 var roleConfig = {
-  STUDENT:  {icon:"&#128218;",title:"Student Login",   sub:"Sign in to borrow books, track due dates and access digital resources.",label:"Roll No / College ID",placeholder:"e.g. 22341A0501"},
-  FACULTY:  {icon:"&#128104;&#8205;&#127979;",title:"Faculty Login",   sub:"Sign in for extended borrowing and full e-resource access via your portal.",label:"Employee ID",placeholder:"e.g. FAC001"},
-  LIBRARIAN:{icon:"&#127963;&#65039;",title:"Librarian Login",sub:"Sign in for full administrative control over the library management system.",label:"Librarian ID",placeholder:"e.g. LIB001"}
+  STUDENT: {
+    icon:"&#128218;",
+    title:"Student Login",
+    sub:"Sign in to borrow books, track due dates and access digital resources.",
+    label:"Roll No / College ID",
+    placeholder:"e.g. 22341A0501"
+  },
+  FACULTY: {
+    icon:"&#128104;&#8205;&#127979;",
+    title:"Faculty Login",
+    sub:"Sign in for extended borrowing and full e-resource access via your portal.",
+    label:"Employee ID",
+    placeholder:"e.g. FAC001"
+  },
+  LIBRARIAN: {
+    icon:"&#127963;&#65039;",
+    title:"Librarian Login",
+    sub:"Sign in for full administrative control over the library management system.",
+    label:"Librarian ID",
+    placeholder:"e.g. LIB001"
+  }
 };
 
-function selectRole(role,el){
-  selectedRole=role;
-  document.querySelectorAll(".rtab").forEach(function(t){t.classList.remove("on");});
+function selectRole(role, el){
+  selectedRole = role;
+  document.querySelectorAll(".rtab").forEach(t => t.classList.remove("on"));
   el.classList.add("on");
-  var cfg=roleConfig[role];
-  document.getElementById("formIcon").innerHTML=cfg.icon;
-  document.getElementById("formTitle").textContent=cfg.title;
-  document.getElementById("formSub").textContent=cfg.sub;
-  document.getElementById("idLabel").textContent=cfg.label;
-  document.getElementById("userid").placeholder=cfg.placeholder;
-  document.getElementById("userid").value="";
-  document.getElementById("password").value="";
+  var cfg = roleConfig[role];
+  document.getElementById("formIcon").innerHTML    = cfg.icon;
+  document.getElementById("formTitle").textContent = cfg.title;
+  document.getElementById("formSub").textContent   = cfg.sub;
+  document.getElementById("idLabel").textContent   = cfg.label;
+  document.getElementById("userid").placeholder    = cfg.placeholder;
+  document.getElementById("userid").value  = "";
+  document.getElementById("password").value = "";
   clearErr();
   document.getElementById("userid").focus();
 }
 
 function toggleEye(){
-  var pw=document.getElementById("password");
-  var eye=document.getElementById("eyeToggle");
-  if(pw.type==="password"){pw.type="text";eye.innerHTML="&#128584;";}
-  else{pw.type="password";eye.innerHTML="&#128065;";}
+  var pw  = document.getElementById("password");
+  var eye = document.getElementById("eyeToggle");
+  if(pw.type === "password"){ pw.type = "text";     eye.innerHTML = "&#128584;"; }
+  else                      { pw.type = "password"; eye.innerHTML = "&#128065;"; }
 }
 
 function showErr(msg){
-  document.getElementById("errText").textContent=msg;
+  document.getElementById("errText").textContent = msg;
   document.getElementById("errMsg").classList.add("show");
 }
 function clearErr(){
@@ -299,72 +338,85 @@ function clearErr(){
   document.getElementById("userid").classList.remove("err");
   document.getElementById("password").classList.remove("err");
 }
-function setLoading(loading){
-  var btn=document.getElementById("loginBtn");
-  var txt=document.getElementById("btnText");
-  if(loading){btn.disabled=true;txt.innerHTML="<span class='spin'></span> Signing in&hellip;";}
-  else{btn.disabled=false;txt.innerHTML="Sign In &rarr;";}
+function setLoading(on){
+  var btn = document.getElementById("loginBtn");
+  var txt = document.getElementById("btnText");
+  if(on){ btn.disabled = true;  txt.innerHTML = "<span class='spin'></span> Signing in&hellip;"; }
+  else  { btn.disabled = false; txt.innerHTML = "Sign In &rarr;"; }
 }
 function showSuccess(role){
-  var names={STUDENT:"Student",FACULTY:"Faculty",LIBRARIAN:"Librarian"};
-  document.getElementById("successTitle").textContent="Welcome, "+names[role]+"!";
-  document.getElementById("successSub").textContent="Redirecting to your dashboard…";
+  var names = {STUDENT:"Student", FACULTY:"Faculty", LIBRARIAN:"Librarian"};
+  document.getElementById("successTitle").textContent = "Welcome, " + names[role] + "!";
+  document.getElementById("successSub").textContent   = "Redirecting to your dashboard…";
   document.getElementById("successOv").classList.add("show");
 }
-function toast(msg,type,dur){
-  type=type||"info";dur=dur||3500;
-  var el=document.createElement("div");
-  el.className="tst "+type;
-  var icons={error:"&#10060;",info:"&#8505;&#65039;"};
-  el.innerHTML="<span>"+(icons[type]||"&#128172;")+"</span><span>"+msg+"</span>";
+function toast(msg, type, dur){
+  type = type||"info"; dur = dur||3500;
+  var el = document.createElement("div");
+  el.className = "tst " + type;
+  var icons = {error:"&#10060;", info:"&#8505;&#65039;"};
+  el.innerHTML = "<span>"+(icons[type]||"&#128172;")+"</span><span>"+msg+"</span>";
   document.getElementById("toast-root").appendChild(el);
-  setTimeout(function(){el.classList.add("out");setTimeout(function(){el.remove();},320);},dur);
+  setTimeout(() => { el.classList.add("out"); setTimeout(() => el.remove(), 320); }, dur);
 }
 
-// Enter key
-document.addEventListener("keydown",function(e){if(e.key==="Enter")doLogin();});
+/* Enter key triggers login */
+document.addEventListener("keydown", e => { if(e.key === "Enter") doLogin(); });
 
-// Cold start ping
-setTimeout(function(){
-  fetch("https://library-backend-1-e3r2.onrender.com/books?page=0&size=1")
-    .then(function(){document.getElementById("coldNotice").classList.remove("show");})
-    .catch(function(){});
+/* Cold start ping — show notice after 4s, hide once server responds */
+setTimeout(() => {
   document.getElementById("coldNotice").classList.add("show");
-  setTimeout(function(){document.getElementById("coldNotice").classList.remove("show");},60000);
-},4000);
+  fetch("https://library-backend-1-e3r2.onrender.com/books?page=0&size=1")
+    .then(() => document.getElementById("coldNotice").classList.remove("show"))
+    .catch(() => {});
+  setTimeout(() => document.getElementById("coldNotice").classList.remove("show"), 60000);
+}, 4000);
 
 async function doLogin(){
   clearErr();
-  var collegeId=document.getElementById("userid").value.trim();
-  var password=document.getElementById("password").value;
-  if(!collegeId){showErr("Please enter your "+roleConfig[selectedRole].label);document.getElementById("userid").focus();return;}
-  if(!password){showErr("Please enter your password");document.getElementById("password").focus();return;}
+  var collegeId = document.getElementById("userid").value.trim();
+  var password  = document.getElementById("password").value;
+
+  if(!collegeId){
+    showErr("Please enter your " + roleConfig[selectedRole].label);
+    document.getElementById("userid").focus();
+    return;
+  }
+  if(!password){
+    showErr("Please enter your password");
+    document.getElementById("password").focus();
+    return;
+  }
+
   setLoading(true);
-  try{
-    var res=await fetch("https://library-backend-1-e3r2.onrender.com/auth/login",{
-      method:"POST",
-      headers:{"Content-Type":"application/json"},
-      body:JSON.stringify({collegeId:collegeId,password:password,role:selectedRole})
+  try {
+    var res = await fetch("https://library-backend-1-e3r2.onrender.com/auth/login", {
+      method: "POST",
+      headers: {"Content-Type":"application/json"},
+      body: JSON.stringify({collegeId, password, role: selectedRole})
     });
+
     if(!res.ok){
-      var errMsg="Invalid credentials. Please try again.";
-      try{var j=await res.json();errMsg=j.error||j.message||errMsg;}catch{}
+      var errMsg = "Invalid credentials. Please try again.";
+      try { var j = await res.json(); errMsg = j.error || j.message || errMsg; } catch{}
       showErr(errMsg);
       document.getElementById("userid").classList.add("err");
       document.getElementById("password").classList.add("err");
       setLoading(false);
       return;
     }
-    var token=await res.text();
-    localStorage.setItem("token",token);
-    localStorage.setItem("role",selectedRole);
+
+    var token = await res.text();
+    localStorage.setItem("token", token);
+    localStorage.setItem("role", selectedRole);
     showSuccess(selectedRole);
-    setTimeout(function(){
-      if(selectedRole==="LIBRARIAN")window.location.href="librarian-dashboard.html";
-      else if(selectedRole==="FACULTY")window.location.href="faculty-dashboard.html";
-      else window.location.href="student-dashboard.html";
-    },1400);
-  }catch(e){
+    setTimeout(() => {
+      if(selectedRole === "LIBRARIAN")    window.location.href = "librarian-dashboard.html";
+      else if(selectedRole === "FACULTY") window.location.href = "faculty-dashboard.html";
+      else                                window.location.href = "student-dashboard.html";
+    }, 1400);
+
+  } catch(e){
     showErr("Server unreachable — please check your connection or try again.");
     setLoading(false);
   }
