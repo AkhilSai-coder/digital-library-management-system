@@ -6,62 +6,183 @@
 <title>Services | GRIET Central Library</title>
 <link rel="stylesheet" href="css/public.css">
 <style>
-.svc-feature-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:24px;margin-top:52px;}
-.svc-feature{background:#fff;border-radius:20px;padding:36px;box-shadow:0 8px 32px rgba(8,28,58,0.07);display:flex;gap:24px;align-items:flex-start;transition:0.35s;border:1px solid var(--border);}
-.svc-feature:hover{transform:translateY(-6px);box-shadow:0 26px 70px rgba(8,28,58,0.12);border-color:transparent;}
-.svc-feat-icon{width:58px;height:58px;background:linear-gradient(135deg,var(--navy),var(--navy2));border-radius:15px;display:flex;align-items:center;justify-content:center;font-size:24px;flex-shrink:0;}
-.svc-feat-body h3{font-size:17px;font-weight:700;color:var(--navy);margin-bottom:10px;}
-.svc-feat-body p{font-size:14px;color:var(--muted);line-height:1.8;}
-.svc-feat-tag{display:inline-block;margin-top:12px;padding:4px 12px;background:#f1f5f9;border-radius:20px;font-size:11px;font-weight:700;color:var(--navy);letter-spacing:0.5px;}
-.eresource-bg{background:linear-gradient(135deg,var(--navy),var(--navy2));padding:96px 0;}
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Outfit:wght@300;400;500;600;700&display=swap');
+#progress{position:fixed;top:0;left:0;height:3px;width:0%;background:linear-gradient(90deg,var(--gold),var(--gold2));z-index:9998;transition:width 0.1s;}
+.hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;padding:8px;background:none;border:none;}
+.hamburger span{display:block;width:24px;height:2px;background:var(--navy);border-radius:2px;transition:0.3s;}
+.mobile-nav{display:none;position:fixed;inset:0;background:var(--navy);z-index:2000;flex-direction:column;align-items:center;justify-content:center;gap:28px;}
+.mobile-nav.open{display:flex;}
+.mobile-nav a{font-family:"Cormorant Garamond",serif;font-size:28px;font-weight:700;color:#fff;text-decoration:none;}
+.mobile-nav a:hover{color:var(--gold);}
+.mobile-nav-close{position:absolute;top:24px;right:24px;background:rgba(255,255,255,0.1);border:none;color:#fff;font-size:20px;width:44px;height:44px;border-radius:12px;cursor:pointer;}
+@media(max-width:768px){.hamburger{display:flex;}.site-nav .nav-link,.site-nav .nav-login{display:none;}}
+
+/* PAGE HERO */
+.page-hero{position:relative;height:460px;overflow:hidden;}
+.page-hero-bg{position:absolute;inset:0;background:url("image/lib3.jpeg") center/cover no-repeat;}
+.page-hero-overlay{position:absolute;inset:0;background:linear-gradient(100deg,rgba(6,18,40,0.93) 0%,rgba(6,18,40,0.72) 42%,rgba(6,18,40,0.15) 65%,transparent 82%);}
+.page-hero-content{position:relative;z-index:2;height:100%;display:flex;flex-direction:column;justify-content:center;padding:0 10%;}
+.breadcrumb{font-size:11.5px;color:rgba(255,255,255,0.48);letter-spacing:1px;margin-bottom:16px;}
+.breadcrumb a{color:rgba(255,255,255,0.48);text-decoration:none;}
+.breadcrumb a:hover{color:var(--gold);}
+.page-hero-content h1{font-family:"Cormorant Garamond",serif;font-size:clamp(42px,6vw,72px);font-weight:700;color:#fff;line-height:1.04;margin-bottom:14px;letter-spacing:-1px;}
+.page-hero-content h1 em{color:var(--gold);font-style:italic;}
+.page-hero-content p{font-size:16px;color:rgba(255,255,255,0.65);max-width:520px;line-height:1.75;}
+
+/* SERVICE SUB-NAV */
+.svc-nav{background:#fff;border-bottom:2px solid var(--border);position:sticky;top:0;z-index:100;box-shadow:0 2px 20px rgba(8,28,58,0.07);}
+.svc-nav-inner{max-width:1200px;margin:auto;padding:0 48px;display:flex;overflow-x:auto;scrollbar-width:none;}
+.svc-nav-inner::-webkit-scrollbar{display:none;}
+.svc-nav-link{padding:16px 20px;font-size:12.5px;font-weight:600;color:var(--muted);text-decoration:none;white-space:nowrap;border-bottom:2px solid transparent;margin-bottom:-2px;transition:0.2s;}
+.svc-nav-link:hover,.svc-nav-link.active{color:var(--navy);border-bottom-color:var(--navy);}
+
+/* BITS-STYLE SERVICE CARDS GRID */
+.bits-svc-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;margin-top:52px;}
+.bits-svc-card{background:#fff;border-radius:20px;padding:32px 28px;box-shadow:0 6px 24px rgba(8,28,58,0.07);transition:0.35s;border:1px solid var(--border);position:relative;overflow:hidden;text-decoration:none;display:block;color:inherit;}
+.bits-svc-card::before{content:"";position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--navy),var(--navy2));transform:scaleX(0);transform-origin:left;transition:0.35s;}
+.bits-svc-card:hover{transform:translateY(-8px);box-shadow:0 28px 70px rgba(8,28,58,0.12);border-color:transparent;}
+.bits-svc-card:hover::before{transform:scaleX(1);}
+.bsc-icon{width:54px;height:54px;background:linear-gradient(135deg,var(--navy),var(--navy2));border-radius:15px;display:flex;align-items:center;justify-content:center;font-size:24px;margin-bottom:20px;box-shadow:0 6px 18px rgba(8,28,58,0.2);}
+.bsc-title{font-family:"Cormorant Garamond",serif;font-size:20px;font-weight:700;color:var(--navy);margin-bottom:10px;}
+.bsc-desc{font-size:13.5px;color:var(--muted);line-height:1.78;}
+.bsc-tag{display:inline-flex;align-items:center;gap:6px;margin-top:14px;font-size:11.5px;font-weight:600;color:var(--navy);opacity:0.7;}
+.bsc-tag::after{content:"\2192";transition:0.2s;}
+.bits-svc-card:hover .bsc-tag::after{transform:translateX(4px);}
+
+/* CORE SERVICES (big 2-col) */
+.core-svc-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:52px;}
+.core-svc{background:#fff;border-radius:20px;padding:36px;box-shadow:0 8px 32px rgba(8,28,58,0.07);display:flex;gap:24px;align-items:flex-start;transition:0.35s;border:1px solid var(--border);}
+.core-svc:hover{transform:translateY(-6px);box-shadow:0 26px 70px rgba(8,28,58,0.12);border-color:transparent;}
+.core-svc-icon{width:58px;height:58px;background:linear-gradient(135deg,var(--navy),var(--navy2));border-radius:15px;display:flex;align-items:center;justify-content:center;font-size:24px;flex-shrink:0;box-shadow:0 6px 18px rgba(8,28,58,0.2);}
+.core-svc-body h3{font-family:"Cormorant Garamond",serif;font-size:20px;font-weight:700;color:var(--navy);margin-bottom:10px;}
+.core-svc-body p{font-size:14px;color:var(--muted);line-height:1.8;}
+.core-svc-tag{display:inline-block;margin-top:12px;padding:4px 12px;background:#f1f5f9;border-radius:20px;font-size:11px;font-weight:700;color:var(--navy);}
+
+/* E-RESOURCES */
+.eresource-section{background:linear-gradient(145deg,#060f1e 0%,#0a1628 55%,#0d2040 100%);padding:96px 0;}
 .er-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-top:48px;}
-.er-card{background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.1);border-radius:18px;padding:28px;transition:0.35s;}
-.er-card:hover{background:rgba(255,255,255,0.13);transform:translateY(-6px);border-color:rgba(201,168,76,0.35);}
+.er-card{background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.08);border-radius:18px;padding:28px;transition:0.35s;position:relative;overflow:hidden;}
+.er-card::before{content:"";position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--gold),var(--gold2));transform:scaleX(0);transform-origin:left;transition:0.35s;}
+.er-card:hover{background:rgba(255,255,255,0.1);transform:translateY(-6px);border-color:rgba(201,168,76,0.3);}
+.er-card:hover::before{transform:scaleX(1);}
 .er-top{display:flex;align-items:center;gap:14px;margin-bottom:18px;}
 .er-icon{width:46px;height:46px;background:rgba(255,255,255,0.1);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px;}
 .er-name{font-size:15px;font-weight:700;color:#fff;}
 .er-type{font-size:10.5px;color:var(--gold);font-weight:600;letter-spacing:1px;margin-top:2px;}
 .er-links{display:flex;flex-direction:column;gap:8px;}
 .er-link{display:flex;align-items:center;justify-content:space-between;padding:9px 13px;background:rgba(255,255,255,0.06);border-radius:10px;font-size:13px;color:rgba(255,255,255,0.75);text-decoration:none;transition:0.2s;}
-.er-link:hover{background:rgba(255,255,255,0.13);color:#fff;transform:translateX(3px);}
-.digital-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-top:48px;}
-.dg-card{background:#fff;border-radius:18px;padding:30px;box-shadow:0 8px 28px rgba(8,28,58,0.06);text-align:center;transition:0.3s;border-bottom:3px solid transparent;}
-.dg-card:hover{transform:translateY(-8px);box-shadow:0 22px 60px rgba(8,28,58,0.1);border-bottom-color:var(--crimson);}
+.er-link:hover{background:rgba(255,255,255,0.14);color:#fff;transform:translateX(3px);}
+
+/* TEXTBOOK FINDER */
+.tbf-section{background:linear-gradient(180deg,#f8f9fb,#f1f5f9);padding:88px 0;}
+.tbf-grid{display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:center;}
+.tbf-box{background:#fff;border-radius:20px;padding:40px;box-shadow:0 12px 40px rgba(8,28,58,0.08);border:1.5px solid var(--border);}
+.tbf-box h3{font-family:"Cormorant Garamond",serif;font-size:26px;color:var(--navy);margin-bottom:8px;}
+.tbf-box p{font-size:14px;color:var(--muted);margin-bottom:24px;line-height:1.7;}
+.tbf-row{display:flex;gap:10px;margin-bottom:14px;}
+.tbf-row select,.tbf-row input{flex:1;padding:12px 16px;border:1.5px solid var(--border);border-radius:10px;font-family:"Outfit",sans-serif;font-size:13.5px;outline:none;transition:0.2s;background:#fff;}
+.tbf-row select:focus,.tbf-row input:focus{border-color:var(--navy);}
+.tbf-row button{padding:12px 22px;background:var(--navy);color:#fff;border:none;border-radius:10px;font-size:13.5px;font-weight:600;cursor:pointer;white-space:nowrap;transition:0.2s;}
+.tbf-row button:hover{background:var(--gold);color:var(--navy);}
+.tbf-feats{display:flex;flex-direction:column;gap:18px;}
+.tbf-feat{display:flex;gap:16px;align-items:flex-start;}
+.tbf-feat-icon{width:46px;height:46px;background:linear-gradient(135deg,var(--navy),var(--navy2));border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;}
+.tbf-feat h4{font-size:15px;font-weight:700;color:var(--navy);margin-bottom:4px;}
+.tbf-feat p{font-size:13px;color:var(--muted);line-height:1.65;}
+
+/* SPACE BOOKING */
+.spaces-section{background:#fff;padding:88px 0;}
+.spaces-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:20px;margin-top:48px;}
+.space-card{background:#f8f9fb;border-radius:20px;padding:30px 24px;transition:0.35s;text-align:center;border:2px solid transparent;position:relative;overflow:hidden;}
+.space-card::before{content:"";position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--navy),var(--navy2));transform:scaleX(0);transition:0.35s;}
+.space-card:hover{background:#fff;border-color:var(--border);transform:translateY(-6px);box-shadow:0 20px 50px rgba(8,28,58,0.1);}
+.space-card:hover::before{transform:scaleX(1);}
+.space-icon{font-size:36px;margin-bottom:16px;}
+.space-name{font-family:"Cormorant Garamond",serif;font-size:20px;color:var(--navy);font-weight:700;margin-bottom:6px;}
+.space-cap{font-size:12px;color:var(--muted);margin-bottom:14px;line-height:1.5;}
+.space-avail{display:inline-block;padding:5px 14px;border-radius:20px;font-size:11px;font-weight:700;}
+.space-avail.open{background:rgba(34,197,94,0.1);color:#16a34a;border:1px solid rgba(34,197,94,0.25);}
+.space-avail.busy{background:rgba(239,68,68,0.1);color:#dc2626;border:1px solid rgba(239,68,68,0.25);}
+
+/* DIGITAL FEATURES */
+.digital-section{background:linear-gradient(180deg,#f8f9fb,#fff);padding:88px 0;}
+.digital-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;margin-top:48px;}
+.dg-card{background:#fff;border-radius:20px;padding:32px;box-shadow:0 6px 24px rgba(8,28,58,0.07);text-align:center;transition:0.35s;border:1px solid var(--border);position:relative;overflow:hidden;}
+.dg-card::before{content:"";position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--gold),var(--gold2));transform:scaleX(0);transition:0.35s;}
+.dg-card:hover{transform:translateY(-8px);box-shadow:0 22px 60px rgba(8,28,58,0.1);border-color:transparent;}
+.dg-card:hover::before{transform:scaleX(1);}
 .dg-icon{font-size:36px;margin-bottom:14px;}
-.dg-title{font-weight:700;font-size:15px;color:var(--navy);margin-bottom:8px;}
-.dg-desc{font-size:13px;color:var(--muted);line-height:1.75;}
-.hours-section{background:#f1f5f9;}
-.hours-wrap{background:#fff;border-radius:22px;padding:48px;box-shadow:0 12px 50px rgba(8,28,58,0.07);display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:center;margin-top:48px;}
-.hours-table{width:100%;border-collapse:collapse;}
-.hours-table th{text-align:left;padding:12px 16px;background:#f8fafc;font-size:11.5px;letter-spacing:1px;color:var(--muted);text-transform:uppercase;border-radius:6px;}
-.hours-table td{padding:14px 16px;border-bottom:1px solid #f1f5f9;font-size:14px;}
-.hours-table td:last-child{font-weight:600;color:var(--navy);}
+.dg-title{font-family:"Cormorant Garamond",serif;font-size:20px;font-weight:700;color:var(--navy);margin-bottom:8px;}
+.dg-desc{font-size:13.5px;color:var(--muted);line-height:1.75;}
+
+/* HOURS */
+.hours-section{background:linear-gradient(145deg,#060f1e 0%,#0a1628 55%,#0d2040 100%);padding:88px 0;}
+.hours-grid{display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:start;margin-top:52px;}
+.hours-table{width:100%;border-collapse:collapse;border-radius:16px;overflow:hidden;}
+.hours-table thead{background:rgba(255,255,255,0.08);}
+.hours-table th{padding:14px 20px;font-size:11px;font-weight:700;letter-spacing:1.5px;color:var(--gold);text-transform:uppercase;text-align:left;}
+.hours-table td{padding:13px 20px;font-size:14px;color:rgba(255,255,255,0.75);border-bottom:1px solid rgba(255,255,255,0.05);}
+.hours-table td:first-child{color:#fff;font-weight:600;}
+.hours-table td:last-child{text-align:right;}
 .hours-table tr:last-child td{border-bottom:none;}
-.hours-table tr.closed td{color:#ef4444;}
-.hours-highlight{background:linear-gradient(135deg,var(--navy),var(--navy2));border-radius:18px;padding:36px;text-align:center;}
-.hours-highlight h3{font-family:'Cormorant Garamond',serif;font-size:22px;color:#fff;margin-bottom:10px;}
-.hours-highlight p{color:rgba(255,255,255,0.65);font-size:13.5px;line-height:1.8;}
-.big-time{font-family:'Cormorant Garamond',serif;font-size:46px;font-weight:700;color:var(--gold);display:block;margin:10px 0;}
+.hours-table tr:hover td{background:rgba(255,255,255,0.03);}
+.hours-status{display:flex;align-items:center;gap:10px;padding:18px 22px;border-radius:14px;font-size:14px;font-weight:600;margin-bottom:24px;}
+.hours-status.open-now{background:rgba(34,197,94,0.12);border:1px solid rgba(34,197,94,0.25);color:#4ade80;}
+.hours-status.closed-now{background:rgba(239,68,68,0.12);border:1px solid rgba(239,68,68,0.25);color:#f87171;}
+.hours-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;}
+.hours-status.open-now .hours-dot{background:#4ade80;box-shadow:0 0 0 3px rgba(74,222,128,0.25);animation:pulse2 2s infinite;}
+.hours-status.closed-now .hours-dot{background:#f87171;}
+@keyframes pulse2{0%,100%{box-shadow:0 0 0 3px rgba(74,222,128,0.25)}50%{box-shadow:0 0 0 6px rgba(74,222,128,0.08)}}
+.hours-note{background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.08);border-radius:14px;padding:20px 24px;border-left:4px solid var(--gold);}
+.hours-note h4{font-size:14px;font-weight:700;color:#fff;margin-bottom:8px;}
+.hours-note p{font-size:13px;color:rgba(255,255,255,0.5);line-height:1.7;}
+.hours-notes{display:flex;flex-direction:column;gap:16px;}
+
+/* FAQ */
+.faq-section{background:#fff;padding:88px 0;}
 .faq-list{display:flex;flex-direction:column;gap:10px;margin-top:48px;}
-.faq-item{background:#fff;border-radius:14px;box-shadow:0 4px 18px rgba(8,28,58,0.05);overflow:hidden;}
-.faq-q{padding:20px 24px;font-weight:600;font-size:14.5px;color:var(--navy);cursor:pointer;display:flex;justify-content:space-between;align-items:center;transition:0.2s;gap:16px;}
-.faq-q:hover{background:#fafbff;}
+.faq-item{background:#f8f9fb;border-radius:14px;overflow:hidden;border:1px solid var(--border);transition:0.2s;}
+.faq-item.open{border-color:rgba(8,28,58,0.12);box-shadow:0 8px 28px rgba(8,28,58,0.07);}
+.faq-q{padding:20px 24px;font-weight:600;font-size:14.5px;color:var(--navy);cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:16px;background:#f8f9fb;transition:0.2s;}
+.faq-q:hover{background:#f1f5f9;}
+.faq-item.open .faq-q{background:#fff;}
 .faq-arrow{font-size:20px;transition:0.3s;color:var(--muted);flex-shrink:0;}
-.faq-a{max-height:0;overflow:hidden;transition:max-height 0.4s ease;}
+.faq-a{max-height:0;overflow:hidden;transition:max-height 0.4s ease;background:#fff;}
 .faq-a-inner{padding:0 24px 20px;font-size:14px;color:var(--muted);line-height:1.85;}
-.faq-item.open .faq-arrow{transform:rotate(45deg);color:var(--crimson);}
+.faq-item.open .faq-arrow{transform:rotate(45deg);color:var(--navy);}
 .faq-item.open .faq-a{max-height:200px;}
-.cta-banner{background:linear-gradient(135deg,var(--crimson),#7f0000);border-radius:22px;padding:56px 60px;display:flex;align-items:center;justify-content:space-between;gap:32px;margin-top:60px;}
-.cta-banner h2{font-family:'Cormorant Garamond',serif;font-size:32px;color:#fff;margin-bottom:8px;}
-.cta-banner p{font-size:15px;color:rgba(255,255,255,0.75);}
-.cta-btn{padding:14px 32px;background:#fff;color:var(--crimson);border-radius:12px;font-size:14.5px;font-weight:700;white-space:nowrap;transition:0.2s;flex-shrink:0;}
-.cta-btn:hover{background:var(--gold);color:#fff;transform:translateY(-2px);}
-@media(max-width:992px){.svc-feature-grid,.er-grid,.digital-grid{grid-template-columns:1fr 1fr;}.hours-wrap{grid-template-columns:1fr;}}
-@media(max-width:640px){.svc-feature-grid,.er-grid,.digital-grid{grid-template-columns:1fr;}.svc-feature{flex-direction:column;}.cta-banner{flex-direction:column;padding:36px 24px;}}
+
+/* CTA BANNER */
+.cta-section{background:linear-gradient(145deg,#060f1e 0%,#0a1628 55%,#0d2040 100%);padding:88px 0;text-align:center;position:relative;overflow:hidden;}
+.cta-section::before{content:"";position:absolute;inset:0;background:radial-gradient(ellipse at 60% 50%,rgba(201,168,76,0.07) 0%,transparent 60%);pointer-events:none;}
+.cta-btns{display:flex;gap:16px;justify-content:center;flex-wrap:wrap;margin-top:36px;}
+
+/* SCROLL TOP */
+#topBtn{position:fixed;bottom:90px;right:28px;width:44px;height:44px;background:var(--navy);border:none;border-radius:12px;color:#fff;font-size:16px;cursor:pointer;box-shadow:0 6px 20px rgba(8,28,58,0.25);z-index:9996;display:none;transition:0.25s;}
+#topBtn:hover{background:var(--gold);color:var(--navy);transform:translateY(-3px);}
+
+/* RESPONSIVE */
+@media(max-width:992px){
+  .bits-svc-grid,.er-grid,.digital-grid{grid-template-columns:1fr 1fr;}
+  .core-svc-grid,.tbf-grid,.hours-grid{grid-template-columns:1fr;}
+  .spaces-grid{grid-template-columns:1fr 1fr;}
+  .page-hero-content{padding:0 6%;}
+  .svc-nav-inner{padding:0 20px;}
+}
+@media(max-width:640px){
+  .bits-svc-grid,.core-svc-grid,.er-grid,.digital-grid,.spaces-grid{grid-template-columns:1fr;}
+  .core-svc{flex-direction:column;}
+  .page-hero{height:360px;}
+  .tbf-row{flex-direction:column;}
+}
 </style>
 </head>
 <body>
-<div class="announce"><div class="announce-track"><span>Library Closed Sundays</span><span>New Springer eBooks Added</span><span>GRIET Library Ranked Top 5 in Telangana</span><span>Extended Hours During Exams</span><span>IEEE Xplore Access Available</span><span>Library Closed Sundays</span><span>New Springer eBooks Added</span><span>GRIET Library Ranked Top 5 in Telangana</span><span>Extended Hours During Exams</span><span>IEEE Xplore Access Available</span></div></div>
+<div id="progress"></div>
+<div class="announce"><div class="announce-track">
+<span>Library Closed Sundays</span><span>New Springer eBooks Added</span><span>GRIET Library Ranked Top 5 in Telangana</span><span>Extended Hours During Exams</span><span>IEEE Xplore Access via Knimbus</span><span>Xerox &middot; Print &middot; Scan Facility Available</span><span>1,30,741 Volumes &middot; 21,659 eJournals &middot; 6,396 eBooks</span><span>library@griet.ac.in</span><span>Library Closed Sundays</span><span>New Springer eBooks Added</span><span>GRIET Library Ranked Top 5 in Telangana</span><span>Extended Hours During Exams</span><span>IEEE Xplore Access via Knimbus</span><span>Xerox &middot; Print &middot; Scan Facility Available</span><span>1,30,741 Volumes &middot; 21,659 eJournals &middot; 6,396 eBooks</span>
+</div></div>
+
 <header class="site-header">
   <div class="header-inner">
     <a href="index.html" class="logo"><img src="griet_logo.webp" alt="GRIET"><div class="logo-text"><div class="logo-name">GRIET Library</div><div class="logo-sub">Central Knowledge Hub</div></div></a>
@@ -69,120 +190,285 @@
       <a href="index.html" class="nav-link">Home</a>
       <a href="about.html" class="nav-link">About</a>
       <a href="service.html" class="nav-link active">Services</a>
-      <a href="login.html" class="nav-login">Login →</a>
+      <a href="login.html" class="nav-login">Login &rarr;</a>
     </nav>
+    <button class="hamburger" onclick="openMobileNav()" aria-label="Menu"><span></span><span></span><span></span></button>
   </div>
 </header>
-<div class="page-hero" style="background:url('image/lib new 3.jpg') center/cover">
+
+<div class="mobile-nav" id="mobileNav">
+  <button class="mobile-nav-close" onclick="closeMobileNav()">&#10005;</button>
+  <a href="index.html" onclick="closeMobileNav()">Home</a>
+  <a href="about.html" onclick="closeMobileNav()">About</a>
+  <a href="service.html" onclick="closeMobileNav()">Services</a>
+  <a href="login.html" onclick="closeMobileNav()" style="color:var(--gold)">Login &rarr;</a>
+</div>
+
+<!-- PAGE HERO -->
+<div class="page-hero">
+  <div class="page-hero-bg"></div>
   <div class="page-hero-overlay"></div>
   <div class="page-hero-content">
-    <div class="breadcrumb">Home · Services</div>
+    <div class="breadcrumb"><a href="index.html">Home</a> &middot; Services</div>
     <h1>Library <em>Services</em></h1>
-    <p>Comprehensive academic and research support for every member of GRIET.</p>
+    <p>Comprehensive academic and research support for every member of GRIET &mdash; from catalogues to remote access, textbook finders to study spaces.</p>
   </div>
 </div>
-<section class="section"><div class="container">
-  <div class="reveal">
-    <div class="eyebrow">What We Offer</div>
-    <div class="display-title">Core Library <em>Services</em></div>
-    <p class="lead">Everything you need to research, learn and grow — all under one roof.</p>
+
+<!-- BITS-STYLE SERVICE SUB-NAV -->
+<div class="svc-nav">
+  <div class="svc-nav-inner">
+    <a href="#core" class="svc-nav-link active">Core Services</a>
+    <a href="#eresources" class="svc-nav-link">E-Resources</a>
+    <a href="#textbook" class="svc-nav-link">Textbook Finder</a>
+    <a href="#spaces" class="svc-nav-link">Study Spaces</a>
+    <a href="#digital" class="svc-nav-link">Digital Features</a>
+    <a href="#hours" class="svc-nav-link">Library Hours</a>
+    <a href="#faq" class="svc-nav-link">FAQ</a>
   </div>
-  <div class="svc-feature-grid reveal">
-    <div class="svc-feature"><div class="svc-feat-icon">📘</div><div class="svc-feat-body"><h3>Book Issue & Return</h3><p>Fully automated borrowing system with real-time tracking, due date alerts and transparent fine calculation. Students: 3 books (7 days). Faculty: 5 books (30 days).</p><span class="svc-feat-tag">KOHA Automated</span></div></div>
-    <div class="svc-feature"><div class="svc-feat-icon">🔍</div><div class="svc-feat-body"><h3>OPAC Catalogue Search</h3><p>Search across 17,195+ titles and 1,30,740 volumes instantly with our cloud-based OPAC system — available 24×7 from any device.</p><span class="svc-feat-tag">Cloud-Based · 24×7</span></div></div>
-    <div class="svc-feature"><div class="svc-feat-icon">💻</div><div class="svc-feat-body"><h3>Digital & Remote Access</h3><p>Access IEEE Xplore, Springer Link, Elsevier ScienceDirect and 5,000+ databases remotely via Knimbus with your institutional credentials.</p><span class="svc-feat-tag">IEEE · Springer · Elsevier</span></div></div>
-    <div class="svc-feature"><div class="svc-feat-icon">📊</div><div class="svc-feat-body"><h3>Research & Thesis Support</h3><p>Plagiarism checking via Turnitin, citation management guidance, thesis formatting assistance and research methodology workshops.</p><span class="svc-feat-tag">Turnitin · Citation Help</span></div></div>
-    <div class="svc-feature"><div class="svc-feat-icon">🏛️</div><div class="svc-feat-body"><h3>Reading & Study Zones</h3><p>Dedicated silent reading halls, group discussion rooms, individual study carrels and 24-hour digital access zones for uninterrupted focus.</p><span class="svc-feat-tag">Silent Zones · Group Rooms</span></div></div>
-    <div class="svc-feature"><div class="svc-feat-icon">📰</div><div class="svc-feat-body"><h3>Current Awareness Service</h3><p>Weekly new arrivals alerts, journal TOC notifications and personalised reading lists sent directly to your email based on your department.</p><span class="svc-feat-tag">Email Alerts · Weekly</span></div></div>
+</div>
+
+<!-- ALL SERVICES (BITS-style card grid) -->
+<section class="section" id="all-services"><div class="container">
+  <div class="reveal" style="text-align:center">
+    <div class="eyebrow">What We Offer</div>
+    <div class="display-title">All Library <em>Services</em></div>
+    <p class="lead">Everything you need to research, learn and grow &mdash; all under one roof.</p>
+  </div>
+  <div class="bits-svc-grid reveal">
+    <a href="https://griet.bestbookbuddies.com/" target="_blank" class="bits-svc-card"><div class="bsc-icon">&#128218;</div><div class="bsc-title">Online Catalogue</div><div class="bsc-desc">Search 1,30,741 volumes and 17,253 titles instantly via our cloud-based OPAC — 24&times;7 from any device.</div><div class="bsc-tag">Browse Catalogue</div></a>
+    <a href="https://griet.knimbus.com/" target="_blank" class="bits-svc-card"><div class="bsc-icon">&#127760;</div><div class="bsc-title">Remote Access</div><div class="bsc-desc">Access IEEE, Springer, Elsevier and all subscribed databases from anywhere using your GRIET email via Knimbus.</div><div class="bsc-tag">Login to Knimbus</div></a>
+    <a href="login.html" class="bits-svc-card"><div class="bsc-icon">&#128216;</div><div class="bsc-title">Book Issue &amp; Return</div><div class="bsc-desc">Borrow, renew and return books via KOHA automated system. Students: 3 books / Faculty: 5 books.</div><div class="bsc-tag">Access Portal</div></a>
+    <a href="login.html" class="bits-svc-card"><div class="bsc-icon">&#128270;</div><div class="bsc-title">Book Request</div><div class="bsc-desc">Request books not in the library collection. Submit via the portal and get notified when acquired.</div><div class="bsc-tag">Submit Request</div></a>
+    <div class="bits-svc-card" style="cursor:default"><div class="bsc-icon">&#128203;</div><div class="bsc-title">Textbook Finder</div><div class="bsc-desc">Search textbooks by department and year. Find prescribed books with shelf location and availability.</div><div class="bsc-tag">Search Below</div></div>
+    <div class="bits-svc-card" style="cursor:default"><div class="bsc-icon">&#128424;</div><div class="bsc-title">Reprography</div><div class="bsc-desc">Print, Scan and Xerox facility using Xerox WorkCentre 5325. For books &amp; journal articles only.</div><div class="bsc-tag">Available On-Campus</div></div>
+    <div class="bits-svc-card" style="cursor:default"><div class="bsc-icon">&#128202;</div><div class="bsc-title">Research Support</div><div class="bsc-desc">Plagiarism checking via Turnitin, citation guidance, thesis formatting and literature search assistance.</div><div class="bsc-tag">Ask a Librarian</div></div>
+    <a href="https://shodhganga.inflibnet.ac.in/" target="_blank" class="bits-svc-card"><div class="bsc-icon">&#127891;</div><div class="bsc-title">Shodhganga</div><div class="bsc-desc">Access 6 lakh+ awarded Indian theses through INFLIBNET&apos;s Shodhganga repository. Open access.</div><div class="bsc-tag">Browse Theses</div></a>
+    <a href="mailto:library@griet.ac.in" class="bits-svc-card"><div class="bsc-icon">&#128172;</div><div class="bsc-title">Ask a Librarian</div><div class="bsc-desc">Get expert help on research topics, database navigation, citations and finding the right resources.</div><div class="bsc-tag">Email Us</div></a>
   </div>
 </div></section>
-<section class="eresource-bg reveal"><div class="container">
-  <div class="eyebrow gold">Digital Library</div>
-  <div class="display-title" style="-webkit-text-fill-color:#fff;color:#fff">E-Resources <em style="color:var(--gold)">Access</em></div>
-  <p class="lead white">World-class academic databases available to all GRIET students and faculty.</p>
+
+<!-- CORE SERVICES DETAIL -->
+<section class="section" id="core" style="background:#f8f9fb;padding-top:0"><div class="container reveal">
+  <div class="eyebrow">In Detail</div>
+  <div class="display-title">Core <em>Services</em></div>
+  <div class="core-svc-grid">
+    <div class="core-svc"><div class="core-svc-icon">&#128218;</div><div class="core-svc-body"><h3>Book Borrowing &amp; KOHA System</h3><p>Fully automated borrowing with real-time tracking, due date reminders and transparent fine management. Students borrow 3 books for 7 days; Faculty borrow 5 books for 30 days. Renewals available online through the portal.</p><span class="core-svc-tag">KOHA Automated &middot; Fine: &#8377;10/day</span></div></div>
+    <div class="core-svc"><div class="core-svc-icon">&#127760;</div><div class="core-svc-body"><h3>Knimbus Remote Access</h3><p>Access all subscribed databases &mdash; IEEE Xplore, Springer, Elsevier ScienceDirect and more &mdash; from home or anywhere using your GRIET institutional email at griet.knimbus.com. Available 24&times;7.</p><span class="core-svc-tag">24&times;7 &middot; griet.knimbus.com</span></div></div>
+    <div class="core-svc"><div class="core-svc-icon">&#128424;</div><div class="core-svc-body"><h3>Reprography &mdash; Xerox WorkCentre 5325</h3><p>Print, Scan and Xerox facility available during library hours. Permitted only for book chapters and journal articles. Not available for personal documents, assignments or question papers.</p><span class="core-svc-tag">Print &middot; Scan &middot; Xerox</span></div></div>
+    <div class="core-svc"><div class="core-svc-icon">&#128202;</div><div class="core-svc-body"><h3>Research &amp; Thesis Support</h3><p>Expert guidance on research methodology, plagiarism checking via Turnitin, citation formatting (IEEE, APA, MLA), thesis structuring and literature review support for M.Tech and Ph.D. scholars.</p><span class="core-svc-tag">Turnitin &middot; Citation Help</span></div></div>
+  </div>
+</div></section>
+
+<!-- E-RESOURCES -->
+<section class="eresource-section reveal" id="eresources"><div class="container">
+  <div style="text-align:center">
+    <div class="eyebrow gold">Digital Library</div>
+    <div class="display-title" style="-webkit-text-fill-color:#fff;color:#fff">E-Resources <em style="color:var(--gold)">Access</em></div>
+    <p style="color:rgba(255,255,255,0.5);margin-top:12px;font-size:15px;">World-class academic databases available to all GRIET students and faculty</p>
+  </div>
   <div class="er-grid">
     <div class="er-card">
-      <div class="er-top"><div class="er-icon">⚡</div><div><div class="er-name">Engineering Databases</div><div class="er-type">IEEE · Springer · Elsevier</div></div></div>
+      <div class="er-top"><div class="er-icon">&#9889;</div><div><div class="er-name">Engineering Databases</div><div class="er-type">IEEE &middot; Springer &middot; Elsevier</div></div></div>
       <div class="er-links">
-        <a href="https://ieeexplore.ieee.org/" target="_blank" class="er-link">IEEE Xplore <span>→</span></a>
-        <a href="https://link.springer.com/" target="_blank" class="er-link">Springer Link <span>→</span></a>
-        <a href="https://www.sciencedirect.com/" target="_blank" class="er-link">ScienceDirect <span>→</span></a>
+        <a href="https://ieeexplore.ieee.org/" target="_blank" class="er-link">IEEE Xplore <span>&#8594;</span></a>
+        <a href="https://link.springer.com/" target="_blank" class="er-link">Springer Link <span>&#8594;</span></a>
+        <a href="https://www.sciencedirect.com/" target="_blank" class="er-link">ScienceDirect <span>&#8594;</span></a>
       </div>
     </div>
     <div class="er-card">
-      <div class="er-top"><div class="er-icon">📚</div><div><div class="er-name">OPAC & Catalogue</div><div class="er-type">Best Book Buddies</div></div></div>
+      <div class="er-top"><div class="er-icon">&#127760;</div><div><div class="er-name">Remote Access</div><div class="er-type">Knimbus Platform</div></div></div>
       <div class="er-links">
-        <a href="https://griet.bestbookbuddies.com/" target="_blank" class="er-link">Online Catalogue <span>→</span></a>
-        <a href="https://griet.bestbookbuddies.com/" target="_blank" class="er-link">New Arrivals <span>→</span></a>
-        <a href="https://griet.bestbookbuddies.com/" target="_blank" class="er-link">Reserve a Book <span>→</span></a>
+        <a href="https://griet.knimbus.com/" target="_blank" class="er-link">Login to Knimbus <span>&#8594;</span></a>
+        <a href="https://griet.knimbus.com/" target="_blank" class="er-link">Browse eBooks <span>&#8594;</span></a>
+        <a href="https://griet.knimbus.com/" target="_blank" class="er-link">Access eJournals <span>&#8594;</span></a>
       </div>
     </div>
     <div class="er-card">
-      <div class="er-top"><div class="er-icon">🌐</div><div><div class="er-name">Remote Access</div><div class="er-type">Knimbus Platform</div></div></div>
+      <div class="er-top"><div class="er-icon">&#128218;</div><div><div class="er-name">OPAC &amp; Catalogue</div><div class="er-type">Best Book Buddies</div></div></div>
       <div class="er-links">
-        <a href="https://griet.knimbus.com/" target="_blank" class="er-link">Login to Knimbus <span>→</span></a>
-        <a href="https://griet.knimbus.com/" target="_blank" class="er-link">Access eBooks <span>→</span></a>
-        <a href="https://griet.knimbus.com/" target="_blank" class="er-link">Browse eJournals <span>→</span></a>
+        <a href="https://griet.bestbookbuddies.com/" target="_blank" class="er-link">Online Catalogue <span>&#8594;</span></a>
+        <a href="https://griet.bestbookbuddies.com/" target="_blank" class="er-link">New Arrivals <span>&#8594;</span></a>
+        <a href="https://griet.bestbookbuddies.com/" target="_blank" class="er-link">Reserve a Book <span>&#8594;</span></a>
+      </div>
+    </div>
+    <div class="er-card">
+      <div class="er-top"><div class="er-icon">&#128270;</div><div><div class="er-name">J-Gate &amp; DELNET</div><div class="er-type">60M+ Articles</div></div></div>
+      <div class="er-links">
+        <a href="https://jgateplus.com/" target="_blank" class="er-link">J-Gate Portal <span>&#8594;</span></a>
+        <a href="https://delnet.in/" target="_blank" class="er-link">DELNET <span>&#8594;</span></a>
+        <a href="https://nlist.inflibnet.ac.in/" target="_blank" class="er-link">N-LIST (INFLIBNET) <span>&#8594;</span></a>
+      </div>
+    </div>
+    <div class="er-card">
+      <div class="er-top"><div class="er-icon">&#127891;</div><div><div class="er-name">Theses &amp; Research</div><div class="er-type">Shodhganga &middot; NPTEL</div></div></div>
+      <div class="er-links">
+        <a href="https://shodhganga.inflibnet.ac.in/" target="_blank" class="er-link">Shodhganga <span>&#8594;</span></a>
+        <a href="https://nptel.ac.in/" target="_blank" class="er-link">NPTEL Lessons <span>&#8594;</span></a>
+        <a href="https://griet.knimbus.com/" target="_blank" class="er-link">Full Text Access <span>&#8594;</span></a>
+      </div>
+    </div>
+    <div class="er-card">
+      <div class="er-top"><div class="er-icon">&#128196;</div><div><div class="er-name">Open Access</div><div class="er-type">Free Resources</div></div></div>
+      <div class="er-links">
+        <a href="https://doaj.org/" target="_blank" class="er-link">DOAJ <span>&#8594;</span></a>
+        <a href="https://scholar.google.com/" target="_blank" class="er-link">Google Scholar <span>&#8594;</span></a>
+        <a href="https://arxiv.org/" target="_blank" class="er-link">arXiv Preprints <span>&#8594;</span></a>
       </div>
     </div>
   </div>
 </div></section>
-<section class="section"><div class="container reveal">
-  <div class="eyebrow">Digital Infrastructure</div>
-  <div class="display-title">Smart Library <em>Features</em></div>
+
+<!-- TEXTBOOK FINDER -->
+<section class="tbf-section" id="textbook"><div class="container">
+  <div class="reveal" style="text-align:center;margin-bottom:52px">
+    <div class="eyebrow">Find Your Books</div>
+    <div class="display-title">Textbook <em>Finder</em></div>
+  </div>
+  <div class="tbf-grid reveal">
+    <div class="tbf-box">
+      <h3>Search by Department &amp; Year</h3>
+      <p>Find textbooks for your course, check availability and locate them on the shelf.</p>
+      <div class="tbf-row">
+        <select id="tbDept"><option value="">Select Department</option><option>CSE</option><option>ECE</option><option>EEE</option><option>MECH</option><option>CIVIL</option><option>IT</option><option>AI &amp; ML</option></select>
+        <select id="tbYear"><option value="">Select Year</option><option>1st Year</option><option>2nd Year</option><option>3rd Year</option><option>4th Year</option></select>
+      </div>
+      <div class="tbf-row">
+        <input type="text" id="tbSubject" placeholder="Subject / Title keywords&hellip;">
+        <button onclick="searchTextbook()">Find Books</button>
+      </div>
+    </div>
+    <div class="tbf-feats">
+      <div class="tbf-feat"><div class="tbf-feat-icon">&#128218;</div><div><h4>17,253 Titles Available</h4><p>Covers textbooks for all 4 years across every engineering department with multiple copies.</p></div></div>
+      <div class="tbf-feat"><div class="tbf-feat-icon">&#128276;</div><div><h4>Real-time Availability</h4><p>Check if your book is available or issued and request it directly from the portal.</p></div></div>
+      <div class="tbf-feat"><div class="tbf-feat-icon">&#128205;</div><div><h4>Shelf Location Guide</h4><p>Every book shows rack number and shelf location so you can find it instantly.</p></div></div>
+    </div>
+  </div>
+</div></section>
+
+<!-- STUDY SPACES -->
+<section class="spaces-section" id="spaces"><div class="container">
+  <div class="reveal" style="text-align:center">
+    <div class="eyebrow">Reserve Your Spot</div>
+    <div class="display-title">Study <em>Spaces</em></div>
+    <p class="lead">Purpose-built spaces for every kind of academic work &mdash; from silent reading to group discussions.</p>
+  </div>
+  <div class="spaces-grid reveal">
+    <div class="space-card"><div class="space-icon">&#128214;</div><div class="space-name">Reading Hall</div><div class="space-cap">300+ seats &middot; Ground Floor<br>Silent reading &amp; individual study</div><span class="space-avail open">Open Now</span></div>
+    <div class="space-card"><div class="space-icon">&#128187;</div><div class="space-name">Study Cubicles</div><div class="space-cap">Individual cubicles &middot; First Floor<br>Focused silent workspaces</div><span class="space-avail open">Available</span></div>
+    <div class="space-card"><div class="space-icon">&#128218;</div><div class="space-name">Journals Section</div><div class="space-cap">Print journals &middot; Ground Floor<br>53 National &middot; 11 International</div><span class="space-avail open">Open Now</span></div>
+    <div class="space-card"><div class="space-icon">&#128424;</div><div class="space-name">Reprography Zone</div><div class="space-cap">Print &middot; Scan &middot; Xerox<br>Xerox WorkCentre 5325</div><span class="space-avail open">Available</span></div>
+  </div>
+</div></section>
+
+<!-- DIGITAL FEATURES -->
+<section class="digital-section" id="digital"><div class="container reveal">
+  <div class="eyebrow">Smart Library</div>
+  <div class="display-title">Digital <em>Features</em></div>
+  <p class="lead">Technology-powered services built for the modern academic.</p>
   <div class="digital-grid">
-    <div class="dg-card"><div class="dg-icon">☁️</div><div class="dg-title">Cloud OPAC</div><div class="dg-desc">Access the library catalogue from anywhere, anytime via cloud-based OPAC with real-time availability status.</div></div>
-    <div class="dg-card"><div class="dg-icon">📱</div><div class="dg-title">Mobile Portal</div><div class="dg-desc">Fully responsive library portal accessible from smartphones, tablets and laptops — no app download needed.</div></div>
-    <div class="dg-card"><div class="dg-icon">🔔</div><div class="dg-title">Smart Alerts</div><div class="dg-desc">Automated due date reminders, overdue notifications and new arrival alerts sent directly to your inbox.</div></div>
-    <div class="dg-card"><div class="dg-icon">📈</div><div class="dg-title">Usage Analytics</div><div class="dg-desc">Track your reading history, borrowed books, fines and request status in your personal dashboard.</div></div>
-    <div class="dg-card"><div class="dg-icon">🔒</div><div class="dg-title">Secure Login</div><div class="dg-desc">Role-based access for Students, Faculty and Librarians with JWT-secured authentication and no popups.</div></div>
-    <div class="dg-card"><div class="dg-icon">📋</div><div class="dg-title">Reports & Analytics</div><div class="dg-desc">Librarians access detailed reports on borrowing trends, overdue books, fine collection and resource usage.</div></div>
+    <div class="dg-card"><div class="dg-icon">&#9729;&#65039;</div><div class="dg-title">Cloud OPAC</div><div class="dg-desc">Access the full catalogue 24&times;7 from any device with real-time availability, department filters and reserve requests.</div></div>
+    <div class="dg-card"><div class="dg-icon">&#128247;</div><div class="dg-title">Mobile Portal</div><div class="dg-desc">Fully responsive portal &mdash; browse catalogue, track borrows, check fines and request books from your phone.</div></div>
+    <div class="dg-card"><div class="dg-icon">&#128276;</div><div class="dg-title">Smart Alerts</div><div class="dg-desc">Automated due date reminders, overdue notifications and new arrival alerts sent to your inbox.</div></div>
+    <div class="dg-card"><div class="dg-icon">&#128200;</div><div class="dg-title">Dashboard Analytics</div><div class="dg-desc">Personal dashboard showing reading history, active borrows, fine status and pending requests at a glance.</div></div>
+    <div class="dg-card"><div class="dg-icon">&#128274;</div><div class="dg-title">JWT Secure Login</div><div class="dg-desc">Role-based access for Students, Faculty and Librarians with token authentication &mdash; no shared passwords.</div></div>
+    <div class="dg-card"><div class="dg-icon">&#128203;</div><div class="dg-title">Librarian Reports</div><div class="dg-desc">Real-time reports on borrowing trends, overdue books, fine collection and resource usage for management.</div></div>
   </div>
 </div></section>
-<section class="section hours-section"><div class="container reveal">
-  <div class="eyebrow">Timing</div>
-  <div class="display-title">Library <em>Hours</em></div>
-  <div class="hours-wrap">
-    <table class="hours-table">
-      <tr><th>Day</th><th>Hours</th></tr>
-      <tr><td>Monday – Friday</td><td>9:00 AM – 8:00 PM</td></tr>
-      <tr><td>Saturday</td><td>9:00 AM – 5:00 PM</td></tr>
-      <tr class="closed"><td>Sunday</td><td>Closed</td></tr>
-      <tr><td>Exam Period</td><td>8:00 AM – 10:00 PM</td></tr>
-      <tr class="closed"><td>Public Holidays</td><td>Closed</td></tr>
-    </table>
-    <div class="hours-highlight">
-      <h3>Regular Hours</h3>
-      <span class="big-time">9AM – 8PM</span>
-      <p>Monday – Friday<br>Extended hours during examination season.<br><br>📍 Main Building, Ground Floor</p>
+
+<!-- LIBRARY HOURS -->
+<section class="hours-section reveal" id="hours"><div class="container">
+  <div style="text-align:center">
+    <div class="eyebrow gold">Timing</div>
+    <div class="display-title" style="-webkit-text-fill-color:#fff;color:#fff">Library <em style="color:var(--gold)">Hours</em></div>
+  </div>
+  <div class="hours-grid">
+    <div>
+      <div class="hours-status" id="hoursStatus"><div class="hours-dot"></div><span id="hoursText">Checking&hellip;</span></div>
+      <table class="hours-table">
+        <thead><tr><th>Day</th><th>Timing</th></tr></thead>
+        <tbody>
+          <tr><td>Monday &ndash; Friday</td><td>9:00 AM &ndash; 8:00 PM</td></tr>
+          <tr><td>Saturday</td><td>9:00 AM &ndash; 5:00 PM</td></tr>
+          <tr><td>Sunday</td><td>Closed</td></tr>
+          <tr><td>Exam Season</td><td>8:00 AM &ndash; 10:00 PM</td></tr>
+          <tr><td>Public Holidays</td><td>Closed</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="hours-notes">
+      <div class="hours-note"><h4>&#128205; Location</h4><p>Central Library Building, GRIET Campus, Bachupally, Hyderabad, Telangana &ndash; 500090</p></div>
+      <div class="hours-note"><h4>&#128231; Contact</h4><p>library@griet.ac.in &middot; Available Mon&ndash;Sat during library hours</p></div>
+      <div class="hours-note"><h4>&#127760; Remote Access</h4><p>Knimbus available 24&times;7 &mdash; griet.knimbus.com</p></div>
+      <div class="hours-note"><h4>&#128421; Reprography Hours</h4><p>Available during regular library hours only &middot; Books &amp; Journals only</p></div>
     </div>
   </div>
 </div></section>
-<section class="section"><div class="container reveal">
+
+<!-- FAQ -->
+<section class="faq-section" id="faq"><div class="container reveal">
   <div class="eyebrow">Help</div>
   <div class="display-title" style="margin-bottom:8px">Frequently Asked <em>Questions</em></div>
   <div class="faq-list">
-    <div class="faq-item"><div class="faq-q">How many books can I borrow at once? <span class="faq-arrow">+</span></div><div class="faq-a"><div class="faq-a-inner">Students can borrow up to <strong>3 books</strong> for 7 days. Faculty members can borrow up to <strong>5 books</strong> for 30 days.</div></div></div>
-    <div class="faq-item"><div class="faq-q">What is the fine for overdue books? <span class="faq-arrow">+</span></div><div class="faq-a"><div class="faq-a-inner">The fine is <strong>₹10 per day</strong> per overdue book. Fines are calculated automatically and visible in your student dashboard.</div></div></div>
-    <div class="faq-item"><div class="faq-q">How do I access IEEE or Springer from home? <span class="faq-arrow">+</span></div><div class="faq-a"><div class="faq-a-inner">Log in to <strong>Knimbus Remote Access</strong> at griet.knimbus.com using your GRIET institutional credentials to access all subscribed databases.</div></div></div>
-    <div class="faq-item"><div class="faq-q">Can I request a book not available in the library? <span class="faq-arrow">+</span></div><div class="faq-a"><div class="faq-a-inner">Yes! Use the <strong>Book Request</strong> feature in the student portal. Your request will be reviewed by the librarian and you'll be notified.</div></div></div>
-    <div class="faq-item"><div class="faq-q">How do I change my library password? <span class="faq-arrow">+</span></div><div class="faq-a"><div class="faq-a-inner">Login → Dashboard → <strong>Change Password</strong> in the sidebar. Enter your current password and set a new one.</div></div></div>
-  </div>
-  <div class="cta-banner reveal">
-    <div><h2>Ready to Access the Library?</h2><p>Login with your college ID to borrow books, explore resources and manage your account.</p></div>
-    <a href="login.html" class="cta-btn">Login to Portal →</a>
+    <div class="faq-item"><div class="faq-q">How many books can I borrow at once?<span class="faq-arrow">+</span></div><div class="faq-a"><div class="faq-a-inner">Students can borrow up to <strong>3 books for 7 days</strong>. Faculty members can borrow up to <strong>5 books for 30 days</strong>. Books can be renewed online if not reserved by someone else.</div></div></div>
+    <div class="faq-item"><div class="faq-q">What is the fine for overdue books?<span class="faq-arrow">+</span></div><div class="faq-a"><div class="faq-a-inner">The fine is <strong>&#8377;10 per day per book</strong>. Fines are calculated automatically and visible in your student dashboard. Pay before borrowing new books.</div></div></div>
+    <div class="faq-item"><div class="faq-q">How do I access IEEE or Springer from home?<span class="faq-arrow">+</span></div><div class="faq-a"><div class="faq-a-inner">Log in to <strong>Knimbus Remote Access</strong> at griet.knimbus.com using your GRIET institutional email and password. All subscribed databases are accessible 24&times;7 from anywhere.</div></div></div>
+    <div class="faq-item"><div class="faq-q">Can I request a book not in the library?<span class="faq-arrow">+</span></div><div class="faq-a"><div class="faq-a-inner">Yes. Use the <strong>Book Request</strong> feature in the student portal. Your request is reviewed by the librarian and you will be notified when the book is acquired or available.</div></div></div>
+    <div class="faq-item"><div class="faq-q">What is the reprography facility and what is allowed?<span class="faq-arrow">+</span></div><div class="faq-a"><div class="faq-a-inner">We have a <strong>Xerox WorkCentre 5325</strong> for Print, Scan and Xerox. It is available only for library book chapters and journal articles. Personal documents, assignments and question papers are not permitted.</div></div></div>
+    <div class="faq-item"><div class="faq-q">How do I find a textbook for my course?<span class="faq-arrow">+</span></div><div class="faq-a"><div class="faq-a-inner">Use the <strong>Textbook Finder</strong> on this page — select your department, year and subject. You can also search the OPAC at griet.bestbookbuddies.com for real-time availability and shelf location.</div></div></div>
   </div>
 </div></section>
-<footer class="site-footer">© 2026 <em>GRIET Central Library</em> · All Rights Reserved</footer>
+
+<!-- CTA -->
+<section class="cta-section reveal"><div class="container">
+  <div class="eyebrow gold">Get Started</div>
+  <div class="display-title" style="-webkit-text-fill-color:#fff;color:#fff;margin-bottom:18px">Access All <em style="color:var(--gold)">Services</em></div>
+  <p style="color:rgba(255,255,255,0.6);font-size:16px;max-width:520px;margin:0 auto;line-height:1.75;">Login with your college ID to borrow books, access e-resources, check fines and manage your account.</p>
+  <div class="cta-btns">
+    <a href="login.html" class="btn-primary">Login to Portal &rarr;</a>
+    <a href="https://griet.knimbus.com/" target="_blank" class="btn-outline" style="color:#fff;border-color:rgba(255,255,255,0.3);">Remote Access &rarr;</a>
+    <a href="https://griet.bestbookbuddies.com/" target="_blank" class="btn-outline" style="color:#fff;border-color:rgba(255,255,255,0.3);">Browse Catalogue &rarr;</a>
+  </div>
+</div></section>
+
+<footer class="site-footer">&copy; 2026 <em>GRIET Central Library</em> &middot; Gokaraju Rangaraju Institute of Engineering &amp; Technology &middot; All Rights Reserved</footer>
+<button id="topBtn" onclick="window.scrollTo({top:0,behavior:'smooth'})">&#8593;</button>
+
 <script>
-const ro=new IntersectionObserver(e=>e.forEach(en=>{if(en.isIntersecting)en.target.classList.add("show");}),{threshold:0.08});
-document.querySelectorAll(".reveal,.reveal-left,.reveal-right").forEach(el=>ro.observe(el));
-document.querySelectorAll(".faq-q").forEach(q=>{
-  q.onclick=()=>{
-    const item=q.parentElement;const was=item.classList.contains("open");
-    document.querySelectorAll(".faq-item").forEach(i=>i.classList.remove("open"));
-    if(!was)item.classList.add("open");
-  };
+window.addEventListener("scroll",function(){
+  var scrolled=window.pageYOffset||document.documentElement.scrollTop||document.body.scrollTop||0;
+  var total=document.documentElement.scrollHeight-document.documentElement.clientHeight;
+  document.getElementById("progress").style.width=(scrolled/total*100)+"%";
+  document.getElementById("topBtn").style.display=scrolled>400?"block":"none";
+  var sections=["core","eresources","textbook","spaces","digital","hours","faq"];
+  var links=document.querySelectorAll(".svc-nav-link");
+  sections.forEach(function(id,i){
+    var el=document.getElementById(id);
+    if(el){var top=el.getBoundingClientRect().top;if(top<=120&&top>-300){links.forEach(function(l){l.classList.remove("active");});if(links[i+1])links[i+1].classList.add("active");}}
+  });
+});
+var ro=new IntersectionObserver(function(e){e.forEach(function(en){if(en.isIntersecting)en.target.classList.add("show");});},{threshold:0.08});
+document.querySelectorAll(".reveal,.reveal-left,.reveal-right").forEach(function(el){ro.observe(el);});
+function openMobileNav(){document.getElementById("mobileNav").classList.add("open");document.body.style.overflow="hidden";}
+function closeMobileNav(){document.getElementById("mobileNav").classList.remove("open");document.body.style.overflow="";}
+// Live hours
+(function(){
+  var now=new Date(),day=now.getDay(),mins=now.getHours()*60+now.getMinutes();
+  var open=(day>0&&day<6&&mins>=540&&mins<1200)||(day===6&&mins>=540&&mins<1020);
+  var w=document.getElementById("hoursStatus"),t=document.getElementById("hoursText");
+  if(day===0){w.className="hours-status closed-now";t.textContent="Closed Today (Sunday)";}
+  else if(open){w.className="hours-status open-now";t.textContent=day===6?"Open Now · Closes 5:00 PM":"Open Now · Closes 8:00 PM";}
+  else{w.className="hours-status closed-now";t.textContent=day===6?"Closed · Opens 9:00 AM (Mon)":"Closed · Opens 9:00 AM";}
+})();
+// Textbook finder
+function searchTextbook(){var dept=document.getElementById("tbDept").value;var year=document.getElementById("tbYear").value;var sub=document.getElementById("tbSubject").value.trim();var q=(dept+" "+year+" "+sub).trim();if(q)window.open("https://griet.bestbookbuddies.com/search?q="+encodeURIComponent(q),"_blank");}
+// FAQ accordion
+document.querySelectorAll(".faq-q").forEach(function(q){
+  q.onclick=function(){var item=q.parentElement;var was=item.classList.contains("open");document.querySelectorAll(".faq-item").forEach(function(i){i.classList.remove("open");});if(!was)item.classList.add("open");};
+});
+// Smooth scroll sub-nav
+document.querySelectorAll(".svc-nav-link").forEach(function(link){
+  link.addEventListener("click",function(e){var href=this.getAttribute("href");if(href.startsWith("#")){e.preventDefault();var el=document.getElementById(href.slice(1));if(el)el.scrollIntoView({behavior:"smooth",block:"start"});}});
 });
 </script>
 </body>
