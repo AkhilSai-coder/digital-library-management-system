@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Entry / Exit Scanner | GRIET Central Library</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="css/theme.css">
+<style>
+/* ── Scanner-specific styles ───────────────────────────────── */
+.scanner-shell{
+  display:flex;flex-direction:column;align-items:center;
+  justify-content:flex-start;padding:40px 20px;gap:28px;
+  max-width:720px;margin:0 auto;
+}
+
+/* Input card */
+.scan-card{
+  width:100%;background:var(--white);border-radius:16px;
+  border:1px solid var(--border);box-shadow:var(--shadow2);
+  padding:32px 36px;text-align:center;
+}
+.scan-icon{font-size:48px;margin-bottom:14px;line-height:1;}
+.scan-card h2{
+  font-family:'Libre Baskerville',serif;font-size:22px;
+  color:var(--navy);margin-bottom:6px;
+}
+.scan-card p{font-size:13.5px;color:var(--muted);margin-bottom:26px;}
+
+.scan-input-wrap{
+  display:flex;background:var(--cream);border:2px solid var(--border);
+  border-radius:10px;overflow:hidden;transition:border-color 0.2s,box-shadow 0.2s;
+}
+.scan-input-wrap:focus-within{
+  border-color:var(--navy);
+  box-shadow:0 0 0 4px rgba(13,31,53,0.07);
+}
+.scan-input-wrap input{
+  flex:1;padding:14px 18px;border:none;outline:none;background:transparent;
+  font-size:16px;font-family:'Inter',sans-serif;color:var(--text);
+  letter-spacing:1px;
+}
+.scan-input-wrap input::placeholder{color:var(--muted);letter-spacing:0;}
+.scan-btn{
+  padding:0 22px;background:var(--navy);color:#fff;border:none;
+  cursor:pointer;font-size:18px;transition:background 0.18s;flex-shrink:0;
+}
+.scan-btn:hover{background:var(--navy2);}
+.scan-btn:disabled{opacity:0.5;cursor:not-allowed;}
+
+.hint{font-size:12px;color:var(--muted);margin-top:10px;text-align:left;}
+
+/* Result card */
+.result-card{
+  width:100%;border-radius:16px;padding:28px 32px;
+  border:1.5px solid;display:none;
+  animation:mIn 0.28s ease;
+}
+.result-card.entry{
+  background:#eef9f4;border-color:#6ee7b7;
+}
+.result-card.exit{
+  background:#eff6ff;border-color:#93c5fd;
+}
+.result-card.error{
+  background:#fef2f2;border-color:#fca5a5;
+}
+@keyframes mIn{
+  from{opacity:0;transform:translateY(14px);}
+  to{opacity:1;transform:translateY(0);}
+}
+.result-icon{font-size:40px;margin-bottom:10px;}
+.result-label{
+  font-size:10px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;
+  margin-bottom:5px;
+}
+.result-card.entry .result-label{color:#059669;}
+.result-card.exit   .result-label{color:#1d4ed8;}
+.result-card.error  .result-label{color:#dc2626;}
+.result-msg{
+  font-family:'Libre Baskerville',serif;font-size:22px;
+  font-weight:700;color:var(--navy);margin-bottom:18px;
+}
+.result-grid{
+  display:grid;grid-template-columns:1fr 1fr;gap:12px;
+  text-align:left;margin-top:6px;
+}
+.result-item label{
+  font-size:10.5px;font-weight:700;letter-spacing:1.5px;
+  text-transform:uppercase;color:var(--muted);display:block;margin-bottom:3px;
+}
+.result-item span{
+  font-size:14px;font-weight:600;color:var(--navy);
+}
+.duration-badge{
+  display:inline-flex;align-items:center;gap:6px;
+  background:var(--navy);color:#fff;padding:6px 14px;border-radius:20px;
+  font-size:13px;font-weight:600;margin-top:16px;
+}
+
+/* Live log table */
+.log-section{width:100%;}
+.log-section .box-header{padding:14px 20px;}
+#liveLog td:first-child{font-family:'Libre Baskerville',serif;font-weight:700;}
+.currently-in{background:#eef9f4;}
+</style>
+</head>
+<body>
+<script src="js/toast.js"></script>
+<script src="js/auth.js"></script>
+
+<div class="dashboard-layout">
+
+<!-- ═══ Sidebar ════════════════════════════════════════════════ -->
+<aside class="sidebar">
+  <div class="sidebar-logo">
+    <img src="GRIET_Logo.png" alt="GRIET"
+         style="height:100px;width:260px;flex-shrink:0;background:white;padding:5px;">
+    <div class="sidebar-logo-text">
+      <div class="sl-name"></div>
+      <div class="sl-sub"></div>
+    </div>
+  </div>
+  <div class="sidebar-brand">
+    <div class="brand-tag">GRIET · Hyderabad</div>
+    <div class="brand-name">Central<br>Library</div>
+    <div class="brand-sub">Management System</div>
+  </div>
+  <nav>
+    <div class="sidebar-sep">Main</div>
+    <a href="librarian-dashboard.html">⊞&nbsp; Dashboard</a>
+    <a href="book-management.html">+&nbsp; Add / Manage Books</a>
+    <div class="sidebar-sep">Circulation</div>
+    <a href="issue-return.html">⇄&nbsp; Issue &amp; Return</a>
+    <a href="fine-management.html">₹&nbsp; Fine Management</a>
+    <div class="sidebar-sep">Gate</div>
+    <a class="active">⬛&nbsp; Entry / Exit Scanner</a>
+    <div class="sidebar-sep">Users</div>
+    <a href="members.html">◎&nbsp; Members</a>
+    <a href="reports.html">↗&nbsp; Reports</a>
+  </nav>
+  <div class="sidebar-footer">
+    <a href="change-password.html">⚙&nbsp; Settings</a>
+    <a onclick="logout()" style="cursor:pointer;">→&nbsp; Logout</a>
+  </div>
+</aside>
+
+<!-- ═══ Main ═════════════════════════════════════════════════════ -->
+<main class="main">
+  <div class="top-bar">
+    <div>
+      <div class="page-eyebrow">Gate Management</div>
+      <h1>Entry / Exit Scanner</h1>
+      <p>Scan a student ID card barcode to record entry or exit</p>
+    </div>
+    <div class="top-bar-right">
+      <div class="date-chip" id="dateBadge">—</div>
+      <button class="btn btn-ghost btn-sm" onclick="loadTodayLog()">↻ Refresh log</button>
+    </div>
+  </div>
+
+  <div class="scanner-shell">
+
+    <!-- ── Scan input card ────────────────────────────────────── -->
+    <div class="scan-card">
+      <div class="scan-icon">⬛</div>
+      <h2>Scan ID Card Barcode</h2>
+      <p>Place the cursor in the field below and scan the barcode.<br>
+         The form submits automatically after scanning.</p>
+
+      <div class="scan-input-wrap">
+        <input
+          type="text"
+          id="barcodeInput"
+          placeholder="Scan or type College ID…"
+          autocomplete="off"
+          autofocus
+          onkeydown="handleKey(event)"
+        >
+        <button class="scan-btn" id="scanBtn" onclick="submitScan()" title="Submit">⏎</button>
+      </div>
+      <div class="hint">
+        💡 Barcode scanners send an <strong>Enter</strong> keystroke after reading —
+        the form will submit automatically.
+      </div>
+    </div>
+
+    <!-- ── Result card (hidden until first scan) ───────────────── -->
+    <div class="result-card" id="resultCard">
+      <div class="result-icon" id="resultIcon"></div>
+      <div class="result-label" id="resultLabel"></div>
+      <div class="result-msg"  id="resultMsg"></div>
+      <div class="result-grid" id="resultGrid"></div>
+    </div>
+
+    <!-- ── Today's log ─────────────────────────────────────────── -->
+    <div class="log-section">
+      <div class="box">
+        <div class="box-header">
+          <span class="box-title">Today's Entries &amp; Exits</span>
+          <span class="badge b-info" id="logCount">—</span>
+        </div>
+        <div class="box-body table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>College ID</th>
+                <th>Entry Time</th>
+                <th>Exit Time</th>
+                <th>Duration</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody id="liveLog">
+              <tr><td colspan="5" style="text-align:center;color:var(--muted);padding:30px;">
+                Loading…
+              </td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /scanner-shell -->
+</main>
+</div>
+
+<script>
+// ════════════════════════════════════════════════════════════════
+//  Config
+// ════════════════════════════════════════════════════════════════
+const API  = "https://library-backend-1-e3r2.onrender.com";
+
+function token() { return localStorage.getItem("token"); }
+
+// ════════════════════════════════════════════════════════════════
+//  Date chip
+// ════════════════════════════════════════════════════════════════
+(function updateDateChip() {
+  const el = document.getElementById("dateBadge");
+  const now = new Date();
+  el.textContent = now.toLocaleDateString("en-IN", {
+    weekday:"short", day:"numeric", month:"short", year:"numeric"
+  });
+})();
+
+// ════════════════════════════════════════════════════════════════
+//  Keyboard: auto-submit on Enter (barcode scanner behavior)
+// ════════════════════════════════════════════════════════════════
+function handleKey(e) {
+  if (e.key === "Enter") {
+    e.preventDefault();
+    submitScan();
+  }
+}
+
+// ════════════════════════════════════════════════════════════════
+//  Core scan submit
+// ════════════════════════════════════════════════════════════════
+async function submitScan() {
+  const input  = document.getElementById("barcodeInput");
+  const btn    = document.getElementById("scanBtn");
+  const rawId  = input.value.trim();
+
+  if (!rawId) {
+    input.focus();
+    return;
+  }
+
+  btn.disabled = true;
+  btn.textContent = "⏳";
+
+  try {
+    const res = await fetch(`${API}/api/scan?collegeId=${encodeURIComponent(rawId)}`, {
+      method: "POST",
+      headers: {
+        "Authorization": "Bearer " + token(),
+        "Content-Type": "application/json"
+      }
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      showResult("error", data.error || "Something went wrong");
+    } else {
+      showResult(data.type === "ENTRY" ? "entry" : "exit", null, data);
+      loadTodayLog();       // refresh the table
+    }
+
+  } catch (err) {
+    showResult("error", "Network error — is the server running?");
+  } finally {
+    btn.disabled    = false;
+    btn.textContent = "⏎";
+    input.value     = "";
+    input.focus();
+  }
+}
+
+// ════════════════════════════════════════════════════════════════
+//  Display result card
+// ════════════════════════════════════════════════════════════════
+function showResult(type, errorMsg, data) {
+  const card  = document.getElementById("resultCard");
+  const icon  = document.getElementById("resultIcon");
+  const label = document.getElementById("resultLabel");
+  const msg   = document.getElementById("resultMsg");
+  const grid  = document.getElementById("resultGrid");
+
+  // Reset classes
+  card.className = `result-card ${type}`;
+  card.style.display = "block";
+
+  if (type === "error") {
+    icon.textContent  = "⚠️";
+    label.textContent = "Error";
+    msg.textContent   = errorMsg;
+    grid.innerHTML    = "";
+    return;
+  }
+
+  const isEntry = type === "entry";
+  icon.textContent  = isEntry ? "✅" : "👋";
+  label.textContent = isEntry ? "Entry Recorded" : "Exit Recorded";
+  msg.textContent   = data.message;
+
+  const entryFmt = formatDT(data.entryTime);
+  const exitFmt  = data.exitTime ? formatDT(data.exitTime) : "—";
+
+  grid.innerHTML = `
+    <div class="result-item">
+      <label>College ID</label>
+      <span>${data.collegeId}</span>
+    </div>
+    <div class="result-item">
+      <label>${isEntry ? "Entry Time" : "Entered At"}</label>
+      <span>${entryFmt}</span>
+    </div>
+    ${!isEntry ? `
+    <div class="result-item">
+      <label>Exit Time</label>
+      <span>${exitFmt}</span>
+    </div>
+    <div class="result-item">
+      <label>Duration</label>
+      <span>${data.durationMinutes != null ? data.durationMinutes + " min" : "—"}</span>
+    </div>
+    ` : ""}
+  `;
+
+  if (!isEntry && data.durationMinutes != null) {
+    grid.insertAdjacentHTML("afterend",
+      `<div class="duration-badge">🕐 ${formatDuration(data.durationMinutes)} spent in library</div>`
+    );
+  }
+}
+
+// ════════════════════════════════════════════════════════════════
+//  Load today's log table
+// ════════════════════════════════════════════════════════════════
+async function loadTodayLog() {
+  const tbody = document.getElementById("liveLog");
+  const badge = document.getElementById("logCount");
+
+  try {
+    const res  = await fetch(`${API}/api/logs/today`, {
+      headers: { "Authorization": "Bearer " + token() }
+    });
+
+    if (!res.ok) { throw new Error("fetch failed"); }
+    const logs = await res.json();
+
+    badge.textContent = logs.length + " records";
+
+    if (!logs.length) {
+      tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;color:var(--muted);padding:30px;">
+        No entries yet today</td></tr>`;
+      return;
+    }
+
+    tbody.innerHTML = logs.map(l => {
+      const inside  = !l.exitTime;
+      const dur     = l.durationMinutes != null ? l.durationMinutes + " min" : "—";
+      const rowCls  = inside ? "class=\"currently-in\"" : "";
+      return `
+        <tr ${rowCls}>
+          <td>${l.collegeId}</td>
+          <td>${formatDT(l.entryTime)}</td>
+          <td>${l.exitTime ? formatDT(l.exitTime) : "—"}</td>
+          <td>${dur}</td>
+          <td>
+            ${inside
+              ? "<span class=\"badge b-active\">Inside</span>"
+              : "<span class=\"badge b-returned\">Exited</span>"
+            }
+          </td>
+        </tr>`;
+    }).join("");
+
+  } catch (e) {
+    tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;color:var(--red);padding:30px;">
+      Failed to load log</td></tr>`;
+  }
+}
+
+// ════════════════════════════════════════════════════════════════
+//  Helpers
+// ════════════════════════════════════════════════════════════════
+function formatDT(iso) {
+  if (!iso) return "—";
+  return new Date(iso).toLocaleTimeString("en-IN", {
+    hour:"2-digit", minute:"2-digit", second:"2-digit", hour12:true
+  });
+}
+
+function formatDuration(mins) {
+  if (mins < 60) return `${mins}m`;
+  const h = Math.floor(mins / 60);
+  const m = mins % 60;
+  return m > 0 ? `${h}h ${m}m` : `${h}h`;
+}
+
+// ════════════════════════════════════════════════════════════════
+//  Init
+// ════════════════════════════════════════════════════════════════
+loadTodayLog();
+</script>
+</body>
+</html>
