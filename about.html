@@ -19,7 +19,7 @@
 
 /* PAGE HERO */
 .page-hero{position:relative;height:460px;overflow:hidden;}
-.page-hero-bg{position:absolute;inset:0;background:url("Gokaraju-Rangaraju.jpeg") center/cover no-repeat;}
+.page-hero-bg{position:absolute;inset:0;background:url("image/lib5.jpeg") center/cover no-repeat;}
 .page-hero-overlay{position:absolute;inset:0;background:linear-gradient(100deg,rgba(6,18,40,0.93) 0%,rgba(6,18,40,0.72) 42%,rgba(6,18,40,0.15) 65%,transparent 82%);}
 .page-hero-content{position:relative;z-index:2;height:100%;display:flex;flex-direction:column;justify-content:center;padding:0 10%;}
 .breadcrumb{font-size:11.5px;color:rgba(255,255,255,0.48);letter-spacing:1px;margin-bottom:16px;}
@@ -220,14 +220,21 @@
 
 <header class="site-header">
   <div class="header-inner">
-    <a href="index.html" class="logo"><img src="GRIET_Logo.png" alt="GRIET" style="width: 400px; height: 80px;"><div class="logo-text"><div class="logo-name"></div><div class="logo-sub"> </div></div></a>
-    <nav class="site-nav">
+    <a href="index.html" class="logo">
+  <img src="GRIET_Logo.png" alt="GRIET" style="width:400px;height:70px">
+</a>
+
+    <!-- HAMBURGER -->
+    <button class="nav-toggle" id="navToggle" onclick="toggleNav()">
+      <span></span><span></span><span></span>
+    </button>
+
+    <nav class="site-nav" id="siteNav">
       <a href="index.html" class="nav-link">Home</a>
-      <a href="about.html" class="nav-link active">About</a>
+      <a href="about.html" class="nav-link">About</a>
       <a href="service.html" class="nav-link">Services</a>
       <a href="login.html" class="nav-login">Login &rarr;</a>
     </nav>
-    <button class="hamburger" onclick="openMobileNav()" aria-label="Menu"><span></span><span></span><span></span></button>
   </div>
 </header>
 
@@ -527,6 +534,38 @@ document.querySelectorAll(".about-nav-link").forEach(function(link){
     var href=this.getAttribute("href");
     if(href.startsWith("#")){e.preventDefault();var el=document.getElementById(href.slice(1));if(el)el.scrollIntoView({behavior:"smooth",block:"start"});}
   });
+});
+
+// public.js — include in all pages
+function toggleNav() {
+  document.getElementById('siteNav').classList.toggle('open');
+  document.getElementById('navToggle').classList.toggle('open');
+}
+
+// Close nav when a link is clicked
+document.querySelectorAll('.nav-link, .nav-login').forEach(function(link) {
+  link.addEventListener('click', function() {
+    document.getElementById('siteNav').classList.remove('open');
+    document.getElementById('navToggle').classList.remove('open');
+  });
+});
+
+// Close nav when clicking outside
+document.addEventListener('click', function(e) {
+  var nav = document.getElementById('siteNav');
+  var toggle = document.getElementById('navToggle');
+  if (!nav.contains(e.target) && !toggle.contains(e.target)) {
+    nav.classList.remove('open');
+    toggle.classList.remove('open');
+  }
+});
+
+// Active nav link highlight
+var path = window.location.pathname;
+document.querySelectorAll('.nav-link').forEach(function(link) {
+  if (link.getAttribute('href') === path.split('/').pop()) {
+    link.classList.add('active');
+  }
 });
 </script>
 </body>

@@ -219,14 +219,6 @@
 }
 
 /* ── ACCREDITATIONS STRIP ── */
-.accred-strip{background:#fff;padding:48px 0;border-bottom:1px solid var(--border);}
-.accred-inner{max-width:1200px;margin:auto;padding:0 48px;}
-.accred-label{font-size:10px;font-weight:700;letter-spacing:3px;color:var(--muted);text-transform:uppercase;text-align:center;margin-bottom:32px;}
-.accred-logos{display:flex;align-items:center;justify-content:center;gap:48px;flex-wrap:wrap;}
-.accred-item{display:flex;flex-direction:column;align-items:center;gap:8px;opacity:0.55;transition:0.3s;filter:grayscale(1);}
-.accred-item:hover{opacity:1;filter:grayscale(0);}
-.accred-logo{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:700;color:var(--navy);letter-spacing:-0.5px;}
-.accred-sub{font-size:10px;color:var(--muted);letter-spacing:0.5px;text-align:center;}
 
 /* ── TESTIMONIALS ── */
 .testimonials-section{background:linear-gradient(135deg,#f8f9fb,#f1f5f9);padding:88px 0;}
@@ -467,9 +459,17 @@
 </div></div>
 <header class="site-header">
   <div class="header-inner">
-    <a href="index.html" class="logo"><img src="GRIET_Logo.png" alt="GRIET" style="width: 400px; height: 80px;"><div class="logo-text"><div class="logo-name"></div><div class="logo-sub"> </div></div></a>
-    <nav class="site-nav">
-      <a href="index.html" class="nav-link active">Home</a>
+    <a href="index.html" class="logo">
+      <img src="GRIET_Logo.png" alt="GRIET" style="width:400px;height:70px">
+    </a>
+
+    <!-- HAMBURGER -->
+    <button class="nav-toggle" id="navToggle" onclick="toggleNav()">
+      <span></span><span></span><span></span>
+    </button>
+
+    <nav class="site-nav" id="siteNav">
+      <a href="index.html" class="nav-link">Home</a>
       <a href="about.html" class="nav-link">About</a>
       <a href="service.html" class="nav-link">Services</a>
       <a href="login.html" class="nav-login">Login &rarr;</a>
@@ -1001,6 +1001,38 @@ function sendLibAI(){
 }
 function askQ(q){document.getElementById("aiInput").value=q;sendLibAI();}
 document.getElementById("aiInput").addEventListener("keydown",function(e){if(e.key==="Enter")sendLibAI();});
+
+// public.js — include in all pages
+function toggleNav() {
+  document.getElementById('siteNav').classList.toggle('open');
+  document.getElementById('navToggle').classList.toggle('open');
+}
+
+// Close nav when a link is clicked
+document.querySelectorAll('.nav-link, .nav-login').forEach(function(link) {
+  link.addEventListener('click', function() {
+    document.getElementById('siteNav').classList.remove('open');
+    document.getElementById('navToggle').classList.remove('open');
+  });
+});
+
+// Close nav when clicking outside
+document.addEventListener('click', function(e) {
+  var nav = document.getElementById('siteNav');
+  var toggle = document.getElementById('navToggle');
+  if (!nav.contains(e.target) && !toggle.contains(e.target)) {
+    nav.classList.remove('open');
+    toggle.classList.remove('open');
+  }
+});
+
+// Active nav link highlight
+var path = window.location.pathname;
+document.querySelectorAll('.nav-link').forEach(function(link) {
+  if (link.getAttribute('href') === path.split('/').pop()) {
+    link.classList.add('active');
+  }
+});
 </script>
 </body>
 </html>
