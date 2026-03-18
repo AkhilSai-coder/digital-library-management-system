@@ -19,7 +19,7 @@
 
 /* PAGE HERO */
 .page-hero{position:relative;height:460px;overflow:hidden;}
-.page-hero-bg{position:absolute;inset:0;background:url("image/new griet.jpg") center/cover no-repeat;}
+.page-hero-bg{position:absolute;inset:0;background:url("Gokaraju-Rangaraju.jpeg") center/cover no-repeat;}
 .page-hero-overlay{position:absolute;inset:0;background:linear-gradient(100deg,rgba(6,18,40,0.93) 0%,rgba(6,18,40,0.72) 42%,rgba(6,18,40,0.15) 65%,transparent 82%);}
 .page-hero-content{position:relative;z-index:2;height:100%;display:flex;flex-direction:column;justify-content:center;padding:0 10%;}
 .breadcrumb{font-size:11.5px;color:rgba(255,255,255,0.48);letter-spacing:1px;margin-bottom:16px;}
@@ -57,7 +57,7 @@
 .ach:hover{transform:translateY(-7px);box-shadow:0 22px 60px rgba(8,28,58,0.12);}
 .ach:hover::before{transform:scaleX(1);}
 .ach-icon{font-size:36px;margin-bottom:14px;}
-.ach-num{font-family:"Cormorant Garamond",serif;font-size:38px;font-weight:700;background:linear-gradient(135deg,var(--navy),var(--navy2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;line-height:1;}
+.ach-num{font-family:"Cormorant Garamond",serif;font-size:38px;font-weight:700;background:linear-gradient(135deg,var(--navy),var(--navy2));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;line-height:1;}
 .ach-label{font-size:12.5px;color:var(--muted);margin-top:8px;font-weight:600;text-transform:uppercase;letter-spacing:0.5px;}
 
 /* COLLECTION STATS (BITS-style table) */
@@ -220,7 +220,7 @@
 
 <header class="site-header">
   <div class="header-inner">
-    <a href="index.html" class="logo"><img src="GRIET_Logo.png" alt="GRIET" style="width: 300px; height: 80px;"><div class="logo-text"><div class="logo-name"></div><div class="logo-sub"> </div></div></a>
+    <a href="index.html" class="logo"><img src="GRIET_Logo.png" alt="GRIET" style="width: 400px; height: 80px;"><div class="logo-text"><div class="logo-name"></div><div class="logo-sub"> </div></div></a>
     <nav class="site-nav">
       <a href="index.html" class="nav-link">Home</a>
       <a href="about.html" class="nav-link active">About</a>
@@ -243,10 +243,27 @@
 <div class="page-hero">
   <div class="page-hero-bg"></div>
   <div class="page-hero-overlay"></div>
-  <div class="page-hero-content">
-    <div class="breadcrumb"><a href="index.html">Home</a> &middot; About</div>
-    <h1>About Our <em>Library</em></h1>
-    <p>A world-class academic resource centre serving 5,000+ students and 350+ faculty since 1997 &mdash; powered by KOHA, NAAC A++ accredited.</p>
+  <div class="page-hero-content" style="align-items:flex-start; padding:0 8%;">
+
+    <div class="breadcrumb" style="font-size:11px; color:rgba(255,255,255,0.55); letter-spacing:1.5px; text-transform:uppercase; margin-bottom:18px;">
+      <a href="index.html" style="color:rgba(255,255,255,0.55); text-decoration:none;">Home</a>
+      <span style="color:var(--gold); font-size:6px; margin:0 6px;">◆</span>
+      About
+    </div>
+
+    <div style="width:48px; height:2px; background:linear-gradient(90deg,var(--gold),transparent); margin-bottom:20px; border-radius:2px;"></div>
+
+    <h1 style="font-family:'Cormorant Garamond',serif; font-size:clamp(42px,5.5vw,72px); font-weight:700; color:#fff; line-height:1.04; margin-bottom:14px; letter-spacing:-1.5px; text-shadow:0 2px 24px rgba(0,0,0,0.45); text-align:left;">
+      About Our <em style="color:var(--gold); font-style:italic;">Library</em>
+    </h1>
+
+    <p style="font-size:15.5px; color:rgba(255,255,255,0.82); max-width:480px; line-height:1.85; text-shadow:0 1px 12px rgba(0,0,0,0.4); text-align:left; font-weight:300;">
+      A world-class academic resource centre serving
+      <strong style="color:#fff; font-weight:500;">5,000+ students</strong> and
+      <strong style="color:#fff; font-weight:500;">350+ faculty</strong>
+      since 1997 &mdash; powered by KOHA, NAAC A++ accredited.
+    </p>
+
   </div>
 </div>
 
