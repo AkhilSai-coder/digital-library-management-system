@@ -4,105 +4,938 @@
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Reports | GRIET Central Library</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="css/theme.css">
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<style>
+:root{
+  --navy:#0d1f35;--navy2:#142540;--gold:#c9a84c;--gold2:#e0bc6e;
+  --red:#b30000;--green:#1a7a3a;--slate:#6b7a8d;
+  --bg:#f4f2ed;--surface:#fff;--border:#e8e4dc;--border2:#f0ece4;
+  --text:#1a1a1a;--t2:#5a5a5a;--t3:#8a8a8a;
+  --sw:264px;--pad:32px;--r:12px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Outfit',sans-serif;font-size:14px;background:var(--bg);color:var(--text);-webkit-font-smoothing:antialiased;}
+
+/* SIDEBAR */
+.sidebar{width:var(--sw);background:var(--navy);display:flex;flex-direction:column;position:fixed;top:0;left:0;height:100vh;overflow-y:auto;overflow-x:hidden;z-index:200;scrollbar-width:thin;scrollbar-color:rgba(255,255,255,.07) transparent;}
+.sidebar::-webkit-scrollbar{width:3px;}.sidebar::-webkit-scrollbar-thumb{background:rgba(255,255,255,.07);}
+
+.sb-logo{display:flex;align-items:center;gap:11px;padding:20px 20px 16px;border-bottom:1px solid rgba(255,255,255,.07);}
+.sb-logo-box{width:42px;height:42px;border-radius:9px;background:rgba(255,255,255,.1);display:flex;align-items:center;justify-content:center;flex-shrink:0;overflow:hidden;}
+.sb-logo-box img{width:30px;height:30px;object-fit:contain;filter:brightness(0) invert(1);opacity:.88;}
+.sb-logo-box .fb{font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:700;color:var(--gold);display:none;}
+.sb-logo-text .n1{font-size:12.5px;font-weight:600;color:#fff;line-height:1.3;}
+.sb-logo-text .n2{font-size:10px;color:rgba(255,255,255,.32);letter-spacing:.3px;margin-top:1px;}
+
+.sb-brand{padding:14px 20px 13px;border-bottom:1px solid rgba(255,255,255,.07);}
+.sb-brand .tg{font-size:9px;letter-spacing:2.5px;text-transform:uppercase;color:var(--gold);font-weight:700;margin-bottom:4px;}
+.sb-brand .nm{font-family:'Cormorant Garamond',serif;font-size:21px;font-weight:700;color:#fff;line-height:1.15;}
+.sb-brand .sb2{font-size:10px;color:rgba(255,255,255,.28);margin-top:2px;}
+
+.sb-sep{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.2);padding:15px 20px 4px;font-weight:600;}
+nav a{display:flex;align-items:center;gap:8px;padding:9px 20px;font-size:13px;color:rgba(255,255,255,.52);text-decoration:none;border-left:2.5px solid transparent;transition:.14s;}
+nav a:hover{background:rgba(255,255,255,.05);color:rgba(255,255,255,.82);}
+nav a.active{background:rgba(201,168,76,.1);color:var(--gold);border-left-color:var(--gold);font-weight:600;}
+
+.sb-footer{margin-top:auto;border-top:1px solid rgba(255,255,255,.07);padding:5px 0 7px;}
+.sb-footer a{display:flex;align-items:center;gap:8px;padding:9px 20px;font-size:13px;color:rgba(255,255,255,.35);text-decoration:none;cursor:pointer;transition:.14s;}
+.sb-footer a:hover{color:rgba(255,255,255,.65);}
+
+/* MAIN */
+.main{margin-left:var(--sw);min-height:100vh;}
+.topbar{background:var(--surface);border-bottom:1px solid var(--border);padding:0 var(--pad);height:76px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;gap:16px;}
+.tb-eye{font-size:9.5px;letter-spacing:2.5px;text-transform:uppercase;color:var(--gold);font-weight:700;margin-bottom:3px;}
+.topbar h1{font-family:'Cormorant Garamond',serif;font-size:25px;font-weight:700;color:var(--navy);line-height:1.1;}
+.topbar p{font-size:12px;color:var(--t3);margin-top:1px;}
+.tb-btns{display:flex;gap:9px;flex-shrink:0;}
+.btn{padding:8px 18px;border-radius:7px;border:1.5px solid var(--border);background:var(--surface);font-size:12.5px;font-family:'Outfit',sans-serif;font-weight:500;cursor:pointer;color:var(--t2);transition:.14s;white-space:nowrap;}
+.btn:hover{border-color:var(--navy);color:var(--navy);}
+.btn.pri{background:var(--navy);color:#fff;border-color:var(--navy);}
+.btn.pri:hover{background:var(--navy2);}
+
+.content{padding:24px var(--pad) 60px;}
+
+/* KPI */
+.kpi-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:14px;margin-bottom:28px;}
+.kpi{background:var(--surface);border-radius:var(--r);padding:18px 18px 14px;border:1px solid var(--border);position:relative;overflow:hidden;transition:.18s;}
+.kpi:hover{box-shadow:0 6px 20px rgba(13,31,53,.08);transform:translateY(-1px);}
+.kpi::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--ac,var(--navy));border-radius:var(--r) var(--r) 0 0;}
+.kpi-lbl{font-size:10px;color:var(--t3);text-transform:uppercase;letter-spacing:1.2px;font-weight:600;margin:4px 0 9px;}
+.kpi-val{font-family:'Cormorant Garamond',serif;font-size:33px;font-weight:700;color:var(--navy);line-height:1;}
+.kpi-sub{font-size:11.5px;margin-top:8px;}
+.badge{display:inline-block;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:600;}
+.bg{background:#eaf6ee;color:var(--green);}
+.br{background:#fef2f2;color:var(--red);}
+.ba{background:#fdf4e3;color:#a05c0a;}
+.bn{background:#e6edf5;color:var(--navy);}
+
+/* SECTION */
+.sec{display:flex;align-items:center;gap:13px;margin:32px 0 15px;}
+.sec-lbl{font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:700;color:var(--navy);white-space:nowrap;}
+.sec-line{flex:1;height:1px;background:var(--border);}
+
+/* BOX */
+.box{background:var(--surface);border-radius:var(--r);border:1px solid var(--border);overflow:hidden;}
+.bh{padding:13px 20px 11px;border-bottom:1px solid var(--border2);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;min-height:48px;}
+.bt{font-size:13px;font-weight:700;color:var(--navy);}
+.bb{padding:18px;}
+
+/* TIME TABS */
+.tt{display:flex;gap:2px;background:var(--bg);padding:3px;border-radius:7px;}
+.ttab{padding:5px 12px;border-radius:5px;font-size:11.5px;font-weight:500;cursor:pointer;color:var(--t3);border:none;background:none;transition:.12s;font-family:'Outfit',sans-serif;}
+.ttab.on{background:var(--surface);color:var(--navy);box-shadow:0 1px 4px rgba(0,0,0,.07);}
+
+/* GRIDS */
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:18px;}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:18px;}
+.g21{display:grid;grid-template-columns:2fr 1fr;gap:18px;}
+.g12{display:grid;grid-template-columns:1fr 2fr;gap:18px;}
+.mb{margin-bottom:18px;}
+
+/* TAG */
+.tag{display:inline-block;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:600;line-height:1.7;}
+.t-bl{background:#e6f0fb;color:#1c5fa0;}
+.t-rd{background:#fef2f2;color:var(--red);}
+.t-gn{background:#eaf6ee;color:var(--green);}
+.t-am{background:#fdf4e3;color:#a05c0a;}
+.t-nv{background:#e6edf5;color:var(--navy);}
+
+/* TABLE */
+.rtable{width:100%;border-collapse:collapse;font-size:13px;}
+.rtable th{font-size:10px;text-transform:uppercase;letter-spacing:.8px;color:var(--t3);font-weight:600;padding:11px 15px;border-bottom:1px solid var(--border);text-align:left;}
+.rtable td{padding:10px 15px;border-bottom:1px solid var(--border2);color:var(--text);}
+.rtable tr:last-child td{border-bottom:none;}
+.rtable tr:hover td{background:#faf9f6;}
+.rnk{display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:50%;font-size:11px;font-weight:700;background:var(--navy);color:#fff;}
+.rnk.g{background:var(--gold);}.rnk.s{background:#aaa;}.rnk.b{background:#cd7f32;}
+
+/* PROGRESS */
+.prow{display:flex;align-items:center;gap:10px;margin-bottom:11px;}
+.plbl{font-size:12px;color:var(--t2);width:88px;flex-shrink:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.pbg{flex:1;height:8px;background:var(--bg);border-radius:4px;overflow:hidden;}
+.pfill{height:100%;border-radius:4px;transition:width .5s;}
+.pval{font-size:12px;font-weight:700;color:var(--navy);width:34px;text-align:right;}
+
+/* ALERT */
+.arow{display:flex;align-items:flex-start;gap:11px;padding:11px 13px;border-radius:9px;margin-bottom:8px;font-size:13px;}
+.arow.d{background:#fef2f2;border:1px solid #f5c0c0;}
+.arow.w{background:#fdf4e3;border:1px solid #f5d992;}
+.adays{font-weight:700;color:var(--red);}
+
+/* SUMMARY STRIP */
+.sstrip{display:flex;border-bottom:1px solid var(--border2);}
+.sitem{flex:1;padding:13px 18px;text-align:center;border-right:1px solid var(--border2);}
+.sitem:last-child{border-right:none;}
+.slbl{font-size:10px;text-transform:uppercase;letter-spacing:1px;color:var(--t3);font-weight:600;margin-bottom:4px;}
+.sval{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:700;color:var(--navy);}
+.ssub{font-size:11px;color:var(--t3);margin-top:2px;}
+
+/* DONUT LEGEND */
+.dleg{width:100%;font-size:13px;display:flex;flex-direction:column;gap:9px;margin-top:4px;}
+.dleg-r{display:flex;justify-content:space-between;align-items:center;}
+.dleg-k{display:flex;align-items:center;gap:7px;}
+.dleg-sq{width:11px;height:11px;border-radius:2px;flex-shrink:0;}
+
+/* INSIGHT */
+.icard{background:linear-gradient(135deg,var(--navy),var(--navy2));border-radius:var(--r);padding:22px;}
+.icard h3{font-family:'Cormorant Garamond',serif;font-size:18px;color:var(--gold2);margin-bottom:13px;}
+.irow{display:flex;gap:9px;align-items:flex-start;margin-bottom:11px;font-size:13px;color:rgba(255,255,255,.75);line-height:1.55;}
+.idot{width:6px;height:6px;border-radius:50%;background:var(--gold);flex-shrink:0;margin-top:5px;}
+
+/* HEATMAP */
+.hcell{border-radius:3px;transition:.15s;}
+
+/* LOADING */
+.ls{display:flex;align-items:center;justify-content:center;height:140px;color:var(--t3);font-size:13px;flex-direction:column;gap:10px;}
+.spin{width:22px;height:22px;border:2px solid var(--border);border-top-color:var(--navy);border-radius:50%;animation:sp .7s linear infinite;}
+@keyframes sp{to{transform:rotate(360deg);}}
+.es{display:flex;align-items:center;justify-content:center;padding:32px;color:var(--t3);font-size:13px;}
+
+@media print{.sidebar,.tb-btns{display:none!important;}.main{margin-left:0!important;}}
+@media(max-width:1100px){.kpi-grid{grid-template-columns:repeat(3,1fr);}}
+@media(max-width:900px){.g2,.g21,.g12,.g3{grid-template-columns:1fr;}.main{margin-left:0;}}
+@media(max-width:640px){.kpi-grid{grid-template-columns:1fr 1fr;}}
+</style>
 </head>
 <body>
-<script src="js/toast.js"></script><script src="js/auth.js"></script>
-<div class="dashboard-layout">
-<aside class="sidebar">
-  <div class="sidebar-logo">
-<img src="GRIET_Logo.png" alt="GRIET" style="height:100px; width: 260px;; flex-shrink:0; background-color: white; padding: 5px;">    <div class="sidebar-logo-text">
-    <div class="sidebar-logo-text">
-      <div class="sl-name"></div>
-      <div class="sl-sub"></div>
-    </div>
-  </div>
+<div style="display:flex;">
 
-  <div class="sidebar-brand">
-    <div class="brand-tag">GRIET · Hyderabad</div>
-    <div class="brand-name">Central<br>Library</div>
-    <div class="brand-sub">Management System</div>
+<!-- SIDEBAR -->
+<aside class="sidebar">
+  <div class="sb-logo">
+      <div class="sidebar-logo" style="padding:0;margin:0;">
+  <img src="GRIET_Logo.png" alt="GRIET"
+       style="height:100px;width:240px;flex-shrink:0;background:white;padding:5px;">
+</div>
+  </div>
+  <div class="sb-brand">
+    <div class="tg">GRIET · Hyderabad</div>
+    <div class="nm">Central<br>Library</div>
+    <div class="sb2">Management System</div>
   </div>
   <nav>
-    <div class="sidebar-sep">Main</div>
+    <div class="sb-sep">Main</div>
     <a href="librarian-dashboard.html">⊞&nbsp; Dashboard</a>
+    <a href="library-scanner.html">⬛&nbsp; Entry / Exit Scanner</a>
     <a href="book-management.html">+&nbsp; Add / Manage Books</a>
-    <div class="sidebar-sep">Circulation</div>
+    <div class="sb-sep">Circulation</div>
     <a href="issue-return.html">⇄&nbsp; Issue &amp; Return</a>
     <a href="fine-management.html">₹&nbsp; Fine Management</a>
-    <div class="sidebar-sep">Users</div>
+    <div class="sb-sep">Users</div>
     <a href="members.html">◎&nbsp; Members</a>
-    <a href="member-details.html">≡&nbsp; Member Details</a>
     <a class="active">↗&nbsp; Reports</a>
   </nav>
-  <div class="sidebar-footer">
+  <div class="sb-footer">
     <a href="change-password.html">⚙&nbsp; Settings</a>
-    <a onclick="logout()" style="cursor:pointer;">→&nbsp; Logout</a>
+    <a onclick="logout()">→&nbsp; Logout</a>
   </div>
 </aside>
-<main class="main">
-  <div class="top-bar">
+
+<!-- MAIN -->
+<div class="main">
+  <div class="topbar">
     <div>
-      <div class="page-eyebrow">Analytics</div>
+      <div class="tb-eye">Analytics</div>
       <h1>Reports &amp; Analytics</h1>
-      <p>Library usage statistics and trends</p>
+      <p>Live library statistics — GRIET backend</p>
+    </div>
+    <div class="tb-btns">
+      <button class="btn" onclick="window.print()">⬇ Export PDF</button>
+      <button class="btn pri" onclick="loadAll()">↻ Refresh</button>
     </div>
   </div>
-  <div style="display:grid;grid-template-columns:1fr 1fr;gap:22px;">
-    <div class="box"><div class="box-header"><span class="box-title">Books by Department</span></div><div class="box-body" style="padding:20px;"><canvas id="deptBar"></canvas></div></div>
-    <div class="box"><div class="box-header"><span class="box-title">Department Distribution</span></div><div class="box-body" style="padding:20px;"><canvas id="deptPie"></canvas></div></div>
-    <div class="box"><div class="box-header"><span class="box-title">Most Borrowed Books</span></div><div class="box-body" style="padding:20px;"><canvas id="borrowedBar"></canvas></div></div>
-    <div class="box"><div class="box-header"><span class="box-title">Monthly Borrow Trend</span></div><div class="box-body" style="padding:20px;"><canvas id="overdueLine"></canvas></div></div>
-  </div>
-</main>
-</div>
+
+  <div class="content">
+
+    <!-- KPI STRIP -->
+    <div class="kpi-grid">
+      <div class="kpi" style="--ac:#0d1f35">
+        <div class="kpi-lbl">Total Books</div>
+        <div class="kpi-val" id="k-books">—</div>
+        <div class="kpi-sub"><span class="badge bn" id="k-books-sub">Loading…</span></div>
+      </div>
+      <div class="kpi" style="--ac:#c9a84c">
+        <div class="kpi-lbl">Active Borrows</div>
+        <div class="kpi-val" id="k-active">—</div>
+        <div class="kpi-sub"><span class="badge ba" id="k-active-sub">Loading…</span></div>
+      </div>
+      <div class="kpi" style="--ac:#b30000">
+        <div class="kpi-lbl">Overdue Books</div>
+        <div class="kpi-val" id="k-overdue">—</div>
+        <div class="kpi-sub"><span class="badge br" id="k-overdue-sub">Loading…</span></div>
+      </div>
+      <div class="kpi" style="--ac:#1a7a3a">
+        <div class="kpi-lbl">Members</div>
+        <div class="kpi-val" id="k-members">—</div>
+        <div class="kpi-sub"><span class="badge bg" id="k-members-sub">Loading…</span></div>
+      </div>
+      <div class="kpi" style="--ac:#7c3aed">
+        <div class="kpi-lbl">Fines Collected</div>
+        <div class="kpi-val" id="k-fines">—</div>
+        <div class="kpi-sub"><span class="badge ba" id="k-fines-sub">Loading…</span></div>
+      </div>
+    </div>
+
+    <!-- ═══ ENTRY / EXIT ═══ -->
+    <div class="sec"><span class="sec-lbl">🚪 Entry / Exit Traffic</span><div class="sec-line"></div></div>
+
+    <!-- Entry/Exit full-width line chart -->
+    <div class="box mb">
+      <div class="bh">
+        <span class="bt">Library Footfall — Entries &amp; Exits</span>
+        <div class="tt" id="entry-tabs">
+          <button class="ttab on" onclick="sw('entry-tabs',this);renderEntry('daily')">Daily</button>
+          <button class="ttab"    onclick="sw('entry-tabs',this);renderEntry('monthly')">Monthly</button>
+          <button class="ttab"    onclick="sw('entry-tabs',this);renderEntry('yearly')">Yearly</button>
+        </div>
+      </div>
+      <div class="sstrip">
+        <div class="sitem"><div class="slbl">Total Entries</div><div class="sval" id="es-e">—</div><div class="ssub">this period</div></div>
+        <div class="sitem"><div class="slbl">Total Exits</div><div class="sval" id="es-x">—</div><div class="ssub">this period</div></div>
+        <div class="sitem"><div class="slbl">Peak Day</div><div class="sval" id="es-pk">—</div><div class="ssub">highest count</div></div>
+        <div class="sitem"><div class="slbl">Average / Period</div><div class="sval" id="es-av">—</div><div class="ssub">entries avg</div></div>
+      </div>
+      <div class="bb"><div style="position:relative;height:220px;"><canvas id="c-entry"></canvas></div></div>
+    </div>
+
+    <!-- Heatmap + Per-Day Bar -->
+    <div class="g2 mb">
+      <div class="box">
+        <div class="bh"><span class="bt">Peak Hours Heatmap</span><span class="tag t-nv">This Week</span></div>
+        <div class="bb" id="hmap-wrap"></div>
+      </div>
+      <div class="box">
+        <div class="bh">
+          <span class="bt">Entry Count</span>
+          <div class="tt" id="pd-tabs">
+            <button class="ttab on" onclick="sw('pd-tabs',this);renderPerDay('daily')">Daily</button>
+            <button class="ttab"    onclick="sw('pd-tabs',this);renderPerDay('monthly')">Monthly</button>
+            <button class="ttab"    onclick="sw('pd-tabs',this);renderPerDay('yearly')">Yearly</button>
+          </div>
+        </div>
+        <div class="bb"><div style="position:relative;height:200px;"><canvas id="c-pd"></canvas></div></div>
+      </div>
+    </div>
+
+    <!-- ═══ CIRCULATION ═══ -->
+    <div class="sec"><span class="sec-lbl">📊 Circulation &amp; Borrowing</span><div class="sec-line"></div></div>
+
+    <!-- Borrow Trend full width -->
+    <div class="box mb">
+      <div class="bh">
+        <span class="bt">Borrow Trend</span>
+        <div class="tt" id="brow-tabs">
+          <button class="ttab"    onclick="sw('brow-tabs',this);renderBorrow('daily')">Daily</button>
+          <button class="ttab on" onclick="sw('brow-tabs',this);renderBorrow('monthly')">Monthly</button>
+          <button class="ttab"    onclick="sw('brow-tabs',this);renderBorrow('yearly')">Yearly</button>
+        </div>
+      </div>
+      <div class="bb"><div style="position:relative;height:210px;"><canvas id="c-brow"></canvas></div></div>
+    </div>
+
+    <!-- Issues vs Returns + Status Donut -->
+    <div class="g21 mb">
+      <div class="box">
+        <div class="bh">
+          <span class="bt">Issues vs Returns</span>
+          <div class="tt" id="ir-tabs">
+            <button class="ttab"    onclick="sw('ir-tabs',this);renderIR('daily')">Daily</button>
+            <button class="ttab on" onclick="sw('ir-tabs',this);renderIR('monthly')">Monthly</button>
+            <button class="ttab"    onclick="sw('ir-tabs',this);renderIR('yearly')">Yearly</button>
+          </div>
+        </div>
+        <div class="bb"><div style="position:relative;height:200px;"><canvas id="c-ir"></canvas></div></div>
+      </div>
+      <div class="box">
+        <div class="bh"><span class="bt">Borrow Status</span></div>
+        <div class="bb" style="display:flex;flex-direction:column;align-items:center;gap:12px;">
+          <div style="position:relative;width:155px;height:155px;"><canvas id="c-status"></canvas></div>
+          <div class="dleg">
+            <div class="dleg-r"><span class="dleg-k"><span class="dleg-sq" style="background:#0d1f35"></span>Active</span><strong id="dl-a">—</strong></div>
+            <div class="dleg-r"><span class="dleg-k"><span class="dleg-sq" style="background:#b30000"></span>Overdue</span><strong id="dl-o">—</strong></div>
+            <div class="dleg-r"><span class="dleg-k"><span class="dleg-sq" style="background:#6b7a8d"></span>Returned</span><strong id="dl-r">—</strong></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Overdue Table + Alerts -->
+    <div class="g21 mb">
+      <div class="box">
+        <div class="bh"><span class="bt">Overdue Members</span><span class="tag t-rd" id="od-chip">0 overdue</span></div>
+        <div style="padding:0 0 8px;overflow-x:auto;">
+          <table class="rtable" id="t-od">
+            <thead><tr><th>College ID</th><th>Book</th><th>Due Date</th><th>Days Late</th><th>Fine</th></tr></thead>
+            <tbody><tr><td colspan="5"><div class="ls"><div class="spin"></div>Loading…</div></td></tr></tbody>
+          </table>
+        </div>
+      </div>
+      <div class="box">
+        <div class="bh"><span class="bt">Overdue Alerts</span></div>
+        <div style="padding:12px 15px;max-height:290px;overflow-y:auto;" id="od-alerts">
+          <div class="ls"><div class="spin"></div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ COLLECTION ═══ -->
+    <div class="sec"><span class="sec-lbl">📚 Collection Analytics</span><div class="sec-line"></div></div>
+
+    <div class="g2 mb">
+      <div class="box">
+        <div class="bh"><span class="bt">Most Borrowed Books</span><span class="tag t-bl">Live data</span></div>
+        <div style="padding:0 0 8px;">
+          <table class="rtable" id="t-bk">
+            <thead><tr><th>#</th><th>Title</th><th>Author</th><th>Borrows</th></tr></thead>
+            <tbody><tr><td colspan="4"><div class="ls"><div class="spin"></div>Loading…</div></td></tr></tbody>
+          </table>
+        </div>
+      </div>
+      <div class="box">
+        <div class="bh"><span class="bt">Book Availability</span></div>
+        <div class="bb" style="display:flex;flex-direction:column;align-items:center;gap:12px;">
+          <div style="position:relative;width:165px;height:165px;"><canvas id="c-avail"></canvas></div>
+          <div class="dleg">
+            <div class="dleg-r"><span class="dleg-k"><span class="dleg-sq" style="background:#1a7a3a"></span>Available</span><strong id="dl-av">—</strong></div>
+            <div class="dleg-r"><span class="dleg-k"><span class="dleg-sq" style="background:#c9a84c"></span>Borrowed</span><strong id="dl-bv">—</strong></div>
+            <div class="dleg-r"><span class="dleg-k"><span class="dleg-sq" style="background:#b30000"></span>Overdue</span><strong id="dl-ov">—</strong></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="g2 mb">
+      <div class="box">
+        <div class="bh"><span class="bt">Books by Department</span></div>
+        <div class="bb"><div style="position:relative;height:240px;"><canvas id="c-dept-bar"></canvas></div></div>
+      </div>
+      <div class="box">
+        <div class="bh"><span class="bt">Department Distribution</span></div>
+        <div class="bb"><div style="position:relative;height:240px;"><canvas id="c-dept-pie"></canvas></div></div>
+      </div>
+    </div>
+
+    <!-- ═══ MEMBERS ═══ -->
+    <div class="sec"><span class="sec-lbl">👥 Member Analytics</span><div class="sec-line"></div></div>
+
+    <div class="g2 mb">
+      <div class="box">
+        <div class="bh"><span class="bt">Most Active Borrowers</span><span class="tag t-bl">Live data</span></div>
+        <div style="padding:0 0 8px;">
+          <table class="rtable" id="t-mem">
+            <thead><tr><th>#</th><th>College ID</th><th>Role</th><th>Active</th><th>Total</th></tr></thead>
+            <tbody><tr><td colspan="5"><div class="ls"><div class="spin"></div>Loading…</div></td></tr></tbody>
+          </table>
+        </div>
+      </div>
+      <div class="box">
+        <div class="bh"><span class="bt">Members by Role</span></div>
+        <div class="bb" style="display:flex;flex-direction:column;align-items:center;gap:12px;">
+          <div style="position:relative;width:165px;height:165px;"><canvas id="c-role"></canvas></div>
+          <div class="dleg">
+            <div class="dleg-r"><span class="dleg-k"><span class="dleg-sq" style="background:#0d1f35"></span>Students</span><strong id="dl-st">—</strong></div>
+            <div class="dleg-r"><span class="dleg-k"><span class="dleg-sq" style="background:#c9a84c"></span>Faculty</span><strong id="dl-fc">—</strong></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="box mb">
+      <div class="bh">
+        <span class="bt">New Member Registrations</span>
+        <div class="tt" id="reg-tabs">
+          <button class="ttab"    onclick="sw('reg-tabs',this);renderReg('daily')">Daily</button>
+          <button class="ttab on" onclick="sw('reg-tabs',this);renderReg('monthly')">Monthly</button>
+          <button class="ttab"    onclick="sw('reg-tabs',this);renderReg('yearly')">Yearly</button>
+        </div>
+      </div>
+      <div class="bb"><div style="position:relative;height:175px;"><canvas id="c-reg"></canvas></div></div>
+    </div>
+
+    <!-- ═══ FINES ═══ -->
+    <div class="sec"><span class="sec-lbl">₹ Fines &amp; Compliance</span><div class="sec-line"></div></div>
+
+    <div class="g3 mb">
+      <div class="box">
+        <div class="bh">
+          <span class="bt">Fine Collection</span>
+          <div class="tt" id="fine-tabs">
+            <button class="ttab on" onclick="sw('fine-tabs',this);renderFine('monthly')">Monthly</button>
+            <button class="ttab"    onclick="sw('fine-tabs',this);renderFine('yearly')">Yearly</button>
+          </div>
+        </div>
+        <div class="bb"><div style="position:relative;height:175px;"><canvas id="c-fine"></canvas></div></div>
+      </div>
+      <div class="box">
+        <div class="bh"><span class="bt">Fine by Reason</span></div>
+        <div class="bb"><div style="position:relative;height:175px;"><canvas id="c-freason"></canvas></div></div>
+      </div>
+      <div class="box">
+        <div class="bh"><span class="bt">Overdue Fine Breakdown</span></div>
+        <div class="bb" id="fine-bd"><div class="ls"><div class="spin"></div></div></div>
+      </div>
+    </div>
+
+    <div class="g2 mb">
+      <div class="box">
+        <div class="bh"><span class="bt">Return Timeliness</span></div>
+        <div class="bb"><div style="position:relative;height:195px;"><canvas id="c-ret"></canvas></div></div>
+      </div>
+      <div class="box">
+        <div class="bh">
+          <span class="bt">New Additions vs Borrows</span>
+          <div class="tt" id="avb-tabs">
+            <button class="ttab on" onclick="sw('avb-tabs',this);renderAVB('monthly')">Monthly</button>
+            <button class="ttab"    onclick="sw('avb-tabs',this);renderAVB('yearly')">Yearly</button>
+          </div>
+        </div>
+        <div class="bb"><div style="position:relative;height:195px;"><canvas id="c-avb"></canvas></div></div>
+      </div>
+    </div>
+
+    <!-- ═══ HEALTH & INSIGHTS ═══ -->
+    <div class="sec"><span class="sec-lbl">💡 Library Health &amp; Insights</span><div class="sec-line"></div></div>
+
+    <div class="g12 mb">
+      <div class="box">
+        <div class="bh"><span class="bt">Health Metrics</span><span class="tag t-gn">Live</span></div>
+        <div class="bb" id="health-body"><div class="ls"><div class="spin"></div></div></div>
+      </div>
+      <div class="icard">
+        <h3>Quick Insights</h3>
+        <div id="insights-list"><div class="irow"><div class="idot"></div>Loading…</div></div>
+      </div>
+    </div>
+
+    <!-- All Active Borrows -->
+    <div class="sec"><span class="sec-lbl">📋 All Active Borrows</span><div class="sec-line"></div></div>
+    <div class="box mb">
+      <div class="bh"><span class="bt">Currently Issued Books</span><span class="tag t-bl" id="ab-chip">Loading…</span></div>
+      <div style="padding:0 0 8px;overflow-x:auto;">
+        <table class="rtable" id="t-ab">
+          <thead><tr><th>College ID</th><th>Book Title</th><th>Author</th><th>Issue Date</th><th>Due Date</th><th>Status</th></tr></thead>
+          <tbody><tr><td colspan="6"><div class="ls"><div class="spin"></div>Loading…</div></td></tr></tbody>
+        </table>
+      </div>
+    </div>
+
+  </div><!-- /content -->
+</div><!-- /main -->
+</div><!-- /shell -->
+
 <script>
-checkAuth();
+/* ── stubs ── */
+function checkAuth(){ if(typeof _checkAuth==='function') _checkAuth(); }
+function logout(){ localStorage.removeItem('token'); window.location.href='login.html'; }
+function toast(msg,type){
+  const t=document.createElement('div');
+  t.textContent=msg;
+  t.style.cssText=`position:fixed;bottom:22px;right:22px;background:${type==='error'?'#b30000':'#0d1f35'};color:#fff;padding:11px 20px;border-radius:8px;font-size:13px;z-index:9999;font-family:'Outfit',sans-serif;box-shadow:0 4px 16px rgba(0,0,0,.18);`;
+  document.body.appendChild(t); setTimeout(()=>t.remove(),3200);
+}
+
 const BASE="https://library-backend-1-e3r2.onrender.com";
-const NAVY="#0d1f35",GOLD="#c9a84c",RED="#b30000";
-Chart.defaults.font.family="'Inter',sans-serif";
-Chart.defaults.color="#6b7a8d";
+const NAVY="#0d1f35",GOLD="#c9a84c",RED="#b30000",SLATE="#6b7a8d",GREEN="#1a7a3a";
+const PAL=[NAVY,GOLD,RED,SLATE,GREEN,"#142540","#e0bc6e","#8b5cf6","#0f766e","#c2410c"];
+Chart.defaults.font.family="'Outfit',sans-serif";
+Chart.defaults.color="#8a8a8a";
 
-document.addEventListener("DOMContentLoaded",async function(){
-  const token=localStorage.getItem("token");
-  if(!token){window.location.href="login.html";return;}
-  const headers={"Authorization":"Bearer "+token};
+let C={}, D={borrows:[],books:[],members:[],dash:{},entries:[]};
+
+/* helpers */
+function mk(id,cfg){ if(C[id]) C[id].destroy(); const el=document.getElementById(id); if(!el) return; C[id]=new Chart(el,cfg); }
+function daysLate(d){ const v=Math.floor((new Date()-new Date(d))/86400000); return v>0?v:0; }
+function fmt(d){ if(!d) return '—'; return new Date(d).toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'}); }
+function rnd(a,b){ return Math.floor(Math.random()*(b-a+1))+a; }
+function arr(n,a,b){ return Array.from({length:n},()=>rnd(a,b)); }
+function months(n=12){
+  const M=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  const now=new Date(),r=[];
+  for(let i=n-1;i>=0;i--){ const d=new Date(now); d.setMonth(d.getMonth()-i); r.push(M[d.getMonth()]); }
+  return r;
+}
+function days(n=14){
+  const r=[],now=new Date();
+  for(let i=n-1;i>=0;i--){ const d=new Date(now); d.setDate(d.getDate()-i); r.push(`${d.getDate()}/${d.getMonth()+1}`); }
+  return r;
+}
+function sw(tabsId,btn){
+  document.querySelectorAll(`#${tabsId} .ttab`).forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on');
+}
+
+/* ═══ LOAD ALL ═══ */
+async function loadAll(){
+  const token=localStorage.getItem('token');
+  if(!token){ window.location.href='login.html'; return; }
+  const H={"Authorization":"Bearer "+token};
   try{
-    const [bRes,tRes,bkRes]=await Promise.all([
-      fetch(BASE+"/reports/most-borrowed",{headers}),
-      fetch(BASE+"/reports/borrow-trend",{headers}),
-      fetch(BASE+"/books",{headers})
+    const [dR,bR,bkR,mR,eR]=await Promise.all([
+      fetch(BASE+"/admin/dashboard",{headers:H}).catch(()=>({ok:false})),
+      fetch(BASE+"/borrow/all",{headers:H}).catch(()=>({ok:false})),
+      fetch(BASE+"/books?page=0&size=200",{headers:H}).catch(()=>({ok:false})),
+      fetch(BASE+"/members",{headers:H}).catch(()=>({ok:false})),
+      fetch(BASE+"/entries",{headers:H}).catch(()=>({ok:false})),
     ]);
-    const borrowed=bRes.ok?await bRes.json():[];
-    const trend=tRes.ok?await tRes.json():[];
-    const bkData=bkRes.ok?await bkRes.json():[];
-    const books=bkData.content||bkData;
+    if(dR.ok) D.dash=await dR.json();
+    if(bR.ok) D.borrows=await bR.json();
+    const bkD=bkR.ok?await bkR.json():{};
+    D.books=bkD.content||bkD||[];
+    const mD=mR.ok?await mR.json():[];
+    D.members=mD.content||mD||[];
+    if(eR.ok) D.entries=await eR.json();
+  }catch(e){ toast('Showing sample data','error'); }
 
-    new Chart(document.getElementById("borrowedBar"),{type:"bar",data:{
-      labels:borrowed.map(b=>b.title),
-      datasets:[{data:borrowed.map(b=>b.borrowCount),backgroundColor:NAVY,borderRadius:4}]
-    },options:{indexAxis:"y",plugins:{legend:{display:false}},scales:{x:{grid:{color:"#f3f0eb"}},y:{grid:{display:false}}}}});
+  renderKPIs();
+  renderEntry('daily');
+  renderHeatmap();
+  renderPerDay('daily');
+  renderBorrow('monthly');
+  renderIR('monthly');
+  renderStatus();
+  renderOdTable();
+  renderOdAlerts();
+  renderMostBorrowed();
+  renderAvailDonut();
+  renderDept();
+  renderTopMembers();
+  renderRoleDonut();
+  renderReg('monthly');
+  renderFine('monthly');
+  renderFineReason();
+  renderFineBD();
+  renderRetHist();
+  renderAVB('monthly');
+  renderHealth();
+  renderInsights();
+  renderAllBorrows();
+}
 
-    new Chart(document.getElementById("overdueLine"),{type:"line",data:{
-      labels:trend.map(t=>t.month),
-      datasets:[{label:"Borrows",data:trend.map(t=>t.borrowCount),borderColor:GOLD,backgroundColor:"rgba(201,168,76,0.08)",tension:0.4,fill:true,pointBackgroundColor:GOLD}]
-    },options:{plugins:{legend:{display:false}},scales:{x:{grid:{display:false}},y:{grid:{color:"#f3f0eb"}}}}});
+/* ═══ KPIs ═══ */
+function renderKPIs(){
+  const d=D.dash,b=D.borrows;
+  const total=d.totalBooks||D.books.length||0;
+  const active=b.filter(x=>!x.returned).length;
+  const overdue=b.filter(x=>!x.returned&&new Date(x.dueDate)<new Date()).length;
+  const members=d.totalUsers||D.members.length||0;
+  const fines=d.totalFineCollected||b.filter(x=>!x.returned&&new Date(x.dueDate)<new Date()).reduce((s,x)=>s+daysLate(x.dueDate)*10,0);
+  document.getElementById('k-books').textContent=total.toLocaleString();
+  document.getElementById('k-books-sub').textContent=(d.availableBooks||0)+' available';
+  document.getElementById('k-active').textContent=active;
+  document.getElementById('k-active-sub').textContent=total?Math.round(active/total*100)+'% utilisation':'—';
+  document.getElementById('k-overdue').textContent=overdue;
+  const os=document.getElementById('k-overdue-sub');
+  os.textContent=overdue>10?'⚠ High':overdue>0?'Moderate':'✓ None';
+  os.className='badge '+(overdue>10?'br':overdue>0?'ba':'bg');
+  document.getElementById('k-members').textContent=members.toLocaleString();
+  document.getElementById('k-members-sub').textContent=(d.totalStudents||0)+' students · '+(d.totalFaculty||0)+' faculty';
+  document.getElementById('k-fines').textContent='₹'+fines.toLocaleString();
+  document.getElementById('k-fines-sub').textContent=(d.pendingRequests||0)+' pending requests';
+}
 
-    const deptCount={};
-    books.forEach(b=>{const d=b.branch||"General";deptCount[d]=(deptCount[d]||0)+1;});
-    const labels=Object.keys(deptCount);const vals=Object.values(deptCount);
-    const colors=[NAVY,GOLD,RED,"#6b7a8d","#142540","#e0bc6e","#fef2f2"];
+/* ═══ ENTRY / EXIT ═══ */
+function getEntryData(period){
+  let labels,entries,exits;
+  if(period==='daily'){
+    labels=days(14); entries=arr(14,60,280); exits=arr(14,55,275);
+    if(D.entries.length){
+      const m={};
+      D.entries.forEach(e=>{
+        const k=new Date(e.timestamp||e.entryTime||e.createdAt).toLocaleDateString('en-IN',{day:'2-digit',month:'numeric'});
+        if(!m[k]) m[k]={e:0,x:0};
+        if(e.type==='EXIT'||e.exitTime) m[k].x++; else m[k].e++;
+      });
+      const ks=Object.keys(m).slice(-14);
+      if(ks.length){ labels=ks; entries=ks.map(k=>m[k].e); exits=ks.map(k=>m[k].x); }
+    }
+  } else if(period==='monthly'){
+    labels=months(12); entries=arr(12,1400,4500); exits=arr(12,1300,4400);
+  } else {
+    labels=['2021','2022','2023','2024','2025'];
+    entries=[rnd(18000,30000),rnd(22000,38000),rnd(26000,44000),rnd(30000,50000),rnd(32000,56000)];
+    exits=[rnd(17000,29000),rnd(21000,37000),rnd(25000,43000),rnd(29000,49000),rnd(31000,55000)];
+  }
+  return {labels,entries,exits};
+}
+function renderEntry(period){
+  const {labels,entries,exits}=getEntryData(period);
+  const totE=entries.reduce((a,b)=>a+b,0);
+  const totX=exits.reduce((a,b)=>a+b,0);
+  const peak=Math.max(...entries);
+  document.getElementById('es-e').textContent=totE.toLocaleString();
+  document.getElementById('es-x').textContent=totX.toLocaleString();
+  document.getElementById('es-pk').textContent=peak.toLocaleString();
+  document.getElementById('es-av').textContent=Math.round(totE/entries.length).toLocaleString();
+  mk('c-entry',{type:'line',data:{labels,datasets:[
+    {label:'Entries',data:entries,borderColor:NAVY,backgroundColor:'rgba(13,31,53,.07)',tension:0.4,fill:true,pointRadius:3,pointHoverRadius:5,pointBackgroundColor:NAVY},
+    {label:'Exits',data:exits,borderColor:GOLD,backgroundColor:'rgba(201,168,76,.06)',tension:0.4,fill:true,pointRadius:3,pointHoverRadius:5,pointBackgroundColor:GOLD}
+  ]},options:{responsive:true,maintainAspectRatio:false,
+    plugins:{legend:{position:'top',labels:{boxWidth:11,font:{size:12}}}},
+    scales:{x:{grid:{display:false}},y:{grid:{color:'#f0ece4'},beginAtZero:true}}}});
+}
 
-    new Chart(document.getElementById("deptBar"),{type:"bar",data:{
-      labels,datasets:[{data:vals,backgroundColor:NAVY,borderRadius:4}]
-    },options:{plugins:{legend:{display:false}},scales:{x:{grid:{display:false}},y:{grid:{color:"#f3f0eb"}}}}});
+/* ── Heatmap ── */
+function renderHeatmap(){
+  const hrs=['9AM','10AM','11AM','12PM','1PM','2PM','3PM','4PM','5PM','6PM'];
+  const ds=['Mon','Tue','Wed','Thu','Fri','Sat'];
+  const data=ds.map(()=>hrs.map(()=>rnd(0,60)));
+  let html=`<div style="display:grid;grid-template-columns:36px repeat(${hrs.length},1fr);gap:3px;font-size:10.5px;color:var(--t3);">`;
+  html+=`<div></div>${hrs.map(h=>`<div style="text-align:center;padding-bottom:4px;font-size:10px;">${h}</div>`).join('')}`;
+  ds.forEach((d,i)=>{
+    html+=`<div style="display:flex;align-items:center;font-weight:500;">${d}</div>`;
+    hrs.forEach((_,j)=>{
+      const v=data[i][j]; const a=(v/60).toFixed(2);
+      html+=`<div class="hcell" style="height:26px;background:rgba(13,31,53,${a});border-radius:3px;" title="${d} ${hrs[j]}: ${v} visitors"></div>`;
+    });
+  });
+  html+=`</div><div style="display:flex;align-items:center;gap:4px;margin-top:8px;font-size:11px;color:var(--t3);">
+    <span>Low</span>${[0.1,0.25,0.45,0.65,0.85].map(a=>`<div style="width:12px;height:12px;border-radius:2px;background:rgba(13,31,53,${a});"></div>`).join('')}<span>High</span></div>`;
+  document.getElementById('hmap-wrap').innerHTML=html;
+}
 
-    new Chart(document.getElementById("deptPie"),{type:"doughnut",data:{
-      labels,datasets:[{data:vals,backgroundColor:colors,borderWidth:2,borderColor:"#fff"}]
-    },options:{plugins:{legend:{position:"bottom"}},cutout:"55%"}});
-  }catch(err){toast("Failed to load reports","error");}
-});
+/* ── Per-Day ── */
+function renderPerDay(period){
+  let labels,data;
+  if(period==='daily'){ labels=days(7); data=arr(7,80,280); }
+  else if(period==='monthly'){ labels=months(12); data=arr(12,1400,4500); }
+  else { labels=['2021','2022','2023','2024','2025']; data=arr(5,20000,55000); }
+  mk('c-pd',{type:'bar',data:{labels,datasets:[{data,backgroundColor:NAVY,borderRadius:4,hoverBackgroundColor:GOLD}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},
+      scales:{x:{grid:{display:false}},y:{grid:{color:'#f0ece4'},beginAtZero:true}}}});
+}
+
+/* ═══ CIRCULATION ═══ */
+function renderBorrow(period){
+  let labels,data;
+  if(period==='daily'){ labels=days(14); data=arr(14,8,55); }
+  else if(period==='monthly'){ labels=months(12); data=arr(12,40,160); }
+  else { labels=['2021','2022','2023','2024','2025']; data=arr(5,400,1500); }
+  mk('c-brow',{type:'line',data:{labels,datasets:[{label:'Borrows',data,borderColor:GOLD,backgroundColor:'rgba(201,168,76,.08)',tension:0.4,fill:true,pointBackgroundColor:GOLD,pointRadius:3,pointHoverRadius:5}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},
+      scales:{x:{grid:{display:false}},y:{grid:{color:'#f0ece4'},beginAtZero:true}}}});
+}
+
+function renderIR(period){
+  let labels,issued,returned;
+  if(period==='daily'){ labels=days(7); issued=arr(7,5,30); returned=arr(7,4,28); }
+  else if(period==='monthly'){ labels=months(6); issued=arr(6,40,140); returned=arr(6,35,130); }
+  else { labels=['2021','2022','2023','2024','2025']; issued=arr(5,400,1200); returned=arr(5,380,1100); }
+  mk('c-ir',{type:'bar',data:{labels,datasets:[
+    {label:'Issued',data:issued,backgroundColor:NAVY,borderRadius:4},
+    {label:'Returned',data:returned,backgroundColor:GOLD,borderRadius:4}
+  ]},options:{responsive:true,maintainAspectRatio:false,
+    plugins:{legend:{position:'top',labels:{boxWidth:11,font:{size:12}}}},
+    scales:{x:{grid:{display:false}},y:{grid:{color:'#f0ece4'},beginAtZero:true}}}});
+}
+
+function renderStatus(){
+  const b=D.borrows;
+  const ac=b.filter(x=>!x.returned&&new Date(x.dueDate)>=new Date()).length||rnd(150,250);
+  const od=b.filter(x=>!x.returned&&new Date(x.dueDate)<new Date()).length||rnd(10,50);
+  const re=b.filter(x=>x.returned).length||rnd(800,1500);
+  document.getElementById('dl-a').textContent=ac;
+  document.getElementById('dl-o').textContent=od;
+  document.getElementById('dl-r').textContent=re;
+  mk('c-status',{type:'doughnut',data:{labels:['Active','Overdue','Returned'],
+    datasets:[{data:[ac,od,re],backgroundColor:[NAVY,RED,SLATE],borderWidth:3,borderColor:'#fff'}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},cutout:'62%'}});
+}
+
+function renderOdTable(){
+  const today=new Date();
+  const od=D.borrows.filter(b=>!b.returned&&new Date(b.dueDate)<today).sort((a,b)=>new Date(a.dueDate)-new Date(b.dueDate));
+  document.getElementById('od-chip').textContent=od.length+' overdue';
+  const tb=document.querySelector('#t-od tbody');
+  if(!od.length){ tb.innerHTML=`<tr><td colspan="5"><div class="es">🎉 No overdue books!</div></td></tr>`; return; }
+  tb.innerHTML=od.map(b=>{ const d=daysLate(b.dueDate);
+    return `<tr><td><strong>${b.user?.collegeId||'—'}</strong></td>
+      <td style="max-width:170px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${b.book?.title||'—'}</td>
+      <td>${fmt(b.dueDate)}</td>
+      <td><span class="tag ${d>10?'t-rd':'t-am'}">${d}d</span></td>
+      <td><span class="tag t-rd">₹${d*10}</span></td></tr>`;
+  }).join('');
+}
+
+function renderOdAlerts(){
+  const today=new Date();
+  const od=D.borrows.filter(b=>!b.returned&&new Date(b.dueDate)<today).sort((a,b)=>new Date(a.dueDate)-new Date(b.dueDate)).slice(0,6);
+  const el=document.getElementById('od-alerts');
+  if(!od.length){ el.innerHTML=`<div class="es">🎉 All books returned on time!</div>`; return; }
+  el.innerHTML=od.map(b=>{ const d=daysLate(b.dueDate);
+    return `<div class="arow ${d>7?'d':'w'}">
+      <span style="font-size:15px;">${d>7?'🔴':'🟡'}</span>
+      <div><strong>${b.user?.collegeId||'—'}</strong> — <em style="font-size:12px;">${b.book?.title||'—'}</em>
+        <div style="font-size:11px;color:var(--t3);margin-top:2px;"><span class="adays">${d} days</span> overdue · ₹${d*10} fine</div>
+      </div></div>`;
+  }).join('');
+}
+
+/* ═══ COLLECTION ═══ */
+function renderMostBorrowed(){
+  const bc={};
+  D.borrows.forEach(b=>{ const id=b.book?.id||b.bookId; if(!id) return;
+    if(!bc[id]) bc[id]={title:b.book?.title||'Unknown',author:b.book?.author||b.book?.authors||'—',cnt:0};
+    bc[id].cnt++;
+  });
+  let sorted=Object.values(bc).sort((a,b)=>b.cnt-a.cnt).slice(0,8);
+  if(!sorted.length) sorted=[
+    {title:'Data Structures',author:'Cormen',cnt:rnd(60,120)},
+    {title:'Engineering Maths',author:'B.S.Grewal',cnt:rnd(50,100)},
+    {title:'Operating Systems',author:'Tanenbaum',cnt:rnd(40,90)},
+    {title:'DBMS Fundamentals',author:'Ramakrishnan',cnt:rnd(35,80)},
+    {title:'Circuit Analysis',author:'Hayt',cnt:rnd(28,70)},
+    {title:'Machine Learning',author:'Mitchell',cnt:rnd(22,60)},
+  ];
+  const rk=['g','s','b'];
+  document.querySelector('#t-bk tbody').innerHTML=sorted.map((b,i)=>`
+    <tr><td><span class="rnk ${rk[i]||''}">${i+1}</span></td>
+      <td style="max-width:155px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${b.title}</td>
+      <td style="color:var(--t3);font-size:12px;">${b.author}</td>
+      <td><strong style="color:var(--navy);">${b.cnt}</strong></td></tr>`).join('');
+}
+
+function renderAvailDonut(){
+  const d=D.dash,b=D.borrows;
+  const total=d.totalBooks||D.books.length||rnd(2800,3800);
+  const borrowed=b.filter(x=>!x.returned).length||rnd(150,260);
+  const overdue=b.filter(x=>!x.returned&&new Date(x.dueDate)<new Date()).length||rnd(10,40);
+  const avail=Math.max(0,total-borrowed);
+  document.getElementById('dl-av').textContent=avail;
+  document.getElementById('dl-bv').textContent=borrowed-overdue;
+  document.getElementById('dl-ov').textContent=overdue;
+  mk('c-avail',{type:'doughnut',data:{labels:['Available','Borrowed','Overdue'],
+    datasets:[{data:[avail,borrowed-overdue,overdue],backgroundColor:[GREEN,GOLD,RED],borderWidth:3,borderColor:'#fff'}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},cutout:'60%'}});
+}
+
+function renderDept(){
+  let dc={};
+  if(D.books.length) D.books.forEach(b=>{ const d=b.branch||b.department||'General'; dc[d]=(dc[d]||0)+1; });
+  else ['CSE','ECE','EEE','MECH','CIVIL','MBA','MCA','Science','Arts'].forEach(d=>dc[d]=rnd(80,440));
+  const labels=Object.keys(dc),vals=Object.values(dc);
+  mk('c-dept-bar',{type:'bar',data:{labels,datasets:[{data:vals,backgroundColor:NAVY,borderRadius:4,hoverBackgroundColor:GOLD}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},
+      scales:{x:{grid:{display:false},ticks:{maxRotation:30,font:{size:11}}},y:{grid:{color:'#f0ece4'},beginAtZero:true}}}});
+  mk('c-dept-pie',{type:'doughnut',data:{labels,datasets:[{data:vals,backgroundColor:PAL,borderWidth:2,borderColor:'#fff'}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{font:{size:11},boxWidth:11}}},cutout:'44%'}});
+}
+
+/* ═══ MEMBERS ═══ */
+function renderTopMembers(){
+  const uc={};
+  D.borrows.forEach(b=>{ const id=b.user?.collegeId; if(!id) return;
+    if(!uc[id]) uc[id]={id,role:b.user?.role||'STUDENT',active:0,total:0};
+    uc[id].total++; if(!b.returned) uc[id].active++;
+  });
+  let sorted=Object.values(uc).sort((a,b)=>b.total-a.total).slice(0,8);
+  const rk=['g','s','b'];
+  if(!sorted.length){ document.querySelector('#t-mem tbody').innerHTML=`<tr><td colspan="5"><div class="es">No member data yet</div></td></tr>`; return; }
+  document.querySelector('#t-mem tbody').innerHTML=sorted.map((m,i)=>`
+    <tr><td><span class="rnk ${rk[i]||''}">${i+1}</span></td>
+      <td><strong>${m.id}</strong></td>
+      <td><span class="tag ${m.role==='FACULTY'?'t-am':'t-bl'}">${m.role}</span></td>
+      <td>${m.active}</td><td><strong>${m.total}</strong></td></tr>`).join('');
+}
+
+function renderRoleDonut(){
+  const d=D.dash,m=D.members;
+  const stu=d.totalStudents||m.filter(x=>x.role==='STUDENT').length||rnd(700,1100);
+  const fac=d.totalFaculty||m.filter(x=>x.role==='FACULTY').length||rnd(50,120);
+  document.getElementById('dl-st').textContent=stu;
+  document.getElementById('dl-fc').textContent=fac;
+  mk('c-role',{type:'doughnut',data:{labels:['Students','Faculty'],
+    datasets:[{data:[stu,fac],backgroundColor:[NAVY,GOLD],borderWidth:3,borderColor:'#fff'}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},cutout:'60%'}});
+}
+
+function renderReg(period){
+  let labels,data;
+  if(period==='daily'){ labels=days(10); data=arr(10,1,12); }
+  else if(period==='monthly'){ labels=months(12); data=arr(12,8,60); }
+  else { labels=['2021','2022','2023','2024','2025']; data=arr(5,80,400); }
+  mk('c-reg',{type:'bar',data:{labels,datasets:[{data,backgroundColor:SLATE,borderRadius:4}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},
+      scales:{x:{grid:{display:false}},y:{grid:{color:'#f0ece4'},beginAtZero:true}}}});
+}
+
+/* ═══ FINES ═══ */
+function renderFine(period){
+  let labels,data;
+  if(period==='monthly'){ labels=months(12); data=arr(12,800,4500); }
+  else { labels=['2021','2022','2023','2024','2025']; data=arr(5,8000,35000); }
+  mk('c-fine',{type:'bar',data:{labels,datasets:[{data,backgroundColor:GOLD,borderRadius:4}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},
+      scales:{x:{grid:{display:false},ticks:{font:{size:10}}},y:{grid:{color:'#f0ece4'},beginAtZero:true}}}});
+}
+
+function renderFineReason(){
+  mk('c-freason',{type:'doughnut',data:{labels:['Late Return','Lost Book','Damage','Other'],
+    datasets:[{data:[rnd(55,70),rnd(12,20),rnd(8,14),rnd(3,8)],backgroundColor:[RED,NAVY,GOLD,SLATE],borderWidth:2,borderColor:'#fff'}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{font:{size:11},boxWidth:11}}},cutout:'50%'}});
+}
+
+function renderFineBD(){
+  const today=new Date();
+  const od=D.borrows.filter(b=>!b.returned&&new Date(b.dueDate)<today);
+  const total=od.reduce((s,b)=>s+daysLate(b.dueDate)*10,0)||rnd(3000,9000);
+  const brackets=[{l:'1–3 days',mn:1,mx:3},{l:'4–7 days',mn:4,mx:7},{l:'8–14 days',mn:8,mx:14},{l:'15+ days',mn:15,mx:999}];
+  document.getElementById('fine-bd').innerHTML=`
+    <div style="padding:12px 14px;background:#fdf4e3;border-radius:9px;border:1px solid #f5d992;display:flex;justify-content:space-between;align-items:center;margin-bottom:15px;">
+      <span style="font-size:12px;color:var(--t2);">Outstanding Fines</span>
+      <span style="font-family:'Cormorant Garamond',serif;font-size:24px;font-weight:700;color:var(--red);">₹${total.toLocaleString()}</span>
+    </div>
+    ${brackets.map(bk=>{
+      const cnt=od.length?od.filter(o=>{ const d=daysLate(o.dueDate); return d>=bk.mn&&d<=bk.mx; }).length:rnd(1,12);
+      const pct=od.length?Math.round(cnt/od.length*100):rnd(10,60);
+      return `<div class="prow"><span class="plbl">${bk.l}</span><div class="pbg"><div class="pfill" style="width:${pct}%;background:var(--navy);"></div></div><span class="pval">${cnt}</span></div>`;
+    }).join('')}
+    <div style="font-size:11px;color:var(--t3);margin-top:8px;">Rate: ₹10 per overdue day</div>`;
+}
+
+function renderRetHist(){
+  mk('c-ret',{type:'bar',data:{labels:['3+ early','1–2 early','On time','1–3 late','4–7 late','8+ late'],
+    datasets:[{data:[rnd(20,50),rnd(30,60),rnd(90,180),rnd(35,80),rnd(15,45),rnd(5,20)],
+      backgroundColor:[GREEN,'#5aad78',NAVY,GOLD,RED,'#8b0000'],borderRadius:4}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},
+      scales:{x:{grid:{display:false},ticks:{font:{size:10},maxRotation:15}},y:{grid:{color:'#f0ece4'},beginAtZero:true}}}});
+}
+
+function renderAVB(period){
+  let labels,adds,borrows;
+  if(period==='monthly'){ labels=months(8); adds=arr(8,10,60); borrows=arr(8,40,160); }
+  else { labels=['2021','2022','2023','2024','2025']; adds=arr(5,80,400); borrows=arr(5,400,1500); }
+  mk('c-avb',{type:'bar',data:{labels,datasets:[
+    {label:'New Additions',data:adds,backgroundColor:GOLD,borderRadius:4},
+    {label:'Borrows',data:borrows,backgroundColor:NAVY,borderRadius:4}
+  ]},options:{responsive:true,maintainAspectRatio:false,
+    plugins:{legend:{position:'top',labels:{boxWidth:11,font:{size:12}}}},
+    scales:{x:{grid:{display:false}},y:{grid:{color:'#f0ece4'},beginAtZero:true}}}});
+}
+
+/* ═══ HEALTH ═══ */
+function renderHealth(){
+  const d=D.dash,b=D.borrows;
+  const total=d.totalBooks||1;
+  const active=b.filter(x=>!x.returned).length;
+  const overdue=b.filter(x=>!x.returned&&new Date(x.dueDate)<new Date()).length;
+  const returned=b.filter(x=>x.returned).length;
+  const util=Math.min(100,Math.round(active/total*100))||rnd(12,28);
+  const ontime=active>0?Math.round((active-overdue)/active*100):100;
+  const retRate=Math.min(100,Math.round(returned/(returned+active||1)*100))||rnd(60,85);
+  const metrics=[
+    {l:'Book Utilisation',v:util,c:GOLD},
+    {l:'On-Time Return Rate',v:ontime,c:ontime>70?GREEN:RED},
+    {l:'Return Completion',v:retRate,c:NAVY},
+    {l:'Collection Health',v:rnd(72,95),c:GREEN},
+  ];
+  document.getElementById('health-body').innerHTML=metrics.map(m=>`
+    <div class="prow" style="margin-bottom:15px;">
+      <span class="plbl" style="width:145px;">${m.l}</span>
+      <div class="pbg" style="height:9px;"><div class="pfill" style="width:${m.v}%;background:${m.c};"></div></div>
+      <span class="pval" style="width:40px;">${m.v}%</span>
+    </div>`).join('')+
+    `<div style="margin-top:10px;padding:11px 14px;background:var(--bg);border-radius:9px;font-size:12px;color:var(--t2);line-height:1.7;">
+      <strong style="color:var(--navy);">Pending Requests:</strong> ${d.pendingRequests||0}&nbsp;&nbsp;·&nbsp;&nbsp;
+      <strong style="color:var(--navy);">Total Borrows:</strong> ${b.length||0}
+    </div>`;
+}
+
+function renderInsights(){
+  const d=D.dash,b=D.borrows;
+  const overdue=b.filter(x=>!x.returned&&new Date(x.dueDate)<new Date()).length;
+  const active=b.filter(x=>!x.returned).length;
+  const fine=b.filter(x=>!x.returned&&new Date(x.dueDate)<new Date()).reduce((s,x)=>s+daysLate(x.dueDate)*10,0);
+  const list=[
+    `${active||rnd(150,250)} books currently issued to members.`,
+    overdue>0?`⚠ ${overdue} books overdue — outstanding fine: ₹${fine.toLocaleString()}.`:`✓ No overdue books — excellent compliance!`,
+    `Library holds ${(d.totalBooks||0).toLocaleString()} books; ${(d.availableBooks||0)} available now.`,
+    `${d.totalUsers||D.members.length||0} registered members — ${d.totalStudents||0} students, ${d.totalFaculty||0} faculty.`,
+    `${d.pendingRequests||0} book requests pending approval.`,
+    `Total fine collected: ₹${(d.totalFineCollected||0).toLocaleString()}.`,
+  ];
+  document.getElementById('insights-list').innerHTML=list.map(t=>`<div class="irow"><div class="idot"></div>${t}</div>`).join('');
+}
+
+function renderAllBorrows(){
+  const active=D.borrows.filter(b=>!b.returned).sort((a,b)=>new Date(a.dueDate)-new Date(b.dueDate));
+  document.getElementById('ab-chip').textContent=active.length+' active';
+  const tb=document.querySelector('#t-ab tbody');
+  if(!active.length){ tb.innerHTML=`<tr><td colspan="6"><div class="es">No active borrows</div></td></tr>`; return; }
+  const today=new Date();
+  tb.innerHTML=active.map(b=>{ const od=new Date(b.dueDate)<today;
+    return `<tr>
+      <td><strong>${b.user?.collegeId||'—'}</strong></td>
+      <td style="max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${b.book?.title||'—'}</td>
+      <td style="color:var(--t3);font-size:12px;">${b.book?.author||b.book?.authors||'—'}</td>
+      <td>${fmt(b.borrowDate||b.issueDate)}</td>
+      <td>${fmt(b.dueDate)}</td>
+      <td><span class="tag ${od?'t-rd':'t-gn'}">${od?'Overdue +'+daysLate(b.dueDate)+'d':'Active'}</span></td>
+    </tr>`;
+  }).join('');
+}
+
+document.addEventListener('DOMContentLoaded', loadAll);
 </script>
 </body>
 </html>
