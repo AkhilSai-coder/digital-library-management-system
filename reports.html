@@ -1,10 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Reports | GRIET Central Library</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/theme.css">
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 <style>
 :root{
@@ -15,7 +14,7 @@
   --sw:264px;--pad:32px;--r:12px;
 }
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
-body{font-family:'Outfit',sans-serif;font-size:14px;background:var(--bg);color:var(--text);-webkit-font-smoothing:antialiased;}
+body{font-family:'DM Sans',sans-serif;font-size:14px;background:var(--bg);color:var(--text);-webkit-font-smoothing:antialiased;}
 
 /* SIDEBAR */
 .sidebar{width:var(--sw);background:var(--navy);display:flex;flex-direction:column;position:fixed;top:0;left:0;height:100vh;overflow-y:auto;overflow-x:hidden;z-index:200;scrollbar-width:thin;scrollbar-color:rgba(255,255,255,.07) transparent;}
@@ -24,13 +23,13 @@ body{font-family:'Outfit',sans-serif;font-size:14px;background:var(--bg);color:v
 .sb-logo{display:flex;align-items:center;gap:11px;padding:20px 20px 16px;border-bottom:1px solid rgba(255,255,255,.07);}
 .sb-logo-box{width:42px;height:42px;border-radius:9px;background:rgba(255,255,255,.1);display:flex;align-items:center;justify-content:center;flex-shrink:0;overflow:hidden;}
 .sb-logo-box img{width:30px;height:30px;object-fit:contain;filter:brightness(0) invert(1);opacity:.88;}
-.sb-logo-box .fb{font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:700;color:var(--gold);display:none;}
+.sb-logo-box .fb{font-family:'Playfair Display',serif;font-size:20px;font-weight:700;color:var(--gold);display:none;}
 .sb-logo-text .n1{font-size:12.5px;font-weight:600;color:#fff;line-height:1.3;}
 .sb-logo-text .n2{font-size:10px;color:rgba(255,255,255,.32);letter-spacing:.3px;margin-top:1px;}
 
 .sb-brand{padding:14px 20px 13px;border-bottom:1px solid rgba(255,255,255,.07);}
 .sb-brand .tg{font-size:9px;letter-spacing:2.5px;text-transform:uppercase;color:var(--gold);font-weight:700;margin-bottom:4px;}
-.sb-brand .nm{font-family:'Cormorant Garamond',serif;font-size:21px;font-weight:700;color:#fff;line-height:1.15;}
+.sb-brand .nm{font-family:'Playfair Display',serif;font-size:21px;font-weight:700;color:#fff;line-height:1.15;}
 .sb-brand .sb2{font-size:10px;color:rgba(255,255,255,.28);margin-top:2px;}
 
 .sb-sep{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.2);padding:15px 20px 4px;font-weight:600;}
@@ -46,10 +45,10 @@ nav a.active{background:rgba(201,168,76,.1);color:var(--gold);border-left-color:
 .main{margin-left:var(--sw);min-height:100vh;}
 .topbar{background:var(--surface);border-bottom:1px solid var(--border);padding:0 var(--pad);height:76px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;gap:16px;}
 .tb-eye{font-size:9.5px;letter-spacing:2.5px;text-transform:uppercase;color:var(--gold);font-weight:700;margin-bottom:3px;}
-.topbar h1{font-family:'Cormorant Garamond',serif;font-size:25px;font-weight:700;color:var(--navy);line-height:1.1;}
+.topbar h1{font-family:'Playfair Display',serif;font-size:25px;font-weight:700;color:var(--navy);line-height:1.1;}
 .topbar p{font-size:12px;color:var(--t3);margin-top:1px;}
 .tb-btns{display:flex;gap:9px;flex-shrink:0;}
-.btn{padding:8px 18px;border-radius:7px;border:1.5px solid var(--border);background:var(--surface);font-size:12.5px;font-family:'Outfit',sans-serif;font-weight:500;cursor:pointer;color:var(--t2);transition:.14s;white-space:nowrap;}
+.btn{padding:8px 18px;border-radius:7px;border:1.5px solid var(--border);background:var(--surface);font-size:12.5px;font-family:'DM Sans',sans-serif;font-weight:500;cursor:pointer;color:var(--t2);transition:.14s;white-space:nowrap;}
 .btn:hover{border-color:var(--navy);color:var(--navy);}
 .btn.pri{background:var(--navy);color:#fff;border-color:var(--navy);}
 .btn.pri:hover{background:var(--navy2);}
@@ -62,7 +61,7 @@ nav a.active{background:rgba(201,168,76,.1);color:var(--gold);border-left-color:
 .kpi:hover{box-shadow:0 6px 20px rgba(13,31,53,.08);transform:translateY(-1px);}
 .kpi::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--ac,var(--navy));border-radius:var(--r) var(--r) 0 0;}
 .kpi-lbl{font-size:10px;color:var(--t3);text-transform:uppercase;letter-spacing:1.2px;font-weight:600;margin:4px 0 9px;}
-.kpi-val{font-family:'Cormorant Garamond',serif;font-size:33px;font-weight:700;color:var(--navy);line-height:1;}
+.kpi-val{font-family:'Playfair Display',serif;font-size:33px;font-weight:700;color:var(--navy);line-height:1;}
 .kpi-sub{font-size:11.5px;margin-top:8px;}
 .badge{display:inline-block;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:600;}
 .bg{background:#eaf6ee;color:var(--green);}
@@ -72,7 +71,7 @@ nav a.active{background:rgba(201,168,76,.1);color:var(--gold);border-left-color:
 
 /* SECTION */
 .sec{display:flex;align-items:center;gap:13px;margin:32px 0 15px;}
-.sec-lbl{font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:700;color:var(--navy);white-space:nowrap;}
+.sec-lbl{font-family:'Playfair Display',serif;font-size:18px;font-weight:700;color:var(--navy);white-space:nowrap;}
 .sec-line{flex:1;height:1px;background:var(--border);}
 
 /* BOX */
@@ -83,7 +82,7 @@ nav a.active{background:rgba(201,168,76,.1);color:var(--gold);border-left-color:
 
 /* TIME TABS */
 .tt{display:flex;gap:2px;background:var(--bg);padding:3px;border-radius:7px;}
-.ttab{padding:5px 12px;border-radius:5px;font-size:11.5px;font-weight:500;cursor:pointer;color:var(--t3);border:none;background:none;transition:.12s;font-family:'Outfit',sans-serif;}
+.ttab{padding:5px 12px;border-radius:5px;font-size:11.5px;font-weight:500;cursor:pointer;color:var(--t3);border:none;background:none;transition:.12s;font-family:'DM Sans',sans-serif;}
 .ttab.on{background:var(--surface);color:var(--navy);box-shadow:0 1px 4px rgba(0,0,0,.07);}
 
 /* GRIDS */
@@ -128,7 +127,7 @@ nav a.active{background:rgba(201,168,76,.1);color:var(--gold);border-left-color:
 .sitem{flex:1;padding:13px 18px;text-align:center;border-right:1px solid var(--border2);}
 .sitem:last-child{border-right:none;}
 .slbl{font-size:10px;text-transform:uppercase;letter-spacing:1px;color:var(--t3);font-weight:600;margin-bottom:4px;}
-.sval{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:700;color:var(--navy);}
+.sval{font-family:'Playfair Display',serif;font-size:22px;font-weight:700;color:var(--navy);}
 .ssub{font-size:11px;color:var(--t3);margin-top:2px;}
 
 /* DONUT LEGEND */
@@ -139,7 +138,7 @@ nav a.active{background:rgba(201,168,76,.1);color:var(--gold);border-left-color:
 
 /* INSIGHT */
 .icard{background:linear-gradient(135deg,var(--navy),var(--navy2));border-radius:var(--r);padding:22px;}
-.icard h3{font-family:'Cormorant Garamond',serif;font-size:18px;color:var(--gold2);margin-bottom:13px;}
+.icard h3{font-family:'Playfair Display',serif;font-size:18px;color:var(--gold2);margin-bottom:13px;}
 .irow{display:flex;gap:9px;align-items:flex-start;margin-bottom:11px;font-size:13px;color:rgba(255,255,255,.75);line-height:1.55;}
 .idot{width:6px;height:6px;border-radius:50%;background:var(--gold);flex-shrink:0;margin-top:5px;}
 
@@ -159,54 +158,50 @@ nav a.active{background:rgba(201,168,76,.1);color:var(--gold);border-left-color:
 </style>
 </head>
 <body>
-<div style="display:flex;">
+<script src="js/toast.js"></script><script src="js/auth.js"></script>
+<div class="dashboard-layout">
 
 <!-- SIDEBAR -->
 <aside class="sidebar">
-  <div class="sb-logo">
-      <div class="sidebar-logo" style="padding:0;margin:0;">
-  <img src="GRIET_Logo.png" alt="GRIET"
-       style="height:100px;width:240px;flex-shrink:0;background:white;padding:5px;">
-</div>
-  </div>
-  <div class="sb-brand">
-    <div class="tg">GRIET · Hyderabad</div>
-    <div class="nm">Central<br>Library</div>
-    <div class="sb2">Management System</div>
+  <div class="sidebar-logo"><img src="GRIET_Logo.png" alt="GRIET"></div>
+  <div class="sidebar-brand">
+    <div class="brand-tag">GRIET · Hyderabad</div>
+    <div class="brand-name">Central<br>Library</div>
+    <div class="brand-sub">Management System</div>
   </div>
   <nav>
-    <div class="sb-sep">Main</div>
+    <div class="sidebar-sep">Main</div>
     <a href="librarian-dashboard.html">⊞&nbsp; Dashboard</a>
     <a href="library-scanner.html">⬛&nbsp; Entry / Exit Scanner</a>
     <a href="book-management.html">+&nbsp; Add / Manage Books</a>
-    <div class="sb-sep">Circulation</div>
+    <div class="sidebar-sep">Circulation</div>
     <a href="issue-return.html">⇄&nbsp; Issue &amp; Return</a>
     <a href="fine-management.html">₹&nbsp; Fine Management</a>
-    <div class="sb-sep">Users</div>
+    <div class="sidebar-sep">Users</div>
     <a href="members.html">◎&nbsp; Members</a>
     <a class="active">↗&nbsp; Reports</a>
   </nav>
-  <div class="sb-footer">
+  <div class="sidebar-footer">
     <a href="change-password.html">⚙&nbsp; Settings</a>
     <a onclick="logout()">→&nbsp; Logout</a>
   </div>
 </aside>
 
 <!-- MAIN -->
-<div class="main">
-  <div class="topbar">
+<main class="main">
+  <div class="top-bar" style="background:var(--white);border-bottom:1px solid var(--border);padding:0 var(--pad);height:76px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;gap:16px;">
     <div>
-      <div class="tb-eye">Analytics</div>
+      <div class="page-eyebrow">Analytics</div>
       <h1>Reports &amp; Analytics</h1>
       <p>Live library statistics — GRIET backend</p>
     </div>
-    <div class="tb-btns">
+    <div class="top-bar-right">
       <button class="btn" onclick="window.print()">⬇ Export PDF</button>
       <button class="btn pri" onclick="loadAll()">↻ Refresh</button>
     </div>
   </div>
 
-  <div class="content">
+  <div class="content" style="padding:24px 36px 60px;">
 
     <!-- KPI STRIP -->
     <div class="kpi-grid">
@@ -481,8 +476,8 @@ nav a.active{background:rgba(201,168,76,.1);color:var(--gold);border-left-color:
     </div>
 
   </div><!-- /content -->
-</div><!-- /main -->
-</div><!-- /shell -->
+</main>
+</div>
 
 <script>
 /* ── stubs ── */
@@ -491,7 +486,7 @@ function logout(){ localStorage.removeItem('token'); window.location.href='login
 function toast(msg,type){
   const t=document.createElement('div');
   t.textContent=msg;
-  t.style.cssText=`position:fixed;bottom:22px;right:22px;background:${type==='error'?'#b30000':'#0d1f35'};color:#fff;padding:11px 20px;border-radius:8px;font-size:13px;z-index:9999;font-family:'Outfit',sans-serif;box-shadow:0 4px 16px rgba(0,0,0,.18);`;
+  t.style.cssText=`position:fixed;bottom:22px;right:22px;background:${type==='error'?'#b30000':'#0d1f35'};color:#fff;padding:11px 20px;border-radius:8px;font-size:13px;z-index:9999;font-family:'DM Sans',sans-serif;box-shadow:0 4px 16px rgba(0,0,0,.18);`;
   document.body.appendChild(t); setTimeout(()=>t.remove(),3200);
 }
 
@@ -843,7 +838,7 @@ function renderFineBD(){
   document.getElementById('fine-bd').innerHTML=`
     <div style="padding:12px 14px;background:#fdf4e3;border-radius:9px;border:1px solid #f5d992;display:flex;justify-content:space-between;align-items:center;margin-bottom:15px;">
       <span style="font-size:12px;color:var(--t2);">Outstanding Fines</span>
-      <span style="font-family:'Cormorant Garamond',serif;font-size:24px;font-weight:700;color:var(--red);">₹${total.toLocaleString()}</span>
+      <span style="font-family:'Playfair Display',serif;font-size:24px;font-weight:700;color:var(--red);">₹${total.toLocaleString()}</span>
     </div>
     ${brackets.map(bk=>{
       const cnt=od.length?od.filter(o=>{ const d=daysLate(o.dueDate); return d>=bk.mn&&d<=bk.mx; }).length:rnd(1,12);

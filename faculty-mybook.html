@@ -1,23 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<title>My Books | Faculty | GRIET Central Library</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>My Books | GRIET Library</title>
 <link rel="stylesheet" href="css/theme.css">
 </head>
 <body>
 <script src="js/toast.js"></script><script src="js/auth.js"></script>
 <div class="dashboard-layout">
 <aside class="sidebar">
-  <div class="sidebar-logo">
-<img src="GRIET_Logo.png" alt="GRIET" style="height:100px; width: 260px;; flex-shrink:0; background-color: white; padding: 5px;">    <div class="sidebar-logo-text">
-    <div class="sidebar-logo-text">
-      <div class="sl-name"></div>
-      <div class="sl-sub"></div>
-    </div>
-  </div>
-
+  <div class="sidebar-logo"><img src="GRIET_Logo.png" alt="GRIET"></div>
   <div class="sidebar-brand">
     <div class="brand-tag">GRIET · Hyderabad</div>
     <div class="brand-name">Central<br>Library</div>
@@ -25,58 +17,76 @@
   </div>
   <nav>
     <div class="sidebar-sep">Menu</div>
-    <a href="faculty-dashboard.html">⊞&nbsp; Dashboard</a>
-    <a href="catalogue.html">◫&nbsp; Book Catalogue</a>
-    <a class="active">📖&nbsp; My Books</a>
-    <a href="faculty-fines.html">₹&nbsp; Fines</a>
-    <a href="faculty-recomendation.html">✦&nbsp; Recommend Books</a>
+    <a href="faculty-dashboard.html">&#8862;&nbsp; Dashboard</a>
+    <a href="catalogue.html">&#9647;&nbsp; Book Catalogue</a>
+    <a class="active">&#128214;&nbsp; My Books</a>
+    <a href="faculty-fines.html">&#8377;&nbsp; Fines</a>
+    <a href="faculty-recomendation.html">&#11088;&nbsp; Recommend Books</a>
   </nav>
   <div class="sidebar-footer">
-    <a href="change-password.html">⚙&nbsp; Change Password</a>
-    <a onclick="logout()" style="cursor:pointer;">→&nbsp; Logout</a>
+    <a href="change-password.html">&#9881;&nbsp; Change Password</a>
+    <a onclick="logout()">&#8594;&nbsp; Logout</a>
   </div>
 </aside>
 <main class="main">
-  <div class="top-bar"><div><div class="page-eyebrow">Faculty</div><h1>My Books</h1></div></div>
+  <div class="top-bar">
+    <div>
+      <div class="page-eyebrow">Faculty</div>
+      <h1>My Books</h1>
+      <p>All your issued and returned books</p>
+    </div>
+    <div class="top-bar-right">
+      <div class="date-chip" id="dateBadge">--</div>
+    </div>
+  </div>
   <div class="tabs">
-    <button class="tab active" id="activeTab" onclick="showActive()">Active (0)</button>
-    <button class="tab" id="historyTab" onclick="showHistory()">History (0)</button>
+    <button class="tab active" onclick="switchTab('active',this)">Active</button>
+    <button class="tab" onclick="switchTab('pending',this)">Pending</button>
+    <button class="tab" onclick="switchTab('history',this)">History</button>
   </div>
   <div class="box">
+    <div class="box-header">
+      <span class="box-title" id="tabTitle">Active Books</span>
+      <span class="badge b-info" id="tabCount">--</span>
+    </div>
     <div class="box-body table-wrap">
-      <table><thead><tr><th>Book Title</th><th>Issue Date</th><th>Due Date</th><th>Status</th></tr></thead>
-      <tbody id="booksTable"></tbody></table>
+      <table>
+        <thead><tr><th>Book Title</th><th>Author</th><th>Issue Date</th><th>Due Date</th><th>Status</th></tr></thead>
+        <tbody id="bookTable"><tr><td colspan="5" style="text-align:center;padding:30px;color:var(--muted);">Loading...</td></tr></tbody>
+      </table>
     </div>
   </div>
 </main>
 </div>
 <script>
 checkAuth();
-let allBorrows=[];
-document.addEventListener("DOMContentLoaded",loadMyBooks);
-async function loadMyBooks(){
-  const token=localStorage.getItem("token");
-  const r=await fetch("https://library-backend-1-e3r2.onrender.com/borrow/my-books",{headers:{"Authorization":"Bearer "+token}});
-  allBorrows=r.ok?await r.json():[];
-  document.getElementById("activeTab").textContent=`Active (${allBorrows.filter(b=>!b.returned).length})`;
-  document.getElementById("historyTab").textContent=`History (${allBorrows.filter(b=>b.returned).length})`;
-  showActive();
-}
-function showActive(){
-  document.getElementById("activeTab").classList.add("active");document.getElementById("historyTab").classList.remove("active");
-  const tb=document.getElementById("booksTable");const active=allBorrows.filter(b=>!b.returned);const today=new Date();
-  if(!active.length){tb.innerHTML=`<tr><td colspan="4" style="text-align:center;padding:32px;color:var(--muted);">No active books</td></tr>`;return;}
-  tb.innerHTML=active.map(b=>{const od=today>new Date(b.dueDate);
-    return `<tr><td><strong>${b.book.title}</strong></td><td>${b.issueDate}</td><td>${b.dueDate}</td>
-    <td><span class="badge ${od?"b-overdue":"b-active"}">${od?"Overdue":"Active"}</span></td></tr>`;
-  }).join("");
-}
-function showHistory(){
-  document.getElementById("historyTab").classList.add("active");document.getElementById("activeTab").classList.remove("active");
-  const tb=document.getElementById("booksTable");const hist=allBorrows.filter(b=>b.returned);
-  if(!hist.length){tb.innerHTML=`<tr><td colspan="4" style="text-align:center;padding:32px;color:var(--muted);">No history yet</td></tr>`;return;}
-  tb.innerHTML=hist.map(b=>`<tr><td><strong>${b.book.title}</strong></td><td>${b.issueDate}</td><td>${b.dueDate}</td>
-  <td><span class="badge b-returned">Returned</span></td></tr>`).join("");
+document.getElementById('dateBadge').textContent = new Date().toLocaleDateString('en-IN',{weekday:'short',day:'numeric',month:'short',year:'numeric'});
+let allBorrows = [];
+document.addEventListener('DOMContentLoaded', async () => {
+  try {
+    const r = await apiFetch('/borrow/my');
+    allBorrows = r.ok ? await r.json() : [];
+    switchTab('active', document.querySelector('.tab.active'));
+  } catch(e) { toast('Failed to load books', 'error'); }
+});
+function switchTab(type, btn) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  btn.classList.add('active');
+  const today = new Date();
+  const titles = { active:'Active Books', pending:'Pending Requests', history:'Borrow History' };
+  document.getElementById('tabTitle').textContent = titles[type];
+  let list = type === 'active' ? allBorrows.filter(b => !b.returned && b.status !== 'PENDING')
+    : type === 'pending' ? allBorrows.filter(b => b.status === 'PENDING')
+    : allBorrows.filter(b => b.returned);
+  document.getElementById('tabCount').textContent = list.length + ' records';
+  const tb = document.getElementById('bookTable');
+  if (!list.length) { tb.innerHTML = '<tr><td colspan="5" style="text-align:center;padding:32px;color:var(--muted);">No books in this category</td></tr>'; return; }
+  tb.innerHTML = list.map(b => {
+    const od = !b.returned && new Date(b.dueDate) < today;
+    const sc = b.returned ? 'b-returned' : b.status === 'PENDING' ? 'b-pending' : od ? 'b-overdue' : 'b-active';
+    const st = b.returned ? 'Returned' : b.status === 'PENDING' ? 'Pending' : od ? 'Overdue' : 'Active';
+    return '<tr><td><strong>' + (b.book?.title||'--') + '</strong></td><td style="color:var(--muted);font-size:12.5px;">' + (b.book?.author||'--') + '</td><td>' + (b.borrowDate||b.issueDate||'--') + '</td><td>' + (b.dueDate||'--') + '</td><td><span class="badge ' + sc + '">' + st + '</span></td></tr>';
+  }).join('');
 }
 </script>
 </body>

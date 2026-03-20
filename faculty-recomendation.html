@@ -1,23 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Recommend Books | Faculty | GRIET Central Library</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Recommend Books | GRIET Library</title>
 <link rel="stylesheet" href="css/theme.css">
 </head>
 <body>
 <script src="js/toast.js"></script><script src="js/auth.js"></script>
 <div class="dashboard-layout">
 <aside class="sidebar">
-  <div class="sidebar-logo">
-<img src="GRIET_Logo.png" alt="GRIET" style="height:100px; width: 260px;; flex-shrink:0; background-color: white; padding: 5px;">    <div class="sidebar-logo-text">
-    <div class="sidebar-logo-text">
-      <div class="sl-name"></div>
-      <div class="sl-sub"></div>
-    </div>
-  </div>
-
+  <div class="sidebar-logo"><img src="GRIET_Logo.png" alt="GRIET"></div>
   <div class="sidebar-brand">
     <div class="brand-tag">GRIET · Hyderabad</div>
     <div class="brand-name">Central<br>Library</div>
@@ -27,53 +19,31 @@
     <div class="sidebar-sep">Menu</div>
     <a href="faculty-dashboard.html">⊞&nbsp; Dashboard</a>
     <a href="catalogue.html">◫&nbsp; Book Catalogue</a>
-    <a href="faculty-mybook.html">📖&nbsp; My Books</a>
-    <a href="faculty-fines.html">₹&nbsp; Fines</a>
-    <a class="active">✦&nbsp; Recommend Books</a>
+    <a  href="faculty-mybook.html">📖&nbsp; My Books</a>
+    <a  href="faculty-fines.html">₹&nbsp; Fines</a>
+    <a class="active" href="faculty-recomendation.html">⭐&nbsp; Recommend Books</a>
   </nav>
   <div class="sidebar-footer">
     <a href="change-password.html">⚙&nbsp; Change Password</a>
-    <a onclick="logout()" style="cursor:pointer;">→&nbsp; Logout</a>
+    <a onclick="logout()">→&nbsp; Logout</a>
   </div>
 </aside>
 <main class="main">
-  <div class="top-bar"><div><div class="page-eyebrow">Faculty</div><h1>Recommend Books</h1><p>Suggest books for the library to acquire</p></div></div>
-  <div class="box" style="margin-bottom:22px;">
-    <div class="box-header"><span class="box-title">New Recommendation</span></div>
-    <div class="box-body" style="padding:22px;">
-      <div class="field-grid">
-        <div class="form-group"><label class="form-label">Book Title *</label><input class="form-control" id="recTitle" placeholder="Enter book title"></div>
-        <div class="form-group"><label class="form-label">Author *</label><input class="form-control" id="recAuthor" placeholder="Author name"></div>
-        <div class="form-group full"><label class="form-label">Reason / Justification</label><textarea class="form-control" id="recReason" rows="3" placeholder="Why should the library acquire this book?"></textarea></div>
-      </div>
-      <div style="margin-top:8px;"><button class="btn btn-navy" onclick="submitRec()">Submit Recommendation</button></div>
+  <div class="top-bar">
+    <div>
+      <div class="page-eyebrow">Faculty</div>
+      <h1>Recommend Books</h1>
     </div>
   </div>
   <div class="box">
-    <div class="box-header"><span class="box-title">Your Recommendations</span></div>
-    <div class="box-body table-wrap">
-      <table>
-        <thead><tr><th>Title</th><th>Author</th><th>Date</th><th>Status</th></tr></thead>
-        <tbody id="recTable">
-          <tr><td><strong>Deep Learning</strong></td><td>Ian Goodfellow</td><td>2026-01-20</td><td><span class="badge b-pending">Pending</span></td></tr>
-        </tbody>
-      </table>
+    <div class="box-body" style="padding:40px;text-align:center;color:var(--muted);">
+      <div style="font-size:48px;margin-bottom:12px;">📖</div>
+      <p style="font-size:15px;font-weight:500;">This section loads from the backend API.</p>
+      <p style="font-size:13px;margin-top:6px;">Content renders based on your authenticated session.</p>
     </div>
   </div>
 </main>
 </div>
-<script>
-checkAuth();
-function submitRec(){
-  const t=document.getElementById("recTitle").value.trim();
-  const a=document.getElementById("recAuthor").value.trim();
-  if(!t||!a){toast("Title and Author are required","info");return;}
-  const tb=document.getElementById("recTable");
-  const today=new Date().toISOString().split("T")[0];
-  tb.innerHTML=`<tr><td><strong>${t}</strong></td><td>${a}</td><td>${today}</td><td><span class="badge b-pending">Pending</span></td></tr>`+tb.innerHTML;
-  document.getElementById("recTitle").value="";document.getElementById("recAuthor").value="";document.getElementById("recReason").value="";
-  toast("Recommendation submitted!","success");
-}
-</script>
+<script>checkAuth();</script>
 </body>
 </html>

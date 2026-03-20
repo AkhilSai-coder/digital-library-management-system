@@ -1,23 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Fine Management | GRIET Central Library</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="css/theme.css">
 </head>
 <body>
 <script src="js/toast.js"></script><script src="js/auth.js"></script>
 <div class="dashboard-layout">
 <aside class="sidebar">
-  <div class="sidebar-logo">
-<img src="GRIET_Logo.png" alt="GRIET" style="height:100px; width: 260px;; flex-shrink:0; background-color: white; padding: 5px;">    <div class="sidebar-logo-text">
-    <div class="sidebar-logo-text">
-      <div class="sl-name"></div>
-      <div class="sl-sub"></div>
-    </div>
-  </div>
-
+  <div class="sidebar-logo"><img src="GRIET_Logo.png" alt="GRIET"></div>
   <div class="sidebar-brand">
     <div class="brand-tag">GRIET · Hyderabad</div>
     <div class="brand-name">Central<br>Library</div>
@@ -27,7 +19,7 @@
     <div class="sidebar-sep">Main</div>
     <a href="librarian-dashboard.html">⊞&nbsp; Dashboard</a>
     <a href="library-scanner.html">⬛&nbsp; Entry / Exit Scanner</a>
-    <a href="book-management.html">+&nbsp; Add / Manage Books</a>
+    <a href="book-management.html">＋&nbsp; Add / Manage Books</a>
     <div class="sidebar-sep">Circulation</div>
     <a href="issue-return.html">⇄&nbsp; Issue &amp; Return</a>
     <a class="active">₹&nbsp; Fine Management</a>
@@ -37,7 +29,7 @@
   </nav>
   <div class="sidebar-footer">
     <a href="change-password.html">⚙&nbsp; Settings</a>
-    <a onclick="logout()" style="cursor:pointer;">→&nbsp; Logout</a>
+    <a onclick="logout()">→&nbsp; Logout</a>
   </div>
 </aside>
 <main class="main">
@@ -47,8 +39,11 @@
       <h1>Fine Management</h1>
       <p>Track and manage overdue fines</p>
     </div>
+    <div class="top-bar-right">
+      <button class="btn btn-ghost btn-sm" onclick="loadFines()">↻ Refresh</button>
+    </div>
   </div>
-  <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:18px;margin-bottom:28px;">
+  <div class="grid-3" style="margin-bottom:22px;">
     <div class="summary-card">
       <h3>Total Pending Fines</h3>
       <div class="fine-amount" id="totalFine">₹0</div>
@@ -57,12 +52,12 @@
     <div class="summary-card">
       <h3>Students Fined</h3>
       <div class="fine-amount" id="stuFined" style="color:var(--gold);">0</div>
-      <div class="fine-sub">@₹10/day</div>
+      <div class="fine-sub">@₹10/day overdue</div>
     </div>
     <div class="summary-card">
       <h3>Faculty Fined</h3>
       <div class="fine-amount" id="facFined" style="color:var(--navy);">0</div>
-      <div class="fine-sub">@₹5/day</div>
+      <div class="fine-sub">@₹5/day overdue</div>
     </div>
   </div>
   <div class="box">
@@ -70,7 +65,7 @@
     <div class="box-body table-wrap">
       <table>
         <thead><tr><th>Member</th><th>Role</th><th>Book</th><th>Overdue By</th><th>Fine</th><th>Status</th></tr></thead>
-        <tbody id="fineTable"></tbody>
+        <tbody id="fineTable"><tr><td colspan="6" style="text-align:center;padding:30px;color:var(--muted);">Loading…</td></tr></tbody>
       </table>
     </div>
   </div>
@@ -78,43 +73,40 @@
 </div>
 <script>
 checkAuth();
-document.addEventListener("DOMContentLoaded",loadFines);
+document.addEventListener('DOMContentLoaded',loadFines);
 async function loadFines(){
-  const token=localStorage.getItem("token");
-  if(!token){window.location.href="login.html";return;}
-  const r=await fetch("https://library-backend-1-e3r2.onrender.com/borrow/all",{headers:{"Authorization":"Bearer "+token}});
-  const borrows=r.ok?await r.json():[];
-  const tb=document.getElementById("fineTable");
-  const today=new Date();
-  let total=0,count=0,stu=0,fac=0;
-  tb.innerHTML="";
-  borrows.forEach(b=>{
-    if(!b.returned){
-      const due=new Date(b.dueDate);
-      if(today>due){
-        const days=Math.floor((today-due)/(1000*60*60*24));
-        const rate=b.user.role==="STUDENT"?10:5;
-        const fine=days*rate;
-        if(fine>0){
+  try{
+    const r=await apiFetch('/borrow/all');
+    const borrows=r.ok?await r.json():[];
+    const today=new Date();
+    let total=0,count=0,stu=0,fac=0;
+    const rows=[];
+    borrows.forEach(b=>{
+      if(!b.returned){
+        const days=Math.floor((today-new Date(b.dueDate))/86400000);
+        if(days>0){
+          const rate=b.user?.role==='STUDENT'?10:5;
+          const fine=days*rate;
           total+=fine;count++;
-          if(b.user.role==="STUDENT")stu++;else fac++;
-          tb.innerHTML+=`<tr>
-            <td><strong>${b.user.collegeId}</strong></td>
-            <td><span class="role-badge">${b.user.role}</span></td>
-            <td>${b.book.title}</td>
-            <td>${days} day(s)</td>
+          if(b.user?.role==='STUDENT')stu++;else fac++;
+          rows.push(`<tr>
+            <td><strong>${b.user?.collegeId||'—'}</strong></td>
+            <td><span class="role-badge">${b.user?.role||'—'}</span></td>
+            <td style="max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${b.book?.title||'—'}</td>
+            <td><span class="badge ${days>7?'b-overdue':'b-pending'}">${days} day(s)</span></td>
             <td><strong>₹${fine}</strong></td>
             <td><span class="badge b-overdue">Pending</span></td>
-          </tr>`;
+          </tr>`);
         }
       }
-    }
-  });
-  if(count===0)tb.innerHTML=`<tr><td colspan="6" style="text-align:center;padding:32px;color:var(--muted);">🎉 No pending fines</td></tr>`;
-  document.getElementById("totalFine").textContent="₹"+total;
-  document.getElementById("fineSub").textContent=count+" pending fine(s)";
-  document.getElementById("stuFined").textContent=stu;
-  document.getElementById("facFined").textContent=fac;
+    });
+    const tb=document.getElementById('fineTable');
+    tb.innerHTML=rows.length?rows.join(''):`<tr><td colspan="6" style="text-align:center;padding:32px;color:var(--muted);">🎉 No pending fines</td></tr>`;
+    document.getElementById('totalFine').textContent='₹'+total;
+    document.getElementById('fineSub').textContent=count+' pending fine(s)';
+    document.getElementById('stuFined').textContent=stu;
+    document.getElementById('facFined').textContent=fac;
+  }catch{toast('Failed to load fines','error');}
 }
 </script>
 </body>

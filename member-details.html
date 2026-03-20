@@ -1,23 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Member Details | GRIET Central Library</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Member Details | GRIET Library</title>
 <link rel="stylesheet" href="css/theme.css">
 </head>
 <body>
 <script src="js/toast.js"></script><script src="js/auth.js"></script>
 <div class="dashboard-layout">
 <aside class="sidebar">
-  <div class="sidebar-logo">
-<img src="GRIET_Logo.png" alt="GRIET" style="height:100px; width: 260px;; flex-shrink:0; background-color: white; padding: 5px;">    <div class="sidebar-logo-text">
-    <div class="sidebar-logo-text">
-      <div class="sl-name"></div>
-      <div class="sl-sub"></div>
-    </div>
-  </div>
-
+  <div class="sidebar-logo"><img src="GRIET_Logo.png" alt="GRIET"></div>
   <div class="sidebar-brand">
     <div class="brand-tag">GRIET · Hyderabad</div>
     <div class="brand-name">Central<br>Library</div>
@@ -27,18 +19,17 @@
     <div class="sidebar-sep">Main</div>
     <a href="librarian-dashboard.html">⊞&nbsp; Dashboard</a>
     <a href="library-scanner.html">⬛&nbsp; Entry / Exit Scanner</a>
-    <a href="book-management.html">+&nbsp; Add / Manage Books</a>
+    <a href="book-management.html">＋&nbsp; Add / Manage Books</a>
     <div class="sidebar-sep">Circulation</div>
     <a href="issue-return.html">⇄&nbsp; Issue &amp; Return</a>
     <a href="fine-management.html">₹&nbsp; Fine Management</a>
     <div class="sidebar-sep">Users</div>
-    <a href="members.html">◎&nbsp; Members</a>
-    <a class="active">≡&nbsp; Member Details</a>
+    <a class="active" href="members.html">◎&nbsp; Members</a>
     <a href="reports.html">↗&nbsp; Reports</a>
   </nav>
   <div class="sidebar-footer">
     <a href="change-password.html">⚙&nbsp; Settings</a>
-    <a onclick="logout()" style="cursor:pointer;">→&nbsp; Logout</a>
+    <a onclick="logout()">→&nbsp; Logout</a>
   </div>
 </aside>
 <main class="main">
@@ -46,129 +37,70 @@
     <div>
       <div class="page-eyebrow">Users</div>
       <h1 id="memberTitle">Member Details</h1>
+      <p id="memberSub">Loading member information…</p>
     </div>
     <div class="top-bar-right">
       <button class="btn btn-ghost btn-sm" onclick="window.location.href='members.html'">← Back to Members</button>
     </div>
   </div>
-
-  <div class="box" style="margin-bottom:22px;">
-    <div class="box-body" style="padding:22px;" id="memberCard">
-      <div style="color:var(--muted);font-size:14px;">Loading member…</div>
+  <div class="grid-2" style="margin-bottom:20px;">
+    <div class="summary-card">
+      <h3>Active Issues</h3>
+      <div class="fine-amount" id="activeCount" style="color:var(--navy);">—</div>
+      <div class="fine-sub">Books currently borrowed</div>
+    </div>
+    <div class="summary-card">
+      <h3>Total Fines</h3>
+      <div class="fine-amount" id="totalFine">₹0</div>
+      <div class="fine-sub">Pending overdue charges</div>
     </div>
   </div>
-
-  <div class="tabs">
-    <button class="tab active" id="activeTab" onclick="loadActive()">Active Books</button>
-    <button class="tab" id="historyTab" onclick="loadHistory()">History</button>
-  </div>
-
   <div class="box">
+    <div class="box-header">
+      <span class="box-title">Borrow History</span>
+      <span class="badge b-info" id="histChip">— records</span>
+    </div>
     <div class="box-body table-wrap">
-      <table><thead><tr><th>Book</th><th>Issue Date</th><th>Due Date</th><th>Action</th></tr></thead>
-      <tbody id="tableBody"></tbody></table>
-    </div>
-  </div>
-
-  <div class="box">
-    <div class="box-header"><span class="box-title">Issue Book to Member</span></div>
-    <div class="box-body" style="padding:20px;">
-      <div class="search-row" style="margin-bottom:10px;">
-        <div class="search-wrap" style="flex:1;">
-          <input type="text" id="bookSearch" placeholder="Search book from catalogue…" oninput="searchBook()">
-          <button>🔍</button>
-        </div>
-        <button class="btn btn-navy" onclick="issueOffline()">Issue Book</button>
-      </div>
-      <div id="suggestions" style="border:1px solid var(--border);border-radius:8px;max-height:120px;overflow-y:auto;display:none;background:var(--white);"></div>
+      <table>
+        <thead><tr><th>Book Title</th><th>Issue Date</th><th>Due Date</th><th>Fine</th><th>Status</th></tr></thead>
+        <tbody id="histTable"><tr><td colspan="5" style="text-align:center;padding:30px;color:var(--muted);">Loading…</td></tr></tbody>
+      </table>
     </div>
   </div>
 </main>
 </div>
 <script>
 checkAuth();
-const BASE="https://library-backend-1-e3r2.onrender.com";
-const member=JSON.parse(localStorage.getItem("selectedMember")||"{}");
-
-document.addEventListener("DOMContentLoaded",function(){
-  if(!member.userId){window.location.href="members.html";return;}
-  document.getElementById("memberTitle").textContent=member.userId;
-  document.getElementById("memberCard").innerHTML=`
-    <div style="display:flex;gap:24px;align-items:center;flex-wrap:wrap;">
-      <div style="width:64px;height:64px;background:var(--navy);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:28px;color:#fff;">👤</div>
-      <div>
-        <div style="font-family:'Libre Baskerville',serif;font-size:20px;font-weight:700;color:var(--navy);">${member.userId}</div>
-        <div style="margin-top:6px;display:flex;gap:10px;">
-          <span class="role-badge">${member.userRole}</span>
-          <span class="badge b-info">${member.userId.includes("CS")?"CSE":member.userId.includes("EC")?"ECE":"General"}</span>
-        </div>
-      </div>
-    </div>`;
-  loadActive();
+document.addEventListener('DOMContentLoaded',async()=>{
+  const m=JSON.parse(localStorage.getItem('selectedMember')||'{}');
+  if(!m.userId){window.location.href='members.html';return;}
+  document.getElementById('memberTitle').textContent=m.userId;
+  document.getElementById('memberSub').textContent=`Role: ${m.userRole||'—'}`;
+  try{
+    const r=await apiFetch('/borrow/user/'+m.userId);
+    const borrows=r.ok?await r.json():[];
+    const today=new Date();
+    const active=borrows.filter(b=>!b.returned);
+    const fine=borrows.filter(b=>!b.returned&&new Date(b.dueDate)<today)
+      .reduce((s,b)=>s+Math.floor((today-new Date(b.dueDate))/86400000)*(m.userRole==='FACULTY'?5:10),0);
+    document.getElementById('activeCount').textContent=active.length;
+    document.getElementById('totalFine').textContent='₹'+fine;
+    document.getElementById('histChip').textContent=borrows.length+' records';
+    const tb=document.getElementById('histTable');
+    if(!borrows.length){tb.innerHTML=`<tr><td colspan="5" style="text-align:center;padding:32px;color:var(--muted);">No borrow history found</td></tr>`;return;}
+    tb.innerHTML=borrows.map(b=>{
+      const od=!b.returned&&new Date(b.dueDate)<today;
+      const days=od?Math.floor((today-new Date(b.dueDate))/86400000):0;
+      return `<tr>
+        <td><strong>${b.book?.title||'—'}</strong></td>
+        <td>${b.borrowDate||b.issueDate||'—'}</td>
+        <td>${b.dueDate||'—'}</td>
+        <td>${days>0?'₹'+days*(m.userRole==='FACULTY'?5:10):'—'}</td>
+        <td><span class="badge ${b.returned?'b-returned':od?'b-overdue':'b-active'}">${b.returned?'Returned':od?'Overdue':'Active'}</span></td>
+      </tr>`;
+    }).join('');
+  }catch{toast('Failed to load member details','error');}
 });
-
-async function loadActive(){
-  document.getElementById("activeTab").classList.add("active");
-  document.getElementById("historyTab").classList.remove("active");
-  const token=localStorage.getItem("token");
-  const r=await fetch(BASE+"/borrow/all",{headers:{"Authorization":"Bearer "+token}});
-  const borrows=r.ok?await r.json():[];
-  const active=borrows.filter(b=>b.user.collegeId===member.userId&&!b.returned);
-  const tb=document.getElementById("tableBody");
-  if(!active.length){tb.innerHTML=`<tr><td colspan="4" style="text-align:center;padding:32px;color:var(--muted);">No active books</td></tr>`;return;}
-  tb.innerHTML=active.map(b=>`<tr>
-    <td><strong>${b.book.title}</strong></td><td>${b.issueDate}</td><td>${b.dueDate}</td>
-    <td><button class="btn btn-warn btn-sm" onclick="returnBook(${b.id})">Return</button></td>
-  </tr>`).join("");
-}
-
-async function loadHistory(){
-  document.getElementById("historyTab").classList.add("active");
-  document.getElementById("activeTab").classList.remove("active");
-  const token=localStorage.getItem("token");
-  const r=await fetch(BASE+"/borrow/all",{headers:{"Authorization":"Bearer "+token}});
-  const borrows=r.ok?await r.json():[];
-  const hist=borrows.filter(b=>b.user.collegeId===member.userId&&b.returned);
-  const tb=document.getElementById("tableBody");
-  if(!hist.length){tb.innerHTML=`<tr><td colspan="4" style="text-align:center;padding:32px;color:var(--muted);">No history</td></tr>`;return;}
-  tb.innerHTML=hist.map(b=>`<tr><td><strong>${b.book.title}</strong></td><td>${b.issueDate}</td><td>${b.dueDate}</td><td><span class="badge b-returned">Returned</span></td></tr>`).join("");
-}
-
-async function returnBook(id){
-  const token=localStorage.getItem("token");
-  const r=await fetch(`${BASE}/borrow/return/${id}`,{method:"POST",headers:{"Authorization":"Bearer "+token}});
-  if(r.ok){toast("Book returned!","success");loadActive();}else toast("Failed","error");
-}
-
-async function searchBook(){
-  const q=document.getElementById("bookSearch").value.toLowerCase();
-  const sg=document.getElementById("suggestions");
-  sg.style.display="none";sg.innerHTML="";
-  if(q.length<2)return;
-  const token=localStorage.getItem("token");
-  const r=await fetch(`${BASE}/books?q=${encodeURIComponent(q)}&size=10`,{headers:{"Authorization":"Bearer "+token}});
-  const data=r.ok?await r.json():[];
-  const books=data.content||data;
-  if(!books.length)return;
-  sg.style.display="block";
-  sg.innerHTML=books.map(b=>`<div style="padding:10px 14px;cursor:pointer;font-size:13.5px;border-bottom:1px solid var(--border);" onmousedown="selectBook('${b.title.replace(/'/g,"\\'")}',${b.id})">${b.title}</div>`).join("");
-}
-
-function selectBook(title,id){
-  document.getElementById("bookSearch").value=title;
-  document.getElementById("bookSearch").dataset.bookId=id;
-  document.getElementById("suggestions").style.display="none";
-}
-
-async function issueOffline(){
-  const inp=document.getElementById("bookSearch");
-  const bookId=inp.dataset.bookId;
-  if(!bookId){toast("Select a book from the list","info");return;}
-  const token=localStorage.getItem("token");
-  const r=await fetch(`${BASE}/borrow/issue?bookId=${bookId}&collegeId=${member.userId}`,{method:"POST",headers:{"Authorization":"Bearer "+token}});
-  if(r.ok){toast("Book issued!","success");inp.value="";inp.dataset.bookId="";loadActive();}
-  else{const m=await r.text();toast("Failed: "+m,"error");}
-}
 </script>
 </body>
 </html>

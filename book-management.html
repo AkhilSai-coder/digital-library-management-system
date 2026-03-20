@@ -1,22 +1,24 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Book Management | GRIET Central Library</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="css/theme.css">
+<style>
+.book-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px;padding:16px;}
+.book-card{background:var(--white);border-radius:12px;border:1px solid var(--border);padding:18px;transition:.2s;box-shadow:var(--shadow);}
+.book-card:hover{transform:translateY(-2px);box-shadow:var(--shadow2);}
+.book-card-title{font-family:'Playfair Display',serif;font-size:15px;font-weight:700;color:var(--navy);margin-bottom:5px;line-height:1.3;}
+.book-card-author{font-size:12.5px;color:var(--muted);margin-bottom:10px;}
+.book-card-meta{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;}
+.book-card-actions{display:flex;gap:8px;}
+</style>
 </head>
 <body>
 <script src="js/toast.js"></script><script src="js/auth.js"></script>
 <div class="dashboard-layout">
 <aside class="sidebar">
-  <div class="sidebar-logo">
-<img src="GRIET_Logo.png" alt="GRIET" style="height:100px; width: 260px;; flex-shrink:0; background-color: white; padding: 5px;">    <div class="sidebar-logo-text">
-      <div class="sl-name"></div>
-      <div class="sl-sub"></div>
-    </div>
-  </div>
-
+  <div class="sidebar-logo"><img src="GRIET_Logo.png" alt="GRIET"></div>
   <div class="sidebar-brand">
     <div class="brand-tag">GRIET · Hyderabad</div>
     <div class="brand-name">Central<br>Library</div>
@@ -26,7 +28,7 @@
     <div class="sidebar-sep">Main</div>
     <a href="librarian-dashboard.html">⊞&nbsp; Dashboard</a>
     <a href="library-scanner.html">⬛&nbsp; Entry / Exit Scanner</a>
-    <a class="active">+&nbsp; Add / Manage Books</a>
+    <a class="active">＋&nbsp; Add / Manage Books</a>
     <div class="sidebar-sep">Circulation</div>
     <a href="issue-return.html">⇄&nbsp; Issue &amp; Return</a>
     <a href="fine-management.html">₹&nbsp; Fine Management</a>
@@ -36,7 +38,7 @@
   </nav>
   <div class="sidebar-footer">
     <a href="change-password.html">⚙&nbsp; Settings</a>
-    <a onclick="logout()" style="cursor:pointer;">→&nbsp; Logout</a>
+    <a onclick="logout()">→&nbsp; Logout</a>
   </div>
 </aside>
 <main class="main">
@@ -47,87 +49,56 @@
       <p>Add, search and manage the library catalogue</p>
     </div>
     <div class="top-bar-right">
-      <button class="btn btn-navy" onclick="openModal()">+ Add Book</button>
+      <button class="btn btn-navy" onclick="openAddModal()">＋ Add Book</button>
     </div>
   </div>
-
   <div class="search-row">
     <div class="search-wrap">
-      <input type="text" id="searchInput" placeholder="Search by title, author, accession number…">
+      <input type="text" id="searchInput" placeholder="Search by title, author, accession number…" oninput="filterBooks()">
       <button>🔍</button>
     </div>
+    <select id="filterAvail" class="form-control" style="width:auto;" onchange="filterBooks()">
+      <option value="">All Books</option>
+      <option value="available">Available</option>
+      <option value="borrowed">Borrowed</option>
+    </select>
   </div>
-
   <div class="box">
     <div class="box-header">
-      <span class="box-title">All Books</span>
-      <span class="badge b-info" id="bookCount">0 books</span>
+      <span class="box-title">Library Catalogue</span>
+      <span class="badge b-info" id="bookCount">— books</span>
     </div>
     <div class="box-body table-wrap">
-      <table id="bookTable">
-        <thead><tr><th>Accession No.</th><th>Title</th><th>Authors</th><th>Publisher</th><th>Year</th><th>Branch</th><th>Price</th><th>Available</th><th>Action</th></tr></thead>
-        <tbody id="bookBody"></tbody>
+      <table>
+        <thead><tr><th>Acc. No</th><th>Title</th><th>Author</th><th>Branch</th><th>Copies</th><th>Available</th><th>Actions</th></tr></thead>
+        <tbody id="bookTable"><tr><td colspan="7" style="text-align:center;padding:30px;color:var(--muted);">Loading…</td></tr></tbody>
       </table>
     </div>
   </div>
 </main>
 </div>
 
-<!-- ADD BOOK MODAL -->
-<div class="modal" id="modal">
+<!-- ADD MODAL -->
+<div class="modal" id="addModal">
   <div class="modal-box">
     <div class="modal-header">
       <h3>Add New Book</h3>
       <button class="modal-close" onclick="closeModal()">✕</button>
     </div>
     <div class="modal-body">
-      <div class="field-section">Basic Information</div>
       <div class="field-grid">
-        <div class="form-group"><label class="form-label">Accession Number *</label><input class="form-control" id="accessionNumber" placeholder="e.g. CSE-001"></div>
-        <div class="form-group"><label class="form-label">ISBN</label><input class="form-control" id="isbn" placeholder="ISBN"></div>
-        <div class="form-group full"><label class="form-label">Book Title *</label><input class="form-control" id="title" placeholder="Full book title"></div>
-        <div class="form-group full"><label class="form-label">Author(s) *</label><input class="form-control" id="authors" placeholder="Author names"></div>
-      </div>
-      <div class="field-section">Publication Details</div>
-      <div class="field-grid">
-        <div class="form-group"><label class="form-label">Publisher</label><input class="form-control" id="publisher" placeholder="Publisher"></div>
-        <div class="form-group"><label class="form-label">Place of Publication</label><input class="form-control" id="placeOfPublication" placeholder="City"></div>
-        <div class="form-group"><label class="form-label">Year</label><input class="form-control" id="year" type="number" placeholder="2024"></div>
-        <div class="form-group"><label class="form-label">Pages</label><input class="form-control" id="pages" type="number" placeholder="Pages"></div>
-      </div>
-      <div class="field-section">Purchase Details</div>
-      <div class="field-grid">
-        <div class="form-group"><label class="form-label">Source</label><input class="form-control" id="source" placeholder="Purchased / Donated"></div>
-        <div class="form-group"><label class="form-label">Price (₹)</label><input class="form-control" id="price" type="number" step="0.01" placeholder="0.00"></div>
-        <div class="form-group"><label class="form-label">Bill Number</label><input class="form-control" id="billNo" placeholder="Bill No."></div>
-        <div class="form-group"><label class="form-label">Bill Date</label><input class="form-control" id="billDate" type="date"></div>
-      </div>
-      <div class="field-section">Classification</div>
-      <div class="field-grid">
-        <div class="form-group"><label class="form-label">Type</label>
-          <select class="form-control" id="type">
-            <option value="">Select Type</option>
-            <option value="TEXTBOOK">Textbook</option><option value="REFERENCE">Reference</option>
-            <option value="NOVEL">Novel</option><option value="JOURNAL">Journal</option>
-            <option value="MAGAZINE">Magazine</option><option value="OTHER">Other</option>
-          </select>
-        </div>
-        <div class="form-group"><label class="form-label">Branch</label>
-          <select class="form-control" id="branch">
-            <option value="">Select Branch</option>
-            <option value="CSE">CSE</option><option value="ECE">ECE</option>
-            <option value="MECH">Mech</option><option value="CIVIL">Civil</option>
-            <option value="EEE">EEE</option><option value="IT">IT</option>
-            <option value="AIML">AI &amp; ML</option><option value="GENERAL">General</option>
-          </select>
-        </div>
-        <div class="form-group"><label class="form-label">Category</label><input class="form-control" id="category" placeholder="e.g. Programming, Math"></div>
-        <div class="form-group"><label class="form-label">Recommended Year (1–4)</label><input class="form-control" id="recommendedYear" type="number" min="1" max="4" placeholder="1"></div>
+        <div class="form-group full"><label class="form-label">Title</label><input id="m-title" class="form-control" placeholder="Book title"></div>
+        <div class="form-group"><label class="form-label">Author</label><input id="m-author" class="form-control" placeholder="Author name"></div>
+        <div class="form-group"><label class="form-label">ISBN</label><input id="m-isbn" class="form-control" placeholder="ISBN"></div>
+        <div class="form-group"><label class="form-label">Accession No.</label><input id="m-accno" class="form-control" placeholder="Acc. Number"></div>
+        <div class="form-group"><label class="form-label">Branch / Department</label><input id="m-branch" class="form-control" placeholder="CSE, ECE…"></div>
+        <div class="form-group"><label class="form-label">Total Copies</label><input id="m-copies" class="form-control" type="number" value="1" min="1"></div>
+        <div class="form-group full"><label class="form-label">Edition / Year</label><input id="m-edition" class="form-control" placeholder="e.g. 3rd Edition, 2022"></div>
       </div>
     </div>
     <div class="modal-footer">
       <button class="btn btn-ghost" onclick="closeModal()">Cancel</button>
-      <button class="btn btn-navy" onclick="saveBook()">Save Book</button>
+      <button class="btn btn-navy" onclick="addBook()">Add Book</button>
     </div>
   </div>
 </div>
@@ -135,91 +106,69 @@
 <script>
 checkAuth();
 let allBooks=[];
-
-document.addEventListener("DOMContentLoaded",()=>{
-  loadBooks();
-  document.getElementById("searchInput").addEventListener("input",filterBooks);
-  document.getElementById("accessionNumber").addEventListener("input",function(){
-    const dup=allBooks.some(b=>b.accessionNumber&&b.accessionNumber.toLowerCase()===this.value.trim().toLowerCase());
-    this.style.borderColor=dup?"var(--red)":"";
-  });
-});
+document.addEventListener('DOMContentLoaded',loadBooks);
 
 async function loadBooks(){
-  const token=localStorage.getItem("token");
-  const r=await fetch("https://library-backend-1-e3r2.onrender.com/books?page=0&size=100",{headers:{"Authorization":"Bearer "+token}});  if(!r.ok){toast("Failed to load books","error");return;}
-  const data=await r.json();
-  allBooks=data.content||data;
-  renderBooks(allBooks);
-}
-
-function renderBooks(books){
-  const tb=document.getElementById("bookBody");
-  document.getElementById("bookCount").textContent=books.length+" books";
-  if(!books.length){tb.innerHTML=`<tr><td colspan="9" style="text-align:center;padding:32px;color:var(--muted);">No books found</td></tr>`;return;}
-  tb.innerHTML=books.map(b=>`<tr>
-    <td><code style="font-size:12px;">${b.accessionNumber||"—"}</code></td>
-    <td><strong>${b.title}</strong></td>
-    <td>${b.authors||"—"}</td>
-    <td>${b.publisher||"—"}</td>
-    <td>${b.year||"—"}</td>
-    <td><span class="role-badge">${b.branch||"—"}</span></td>
-    <td>${b.price?"₹"+b.price:"—"}</td>
-    <td><span class="badge ${b.available?"b-active":"b-overdue"}">${b.available?"Yes":"No"}</span></td>
-    <td><button class="btn btn-del btn-sm" onclick="deleteBook(${b.id})">Delete</button></td>
-  </tr>`).join("");
+  try{
+    const r=await apiFetch('/books?page=0&size=500');
+    const data=r.ok?await r.json():{};
+    allBooks=data.content||data||[];
+    filterBooks();
+  }catch{toast('Failed to load books','error');}
 }
 
 function filterBooks(){
-  const v=document.getElementById("searchInput").value.toLowerCase();
-  renderBooks(allBooks.filter(b=>
-    (b.title&&b.title.toLowerCase().includes(v))||
-    (b.authors&&b.authors.toLowerCase().includes(v))||
-    (b.accessionNumber&&b.accessionNumber.toLowerCase().includes(v))||
-    (b.branch&&b.branch.toLowerCase().includes(v))
-  ));
+  const q=document.getElementById('searchInput').value.toLowerCase();
+  const av=document.getElementById('filterAvail').value;
+  let list=allBooks.filter(b=>{
+    const match=!q||(b.title||'').toLowerCase().includes(q)||(b.author||b.authors||'').toLowerCase().includes(q)||(b.accessionNumber||'').toLowerCase().includes(q);
+    if(!match) return false;
+    if(av==='available') return (b.availableCopies??b.totalCopies??1)>0;
+    if(av==='borrowed') return (b.availableCopies??b.totalCopies??1)===0;
+    return true;
+  });
+  document.getElementById('bookCount').textContent=list.length+' books';
+  const tb=document.getElementById('bookTable');
+  if(!list.length){tb.innerHTML=`<tr><td colspan="7" style="text-align:center;padding:30px;color:var(--muted);">No books found</td></tr>`;return;}
+  tb.innerHTML=list.map(b=>`<tr>
+    <td><code style="font-size:12px;">${b.accessionNumber||'—'}</code></td>
+    <td style="max-width:200px;"><strong style="display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${b.title||'—'}</strong></td>
+    <td style="color:var(--muted);font-size:12.5px;">${b.author||b.authors||'—'}</td>
+    <td>${b.branch||b.department||'—'}</td>
+    <td>${b.totalCopies??1}</td>
+    <td><span class="badge ${(b.availableCopies??1)>0?'b-active':'b-overdue'}">${b.availableCopies??1}</span></td>
+    <td><button class="btn btn-del btn-xs" onclick="deleteBook(${b.id})">Delete</button></td>
+  </tr>`).join('');
 }
 
-async function saveBook(){
-  const token=localStorage.getItem("token");
-  const acc=document.getElementById("accessionNumber").value.trim();
-  const ttl=document.getElementById("title").value.trim();
-  const aut=document.getElementById("authors").value.trim();
-  if(!acc||!ttl||!aut){toast("Accession Number, Title and Authors are required","info");return;}
-  if(allBooks.some(b=>b.accessionNumber&&b.accessionNumber.toLowerCase()===acc.toLowerCase())){
-    toast("Accession number already exists!","error");return;
-  }
-  const body={accessionNumber:acc,title:ttl,authors:aut,
-    publisher:document.getElementById("publisher").value.trim(),
-    placeOfPublication:document.getElementById("placeOfPublication").value.trim(),
-    year:parseInt(document.getElementById("year").value)||0,
-    isbn:document.getElementById("isbn").value.trim(),
-    pages:parseInt(document.getElementById("pages").value)||0,
-    source:document.getElementById("source").value.trim(),
-    price:parseFloat(document.getElementById("price").value)||0,
-    billNo:document.getElementById("billNo").value.trim(),
-    billDate:document.getElementById("billDate").value||null,
-    type:document.getElementById("type").value,
-    category:document.getElementById("category").value.trim(),
-    branch:document.getElementById("branch").value,
-    recommendedYear:parseInt(document.getElementById("recommendedYear").value)||0
+function openAddModal(){ document.getElementById('addModal').style.display='flex'; }
+function closeModal(){ document.getElementById('addModal').style.display='none'; }
+
+async function addBook(){
+  const body={
+    title:document.getElementById('m-title').value.trim(),
+    author:document.getElementById('m-author').value.trim(),
+    isbn:document.getElementById('m-isbn').value.trim(),
+    accessionNumber:document.getElementById('m-accno').value.trim(),
+    branch:document.getElementById('m-branch').value.trim(),
+    totalCopies:parseInt(document.getElementById('m-copies').value)||1,
+    edition:document.getElementById('m-edition').value.trim()
   };
-  const r=await fetch("https://library-backend-1-e3r2.onrender.com/books/admin/add-book",{
-    method:"POST",headers:{"Content-Type":"application/json","Authorization":"Bearer "+token},body:JSON.stringify(body)
-  });
-  if(r.ok){closeModal();toast("Book added successfully!","success");loadBooks();}
-  else{const e=await r.text();toast("Failed: "+e,"error");}
+  if(!body.title){toast('Title is required','error');return;}
+  try{
+    const r=await apiFetch('/books',{method:'POST',body:JSON.stringify(body)});
+    if(r.ok){toast('Book added successfully','success');closeModal();loadBooks();}
+    else toast('Failed to add book','error');
+  }catch{toast('Network error','error');}
 }
 
 async function deleteBook(id){
-  toast("Book deletion is disabled. Contact system administrator.","info");
-}
-
-function openModal(){document.getElementById("modal").style.display="flex";}
-function closeModal(){
-  document.getElementById("modal").style.display="none";
-  ["accessionNumber","isbn","title","authors","publisher","placeOfPublication","year","pages","source","price","billNo","billDate","category","recommendedYear"].forEach(i=>{const el=document.getElementById(i);if(el)el.value="";});
-  document.getElementById("type").value="";document.getElementById("branch").value="";
+  if(!confirm('Delete this book?')) return;
+  try{
+    const r=await apiFetch('/books/'+id,{method:'DELETE'});
+    if(r.ok){toast('Book deleted');loadBooks();}
+    else toast('Failed to delete','error');
+  }catch{toast('Network error','error');}
 }
 </script>
 </body>

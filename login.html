@@ -2,14 +2,14 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
 <title>Login | GRIET Central Library</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,800;1,600&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root{--navy:#081c3a;--navy2:#0d2a57;--gold:#c9a84c;--gold2:#e8c97e;--muted:#64748b;--text:#1a1a2e;--border:#e2e8f0;}
 *{margin:0;padding:0;box-sizing:border-box;}
-html,body{height:100%;font-family:"Outfit",sans-serif;overflow:hidden;}
+html,body{height:100%;font-family:'DM Sans',sans-serif;overflow:hidden;}
 
 /* ── ANNOUNCE TICKER ── */
 .announce{background:var(--navy);height:36px;overflow:hidden;position:relative;}
@@ -45,7 +45,7 @@ html,body{height:100%;font-family:"Outfit",sans-serif;overflow:hidden;}
 .left-hero{flex:1;display:flex;flex-direction:column;justify-content:center;}
 .left-badge{display:inline-flex;align-items:center;gap:8px;padding:6px 16px;background:rgba(201,168,76,0.12);border:1px solid rgba(201,168,76,0.32);border-radius:30px;color:var(--gold2);font-size:10px;font-weight:700;letter-spacing:3px;text-transform:uppercase;margin-bottom:24px;width:fit-content;backdrop-filter:blur(8px);}
 .left-badge::before{content:"◆";font-size:6px;}
-.left-hero h1{font-family:"Cormorant Garamond",serif;font-size:52px;font-weight:700;color:#fff;line-height:1.05;margin-bottom:18px;letter-spacing:-1.5px;}
+.left-hero h1{font-family:'Playfair Display',serif;font-size:52px;font-weight:700;color:#fff;line-height:1.05;margin-bottom:18px;letter-spacing:-1.5px;}
 .left-hero h1 em{color:var(--gold);font-style:italic;display:block;}
 .left-hero p{font-size:15.5px;color:rgba(255,255,255,.62);line-height:1.8;max-width:380px;}
 
@@ -57,7 +57,7 @@ html,body{height:100%;font-family:"Outfit",sans-serif;overflow:hidden;}
 /* STATS */
 .left-stats{display:flex;gap:12px;flex-wrap:wrap;}
 .lstat{background:rgba(255,255,255,.07);backdrop-filter:blur(14px);border:1px solid rgba(255,255,255,.1);border-radius:14px;padding:16px 22px;text-align:center;}
-.lstat .v{font-family:"Cormorant Garamond",serif;font-size:24px;font-weight:700;color:var(--gold2);}
+.lstat .v{font-family:'Playfair Display',serif;font-size:24px;font-weight:700;color:var(--gold2);}
 .lstat .l{font-size:10px;color:rgba(255,255,255,.45);letter-spacing:1px;text-transform:uppercase;margin-top:3px;}
 
 /* ── RIGHT PANEL ── */
@@ -72,7 +72,7 @@ html,body{height:100%;font-family:"Outfit",sans-serif;overflow:hidden;}
 
 /* FORM HEADER */
 .form-icon{width:58px;height:58px;background:linear-gradient(135deg,var(--navy),var(--navy2));border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:26px;margin-bottom:20px;box-shadow:0 8px 24px rgba(8,28,58,0.2);}
-.form-title{font-family:"Cormorant Garamond",serif;font-size:32px;font-weight:700;color:var(--navy);margin-bottom:6px;}
+.form-title{font-family:'Playfair Display',serif;font-size:32px;font-weight:700;color:var(--navy);margin-bottom:6px;}
 .form-sub{font-size:13.5px;color:var(--muted);margin-bottom:28px;line-height:1.65;}
 
 /* COLD START NOTICE */
@@ -81,7 +81,7 @@ html,body{height:100%;font-family:"Outfit",sans-serif;overflow:hidden;}
 
 /* ROLE TABS */
 .role-tabs{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:26px;background:#eef2f7;padding:5px;border-radius:14px;}
-.rtab{padding:10px 6px;border:none;border-radius:10px;background:transparent;cursor:pointer;font-size:12.5px;font-weight:600;color:var(--muted);transition:.25s;display:flex;flex-direction:column;align-items:center;gap:4px;font-family:"Outfit",sans-serif;}
+.rtab{padding:10px 6px;border:none;border-radius:10px;background:transparent;cursor:pointer;font-size:12.5px;font-weight:600;color:var(--muted);transition:.25s;display:flex;flex-direction:column;align-items:center;gap:4px;font-family:'DM Sans',sans-serif;}
 .rtab .tic{font-size:20px;}
 .rtab:hover{color:var(--navy);}
 .rtab.on{background:#fff;color:var(--navy);box-shadow:0 3px 12px rgba(8,28,58,.1);}
@@ -89,7 +89,7 @@ html,body{height:100%;font-family:"Outfit",sans-serif;overflow:hidden;}
 /* INPUTS */
 .field{position:relative;margin-bottom:15px;}
 .field label{display:block;font-size:12.5px;font-weight:600;color:var(--navy);margin-bottom:7px;letter-spacing:.3px;}
-.field input{width:100%;padding:13px 16px;border:1.5px solid var(--border);border-radius:12px;font-size:14px;font-family:"Outfit",sans-serif;background:#fff;color:var(--text);transition:.25s;}
+.field input{width:100%;padding:13px 16px;border:1.5px solid var(--border);border-radius:12px;font-size:14px;font-family:'DM Sans',sans-serif;background:#fff;color:var(--text);transition:.25s;}
 .field input:focus{outline:none;border-color:var(--navy);box-shadow:0 0 0 3px rgba(8,28,58,.07);}
 .field input.err{border-color:#ef4444;box-shadow:0 0 0 3px rgba(239,68,68,.07);}
 .field .eye{position:absolute;right:14px;top:37px;cursor:pointer;color:var(--muted);font-size:16px;user-select:none;transition:.2s;}
@@ -100,7 +100,7 @@ html,body{height:100%;font-family:"Outfit",sans-serif;overflow:hidden;}
 .err-msg.show{display:flex;}
 
 /* LOGIN BTN */
-.btn-login{width:100%;padding:15px;background:linear-gradient(135deg,var(--navy),var(--navy2));color:#fff;border:none;border-radius:13px;font-size:15px;font-weight:700;cursor:pointer;transition:.3s;font-family:"Outfit",sans-serif;display:flex;align-items:center;justify-content:center;gap:10px;margin-top:8px;}
+.btn-login{width:100%;padding:15px;background:linear-gradient(135deg,var(--navy),var(--navy2));color:#fff;border:none;border-radius:13px;font-size:15px;font-weight:700;cursor:pointer;transition:.3s;font-family:'DM Sans',sans-serif;display:flex;align-items:center;justify-content:center;gap:10px;margin-top:8px;}
 .btn-login:hover{transform:translateY(-2px);box-shadow:0 14px 32px rgba(8,28,58,.28);}
 .btn-login:active{transform:translateY(0);}
 .btn-login:disabled{opacity:.7;cursor:not-allowed;transform:none;box-shadow:none;}
@@ -117,7 +117,7 @@ html,body{height:100%;font-family:"Outfit",sans-serif;overflow:hidden;}
 @keyframes fadeIn{from{opacity:0;}to{opacity:1;}}
 .success-ring{width:80px;height:80px;border-radius:50%;background:linear-gradient(135deg,#059669,#047857);display:flex;align-items:center;justify-content:center;font-size:36px;margin-bottom:22px;animation:pop .4s cubic-bezier(.175,.885,.32,1.275);}
 @keyframes pop{from{transform:scale(0);}to{transform:scale(1);}}
-.success-ov h2{font-family:"Cormorant Garamond",serif;font-size:32px;margin-bottom:8px;}
+.success-ov h2{font-family:'Playfair Display',serif;font-size:32px;margin-bottom:8px;}
 .success-ov p{font-size:14.5px;opacity:.65;}
 .success-bar{width:220px;height:3px;background:rgba(255,255,255,.12);border-radius:3px;margin-top:32px;overflow:hidden;}
 .success-fill{height:100%;background:var(--gold);border-radius:3px;animation:fill 1.2s ease forwards;}
@@ -151,6 +151,7 @@ html,body{height:100%;font-family:"Outfit",sans-serif;overflow:hidden;}
 </style>
 </head>
 <body>
+<script src="js/toast.js"></script>
 <div id="toast-root"></div>
 
 <!-- SUCCESS OVERLAY -->

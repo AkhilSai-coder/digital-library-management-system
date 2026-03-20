@@ -1,23 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Faculty Dashboard | GRIET Central Library</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Faculty Dashboard | GRIET Library</title>
 <link rel="stylesheet" href="css/theme.css">
 </head>
 <body>
 <script src="js/toast.js"></script><script src="js/auth.js"></script>
 <div class="dashboard-layout">
 <aside class="sidebar">
-  <div class="sidebar-logo">
-<img src="GRIET_Logo.png" alt="GRIET" style="height:100px; width: 260px;; flex-shrink:0; background-color: white; padding: 5px;">    <div class="sidebar-logo-text">
-    <div class="sidebar-logo-text">
-      <div class="sl-name"></div>
-      <div class="sl-sub"></div>
-    </div>
-  </div>
-
+  <div class="sidebar-logo"><img src="GRIET_Logo.png" alt="GRIET"></div>
   <div class="sidebar-brand">
     <div class="brand-tag">GRIET · Hyderabad</div>
     <div class="brand-name">Central<br>Library</div>
@@ -29,11 +21,11 @@
     <a href="catalogue.html">◫&nbsp; Book Catalogue</a>
     <a href="faculty-mybook.html">📖&nbsp; My Books</a>
     <a href="faculty-fines.html">₹&nbsp; Fines</a>
-    <a href="faculty-recomendation.html">✦&nbsp; Recommend Books</a>
+    <a href="faculty-recomendation.html">⭐&nbsp; Recommend Books</a>
   </nav>
   <div class="sidebar-footer">
     <a href="change-password.html">⚙&nbsp; Change Password</a>
-    <a onclick="logout()" style="cursor:pointer;">→&nbsp; Logout</a>
+    <a onclick="logout()">→&nbsp; Logout</a>
   </div>
 </aside>
 <main class="main">
@@ -41,36 +33,34 @@
     <div>
       <div class="page-eyebrow" id="greetText">Good Morning</div>
       <h1>Faculty Dashboard</h1>
-      <p>Your borrowing activity and library resources</p>
+      <p>Your borrowing activity and recommendations</p>
     </div>
     <div class="top-bar-right">
       <div class="date-chip" id="dateBadge">—</div>
     </div>
   </div>
-
   <div class="cards">
     <div class="card">
       <div class="card-label">Issued Books</div>
       <div class="card-value" id="issuedCount">0</div>
-      <div class="card-sub"><span class="dot dg"></span>Active borrows</div>
+      <div class="card-sub"><span class="dot dg"></span>Currently active</div>
     </div>
     <div class="card c-red">
       <div class="card-label">Overdue</div>
       <div class="card-value vr" id="overdueCount">0</div>
-      <div class="card-sub"><span class="dot dr"></span>₹5/day fine</div>
+      <div class="card-sub"><span class="dot dr"></span>Return immediately</div>
     </div>
     <div class="card c-gold">
-      <div class="card-label">Reading History</div>
-      <div class="card-value vy" id="historyCount">0</div>
-      <div class="card-sub"><span class="dot dy"></span>Books returned</div>
+      <div class="card-label">Pending Fines</div>
+      <div class="card-value vy" id="fineCount">₹0</div>
+      <div class="card-sub"><span class="dot dy"></span>₹5/day overdue</div>
     </div>
-    <div class="card c-green">
-      <div class="card-label">Pending Requests</div>
-      <div class="card-value" id="requestCount">0</div>
-      <div class="card-sub"><span class="dot"></span>Awaiting approval</div>
+    <div class="card c-blue">
+      <div class="card-label">Recommendations</div>
+      <div class="card-value" id="recCount">—</div>
+      <div class="card-sub"><span class="dot"></span>Books recommended</div>
     </div>
   </div>
-
   <div class="box">
     <div class="box-header">
       <span class="box-title">Currently Issued Books</span>
@@ -78,8 +68,8 @@
     </div>
     <div class="box-body table-wrap">
       <table>
-        <thead><tr><th>Book Title</th><th>Issue Date</th><th>Due Date</th><th>Status</th></tr></thead>
-        <tbody id="facultyTable"></tbody>
+        <thead><tr><th>Book Title</th><th>Author</th><th>Issue Date</th><th>Due Date</th><th>Status</th></tr></thead>
+        <tbody id="issuedTable"><tr><td colspan="5" style="text-align:center;padding:30px;color:var(--muted);">Loading…</td></tr></tbody>
       </table>
     </div>
   </div>
@@ -88,42 +78,34 @@
 <script>
 checkAuth();
 const h=new Date().getHours();
-document.getElementById("greetText").textContent=h<12?"Good Morning":h<17?"Good Afternoon":"Good Evening";
-document.getElementById("dateBadge").textContent=new Date().toLocaleDateString("en-IN",{weekday:"long",day:"numeric",month:"long",year:"numeric"});
-
-document.addEventListener("DOMContentLoaded",async function(){
-  const token=localStorage.getItem("token");
-  if(!token){window.location.href="login.html";return;}
-  const tb=document.getElementById("facultyTable");
+document.getElementById('greetText').textContent=h<12?'Good Morning':h<17?'Good Afternoon':'Good Evening';
+document.getElementById('dateBadge').textContent=new Date().toLocaleDateString('en-IN',{weekday:'short',day:'numeric',month:'short',year:'numeric'});
+document.addEventListener('DOMContentLoaded',async()=>{
   try{
-    const [br,rr]=await Promise.all([
-      fetch("https://library-backend-1-e3r2.onrender.com/borrow/my-books",{headers:{"Authorization":"Bearer "+token}}),
-      fetch("https://library-backend-1-e3r2.onrender.com/request/my",{headers:{"Authorization":"Bearer "+token}})
-    ]);
-    const borrows=br.ok?await br.json():[];
-    const requests=rr.ok?await rr.json():[];
+    const r=await apiFetch('/borrow/my');
+    const borrows=r.ok?await r.json():[];
     const today=new Date();
     const active=borrows.filter(b=>!b.returned);
-    const returned=borrows.filter(b=>b.returned);
-    let overdue=0;
-    tb.innerHTML="";
-    active.forEach(b=>{
-      const due=new Date(b.dueDate);
-      const isOverdue=today>due;
-      if(isOverdue)overdue++;
-      tb.innerHTML+=`<tr>
-        <td><strong>${b.book.title}</strong></td>
-        <td>${b.issueDate}</td><td>${b.dueDate}</td>
-        <td><span class="badge ${isOverdue?"b-overdue":"b-active"}">${isOverdue?"Overdue":"Active"}</span></td>
+    const od=active.filter(b=>new Date(b.dueDate)<today);
+    const fine=od.reduce((s,b)=>s+Math.floor((today-new Date(b.dueDate))/86400000)*5,0);
+    document.getElementById('issuedCount').textContent=active.length;
+    document.getElementById('overdueCount').textContent=od.length;
+    document.getElementById('fineCount').textContent='₹'+fine;
+    document.getElementById('recCount').textContent='—';
+    document.getElementById('activeChip').textContent=active.length+' active';
+    const tb=document.getElementById('issuedTable');
+    if(!active.length){tb.innerHTML=`<tr><td colspan="5" style="text-align:center;padding:32px;color:var(--muted);">📚 No books currently issued</td></tr>`;return;}
+    tb.innerHTML=active.map(b=>{
+      const overdue=new Date(b.dueDate)<today;
+      return `<tr>
+        <td><strong>${b.book?.title||'—'}</strong></td>
+        <td style="color:var(--muted);font-size:12.5px;">${b.book?.author||'—'}</td>
+        <td>${b.borrowDate||b.issueDate||'—'}</td>
+        <td>${b.dueDate||'—'}</td>
+        <td><span class="badge ${overdue?'b-overdue':'b-active'}">${overdue?'Overdue':'Active'}</span></td>
       </tr>`;
-    });
-    if(active.length===0)tb.innerHTML=`<tr><td colspan="4" style="text-align:center;padding:32px;color:var(--muted);">No books currently issued</td></tr>`;
-    document.getElementById("issuedCount").textContent=active.length;
-    document.getElementById("overdueCount").textContent=overdue;
-    document.getElementById("historyCount").textContent=returned.length;
-    document.getElementById("activeChip").textContent=active.length+" active";
-    document.getElementById("requestCount").textContent=requests.filter(r=>r.status==="PENDING").length;
-  }catch(e){toast("Server error","error");}
+    }).join('');
+  }catch{toast('Failed to load data','error');}
 });
 </script>
 </body>

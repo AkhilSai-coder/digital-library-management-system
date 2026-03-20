@@ -1,23 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Fines | Faculty | GRIET Central Library</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>My Fines | GRIET Library</title>
 <link rel="stylesheet" href="css/theme.css">
 </head>
 <body>
 <script src="js/toast.js"></script><script src="js/auth.js"></script>
 <div class="dashboard-layout">
 <aside class="sidebar">
-  <div class="sidebar-logo">
-<img src="GRIET_Logo.png" alt="GRIET" style="height:100px; width: 260px;; flex-shrink:0; background-color: white; padding: 5px;">    <div class="sidebar-logo-text">
-    <div class="sidebar-logo-text">
-      <div class="sl-name"></div>
-      <div class="sl-sub"></div>
-    </div>
-  </div>
-
+  <div class="sidebar-logo"><img src="GRIET_Logo.png" alt="GRIET"></div>
   <div class="sidebar-brand">
     <div class="brand-tag">GRIET · Hyderabad</div>
     <div class="brand-name">Central<br>Library</div>
@@ -25,56 +17,81 @@
   </div>
   <nav>
     <div class="sidebar-sep">Menu</div>
-    <a href="faculty-dashboard.html">⊞&nbsp; Dashboard</a>
-    <a href="catalogue.html">◫&nbsp; Book Catalogue</a>
-    <a href="faculty-mybook.html">📖&nbsp; My Books</a>
-    <a class="active">₹&nbsp; Fines</a>
-    <a href="faculty-recomendation.html">✦&nbsp; Recommend Books</a>
+    <a href="faculty-dashboard.html">&#8862;&nbsp; Dashboard</a>
+    <a href="catalogue.html">&#9647;&nbsp; Book Catalogue</a>
+    <a href="faculty-mybook.html">&#128214;&nbsp; My Books</a>
+    <a class="active">&#8377;&nbsp; Fines</a>
+    <a href="faculty-recomendation.html">&#11088;&nbsp; Recommend Books</a>
   </nav>
   <div class="sidebar-footer">
-    <a href="change-password.html">⚙&nbsp; Change Password</a>
-    <a onclick="logout()" style="cursor:pointer;">→&nbsp; Logout</a>
+    <a href="change-password.html">&#9881;&nbsp; Change Password</a>
+    <a onclick="logout()">&#8594;&nbsp; Logout</a>
   </div>
 </aside>
 <main class="main">
-  <div class="top-bar"><div><div class="page-eyebrow">Faculty</div><h1>Fines</h1></div></div>
-  <div class="summary-card">
-    <h3>Outstanding Amount</h3>
-    <div class="fine-amount" id="fineAmount">₹0</div>
-    <div class="fine-sub" id="fineSub">0 pending fine(s) · ₹5/day</div>
+  <div class="top-bar">
+    <div>
+      <div class="page-eyebrow">Faculty</div>
+      <h1>My Fines</h1>
+      <p>Pending and cleared fines for your account</p>
+    </div>
+    <div class="top-bar-right">
+      <div class="date-chip" id="dateBadge">--</div>
+    </div>
+  </div>
+  <div class="grid-2" style="margin-bottom:20px;">
+    <div class="summary-card">
+      <h3>Total Pending Fine</h3>
+      <div class="fine-amount" id="totalFine">Rs.0</div>
+      <div class="fine-sub">Pay at the library counter</div>
+    </div>
+    <div class="summary-card">
+      <h3>Overdue Books</h3>
+      <div class="fine-amount" id="odCount" style="color:var(--gold);">0</div>
+      <div class="fine-sub">Rs.5 per day (faculty rate)</div>
+    </div>
   </div>
   <div class="box">
-    <div class="box-header"><span class="box-title">Fine History</span></div>
+    <div class="box-header">
+      <span class="box-title">Fine Breakdown</span>
+      <span class="badge b-info" id="fineChip">-- records</span>
+    </div>
     <div class="box-body table-wrap">
-      <table><thead><tr><th>Book</th><th>Overdue By</th><th>Fine</th><th>Due Date</th><th>Status</th></tr></thead>
-      <tbody id="fineTable"></tbody></table>
+      <table>
+        <thead><tr><th>Book</th><th>Due Date</th><th>Days Overdue</th><th>Fine (Rs.5/day)</th></tr></thead>
+        <tbody id="fineTable"><tr><td colspan="4" style="text-align:center;padding:30px;color:var(--muted);">Loading...</td></tr></tbody>
+      </table>
     </div>
   </div>
 </main>
 </div>
 <script>
 checkAuth();
-document.addEventListener("DOMContentLoaded",loadFines);
-async function loadFines(){
-  const token=localStorage.getItem("token");
-  if(!token){window.location.href="login.html";return;}
-  const r=await fetch("https://library-backend-1-e3r2.onrender.com/borrow/my-books",{headers:{"Authorization":"Bearer "+token}});
-  const borrows=r.ok?await r.json():[];
-  const tb=document.getElementById("fineTable");
-  const today=new Date();let total=0,count=0;tb.innerHTML="";
-  borrows.forEach(b=>{
-    if(!b.returned){const due=new Date(b.dueDate);
-      if(today>due){const days=Math.floor((today-due)/(1000*60*60*24));const fine=days*5;
-        if(fine>0){total+=fine;count++;
-          tb.innerHTML+=`<tr><td><strong>${b.book.title}</strong></td><td>${days} day(s)</td><td><strong>₹${fine}</strong></td><td>${b.dueDate}</td><td><span class="badge b-overdue">Pending</span></td></tr>`;
-        }
-      }
+document.getElementById('dateBadge').textContent = new Date().toLocaleDateString('en-IN',{weekday:'short',day:'numeric',month:'short',year:'numeric'});
+document.addEventListener('DOMContentLoaded', async () => {
+  try {
+    const r = await apiFetch('/borrow/my');
+    const borrows = r.ok ? await r.json() : [];
+    const today = new Date();
+    const od = borrows.filter(b => !b.returned && new Date(b.dueDate) < today);
+    let total = 0;
+    const tb = document.getElementById('fineTable');
+    document.getElementById('fineChip').textContent = od.length + ' records';
+    if (!od.length) {
+      tb.innerHTML = '<tr><td colspan="4" style="text-align:center;padding:32px;color:var(--muted);">No pending fines!</td></tr>';
+      document.getElementById('odCount').textContent = 0;
+      return;
     }
-  });
-  if(count===0)tb.innerHTML=`<tr><td colspan="5" style="text-align:center;padding:32px;color:var(--muted);">🎉 No fines — you're all clear!</td></tr>`;
-  document.getElementById("fineAmount").textContent="₹"+total;
-  document.getElementById("fineSub").textContent=count+" pending fine(s) · ₹5/day";
-}
+    tb.innerHTML = od.map(b => {
+      const days = Math.floor((today - new Date(b.dueDate)) / 86400000);
+      const fine = days * 5; total += fine;
+      const sc = days > 7 ? 'b-overdue' : 'b-pending';
+      return '<tr><td><strong>' + (b.book?.title||'--') + '</strong></td><td>' + b.dueDate + '</td><td><span class="badge ' + sc + '">' + days + 'd</span></td><td><strong>Rs.' + fine + '</strong></td></tr>';
+    }).join('');
+    document.getElementById('totalFine').textContent = 'Rs.' + total;
+    document.getElementById('odCount').textContent = od.length;
+  } catch(e) { toast('Failed to load fines', 'error'); }
+});
 </script>
 </body>
 </html>

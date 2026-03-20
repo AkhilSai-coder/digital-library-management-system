@@ -1,23 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Issue &amp; Return | GRIET Central Library</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="css/theme.css">
 </head>
 <body>
 <script src="js/toast.js"></script><script src="js/auth.js"></script>
 <div class="dashboard-layout">
 <aside class="sidebar">
-  <div class="sidebar-logo">
-<img src="GRIET_Logo.png" alt="GRIET" style="height:100px; width: 260px;; flex-shrink:0; background-color: white; padding: 5px;">    <div class="sidebar-logo-text">
-    <div class="sidebar-logo-text">
-      <div class="sl-name"></div>
-      <div class="sl-sub"></div>
-    </div>
-  </div>
-
+  <div class="sidebar-logo"><img src="GRIET_Logo.png" alt="GRIET"></div>
   <div class="sidebar-brand">
     <div class="brand-tag">GRIET · Hyderabad</div>
     <div class="brand-name">Central<br>Library</div>
@@ -27,7 +19,7 @@
     <div class="sidebar-sep">Main</div>
     <a href="librarian-dashboard.html">⊞&nbsp; Dashboard</a>
     <a href="library-scanner.html">⬛&nbsp; Entry / Exit Scanner</a>
-    <a href="book-management.html">+&nbsp; Add / Manage Books</a>
+    <a href="book-management.html">＋&nbsp; Add / Manage Books</a>
     <div class="sidebar-sep">Circulation</div>
     <a class="active">⇄&nbsp; Issue &amp; Return</a>
     <a href="fine-management.html">₹&nbsp; Fine Management</a>
@@ -37,7 +29,7 @@
   </nav>
   <div class="sidebar-footer">
     <a href="change-password.html">⚙&nbsp; Settings</a>
-    <a onclick="logout()" style="cursor:pointer;">→&nbsp; Logout</a>
+    <a onclick="logout()">→&nbsp; Logout</a>
   </div>
 </aside>
 <main class="main">
@@ -57,114 +49,91 @@
         <span class="panel-title">Pending Requests</span>
         <span class="panel-badge" id="reqBadge">0</span>
       </div>
-      <div class="panel-body" id="requestList"></div>
+      <div class="panel-body" id="requestList"><div class="empty-state"><span class="ei">📋</span><p>Loading…</p></div></div>
     </div>
     <div class="panel">
       <div class="panel-header">
-        <span class="panel-title">Issued Books</span>
+        <span class="panel-title">Currently Issued</span>
         <span class="panel-badge blue" id="issuedBadge">0</span>
       </div>
-      <div class="panel-body" id="issuedList"></div>
+      <div class="panel-body" id="issuedList"><div class="empty-state"><span class="ei">📚</span><p>Loading…</p></div></div>
     </div>
   </div>
 </main>
 </div>
 <script>
 checkAuth();
-const BASE="https://library-backend-1-e3r2.onrender.com";
-document.addEventListener("DOMContentLoaded",loadAll);
+const BASE='https://library-backend-1-e3r2.onrender.com';
+document.addEventListener('DOMContentLoaded',loadAll);
 
 async function loadAll(){await Promise.all([loadRequests(),loadIssued()]);}
 
 async function loadRequests(){
-  const el=document.getElementById("requestList");
-  el.innerHTML=`<div style="padding:20px;color:var(--muted);text-align:center;font-size:13px;">Loading...</div>`;
+  const el=document.getElementById('requestList');
   try{
-    const res=await apiFetch("/request/pending");
-    const data=res.ok?await res.json():[];
-    document.getElementById("reqBadge").textContent=data.length;
-    if(!data.length){el.innerHTML=`<div class="empty-state"><div class="ei">✅</div><p>No pending requests</p></div>`;return;}
-    el.innerHTML=data.map(r=>`
-      <div class="list-item" id="req-${r.id}">
+    const r=await apiFetch('/borrow/requests');
+    const data=r.ok?await r.json():[];
+    document.getElementById('reqBadge').textContent=data.length;
+    if(!data.length){el.innerHTML='<div class="empty-state"><span class="ei">🎉</span><p>No pending requests</p></div>';return;}
+    el.innerHTML=data.map(b=>`
+      <div class="list-item">
         <div class="item-info">
-          <b>${r.book.title}</b>
-          <small>👤 ${r.user.collegeId} &nbsp;·&nbsp; ${r.book.accessionNumber||"—"}</small>
+          <b>${b.book?.title||'—'}</b>
+          <small>${b.user?.collegeId||'—'} · ${b.user?.role||''}</small>
         </div>
         <div class="btn-group">
-          <button class="btn btn-ok btn-sm" onclick="approveRequest(${r.id},this)">Approve</button>
-          <button class="btn btn-del btn-sm" onclick="rejectRequest(${r.id},this)">Reject</button>
+          <button class="btn btn-ok btn-xs" onclick="approve(${b.id})">Approve</button>
+          <button class="btn btn-del btn-xs" onclick="reject(${b.id})">Reject</button>
         </div>
-      </div>`).join("");
-  }catch(e){el.innerHTML=`<div class="empty-state"><p>Failed to load requests</p></div>`;}
+      </div>`).join('');
+  }catch{el.innerHTML='<div class="empty-state"><span class="ei">⚠️</span><p>Failed to load</p></div>';}
 }
 
 async function loadIssued(){
-  const el=document.getElementById("issuedList");
-  el.innerHTML=`<div style="padding:20px;color:var(--muted);text-align:center;font-size:13px;">Loading...</div>`;
+  const el=document.getElementById('issuedList');
   try{
-    const res=await apiFetch("/borrow/all");
-    const data=res.ok?await res.json():[];
-    const active=data.filter(b=>!b.returned);
-    document.getElementById("issuedBadge").textContent=active.length;
-    if(!active.length){el.innerHTML=`<div class="empty-state"><div class="ei">📭</div><p>No books currently issued</p></div>`;return;}
+    const r=await apiFetch('/borrow/all');
+    const borrows=r.ok?await r.json():[];
+    const active=borrows.filter(b=>!b.returned);
+    document.getElementById('issuedBadge').textContent=active.length;
+    if(!active.length){el.innerHTML='<div class="empty-state"><span class="ei">📭</span><p>No active borrows</p></div>';return;}
     const today=new Date();
     el.innerHTML=active.map(b=>{
-      const overdue=new Date(b.dueDate)<today;
-      return `<div class="list-item" id="borrow-${b.id}">
+      const od=new Date(b.dueDate)<today;
+      return `<div class="list-item">
         <div class="item-info">
-          <b>${b.book.title}${overdue?'<span class="overdue-chip">OVERDUE</span>':''}</b>
-          <small>👤 ${b.user.collegeId} &nbsp;·&nbsp; Due: ${b.dueDate}</small>
+          <b>${b.book?.title||'—'} ${od?'<span class="overdue-chip">Overdue</span>':''}</b>
+          <small>${b.user?.collegeId||'—'} · Due: ${b.dueDate}</small>
         </div>
-        <div class="btn-group">
-          <button class="btn btn-warn btn-sm" onclick="returnBook(${b.id},this)">Return</button>
-        </div>
+        <button class="btn btn-ghost btn-xs" onclick="returnBook(${b.id})">Return</button>
       </div>`;
-    }).join("");
-  }catch(e){el.innerHTML=`<div class="empty-state"><p>Failed to load</p></div>`;}
+    }).join('');
+  }catch{el.innerHTML='<div class="empty-state"><span class="ei">⚠️</span><p>Failed to load</p></div>';}
 }
 
-async function approveRequest(id,btn){
-  btn.disabled=true;btn.textContent="...";
-  document.querySelectorAll(`#req-${id} .btn`).forEach(b=>b.disabled=true);
-  const res=await apiFetch(`/request/approve/${id}`,{method:"POST"});
-  if(res.ok){removeItem("req-"+id);decBadge("reqBadge");toast("Request approved — book issued!","success");loadIssued();}
-  else{toast("Failed to approve","error");btn.disabled=false;btn.textContent="Approve";}
-}
-
-async function rejectRequest(id,btn){
-  btn.disabled=true;btn.textContent="...";
-  document.querySelectorAll(`#req-${id} .btn`).forEach(b=>b.disabled=true);
-  const res=await apiFetch(`/request/reject/${id}`,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({reason:""})});
-  if(res.ok){removeItem("req-"+id);decBadge("reqBadge");toast("Request rejected","info");}
-  else{toast("Failed to reject","error");btn.disabled=false;btn.textContent="Reject";}
-}
-
-async function returnBook(id,btn){
-  btn.disabled=true;btn.textContent="...";
+async function approve(id){
   try{
-    const res=await apiFetch(`/borrow/return/${id}`,{method:"POST"});
-    if(res.ok){
-      removeItem("borrow-"+id);
-      decBadge("issuedBadge");
-      toast("Book returned successfully!","success");
-      loadIssued();
-    } else {
-      const err=await res.text().catch(()=>"Unknown error");
-      toast("Return failed: "+err,"error");
-      btn.disabled=false;btn.textContent="Return";
-    }
-  } catch(e){
-    toast("Server error. Try again.","error");
-    btn.disabled=false;btn.textContent="Return";
-  }
+    const r=await apiFetch('/borrow/approve/'+id,{method:'POST'});
+    if(r.ok){toast('Request approved','success');loadAll();}
+    else toast('Failed to approve','error');
+  }catch{toast('Network error','error');}
 }
 
-function removeItem(id){
-  const el=document.getElementById(id);if(!el)return;
-  el.classList.add("removing");
-  setTimeout(()=>{el.remove();},300);
+async function reject(id){
+  try{
+    const r=await apiFetch('/borrow/reject/'+id,{method:'POST'});
+    if(r.ok){toast('Request rejected');loadAll();}
+    else toast('Failed to reject','error');
+  }catch{toast('Network error','error');}
 }
-function decBadge(id){const el=document.getElementById(id);el.textContent=Math.max(0,parseInt(el.textContent)-1);}
+
+async function returnBook(id){
+  try{
+    const r=await apiFetch('/borrow/return/'+id,{method:'POST'});
+    if(r.ok){toast('Book returned','success');loadAll();}
+    else toast('Failed to return','error');
+  }catch{toast('Network error','error');}
+}
 </script>
 </body>
 </html>

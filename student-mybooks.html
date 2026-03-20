@@ -1,23 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<title>My Books | Student | GRIET Central Library</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>My Books | GRIET Library</title>
 <link rel="stylesheet" href="css/theme.css">
 </head>
 <body>
 <script src="js/toast.js"></script><script src="js/auth.js"></script>
 <div class="dashboard-layout">
 <aside class="sidebar">
-  <div class="sidebar-logo">
-<img src="GRIET_Logo.png" alt="GRIET" style="height:100px; width: 260px;; flex-shrink:0; background-color: white; padding: 5px;">    <div class="sidebar-logo-text">
-    <div class="sidebar-logo-text">
-      <div class="sl-name"></div>
-      <div class="sl-sub"></div>
-    </div>
-  </div>
-
+  <div class="sidebar-logo"><img src="GRIET_Logo.png" alt="GRIET"></div>
   <div class="sidebar-brand">
     <div class="brand-tag">GRIET · Hyderabad</div>
     <div class="brand-name">Central<br>Library</div>
@@ -32,21 +24,28 @@
   </nav>
   <div class="sidebar-footer">
     <a href="change-password.html">⚙&nbsp; Change Password</a>
-    <a onclick="logout()" style="cursor:pointer;">→&nbsp; Logout</a>
+    <a onclick="logout()">→&nbsp; Logout</a>
   </div>
 </aside>
 <main class="main">
   <div class="top-bar">
-    <div><div class="page-eyebrow">Student</div><h1>My Books</h1></div>
+    <div>
+      <div class="page-eyebrow">Student</div>
+      <h1>My Books</h1>
+      <p>All your issued and returned books</p>
+    </div>
   </div>
   <div class="tabs">
-    <button class="tab active" id="activeTab" onclick="showActive()">Active (0)</button>
-    <button class="tab" id="historyTab" onclick="showHistory()">History (0)</button>
+    <button class="tab active" onclick="switchTab('active',this)">Active</button>
+    <button class="tab" onclick="switchTab('pending',this)">Pending</button>
+    <button class="tab" onclick="switchTab('history',this)">History</button>
   </div>
   <div class="box">
     <div class="box-body table-wrap">
-      <table><thead><tr><th>Book Title</th><th>Issue Date</th><th>Due Date</th><th>Status</th></tr></thead>
-      <tbody id="booksTable"></tbody></table>
+      <table>
+        <thead><tr><th>Book Title</th><th>Author</th><th>Issue Date</th><th>Due Date</th><th>Status</th></tr></thead>
+        <tbody id="bookTable"><tr><td colspan="5" style="text-align:center;padding:30px;color:var(--muted);">Loading…</td></tr></tbody>
+      </table>
     </div>
   </div>
 </main>
@@ -54,38 +53,29 @@
 <script>
 checkAuth();
 let allBorrows=[];
-document.addEventListener("DOMContentLoaded",loadMyBooks);
-async function loadMyBooks(){
-  const token=localStorage.getItem("token");
-  const r=await fetch("https://library-backend-1-e3r2.onrender.com/borrow/my-books",{headers:{"Authorization":"Bearer "+token}});
-  allBorrows=r.ok?await r.json():[];
-  const ac=allBorrows.filter(b=>!b.returned).length;
-  const hc=allBorrows.filter(b=>b.returned).length;
-  document.getElementById("activeTab").textContent=`Active (${ac})`;
-  document.getElementById("historyTab").textContent=`History (${hc})`;
-  showActive();
-}
-function showActive(){
-  document.getElementById("activeTab").classList.add("active");
-  document.getElementById("historyTab").classList.remove("active");
-  const tb=document.getElementById("booksTable");
-  const active=allBorrows.filter(b=>!b.returned);
+document.addEventListener('DOMContentLoaded',async()=>{
+  try{const r=await apiFetch('/borrow/my');allBorrows=r.ok?await r.json():[];switchTab('active',document.querySelector('.tab.active'));}
+  catch{toast('Failed to load','error');}
+});
+function switchTab(type,btn){
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  btn.classList.add('active');
   const today=new Date();
-  if(!active.length){tb.innerHTML=`<tr><td colspan="4" style="text-align:center;padding:32px;color:var(--muted);">No active books</td></tr>`;return;}
-  tb.innerHTML=active.map(b=>{
-    const od=today>new Date(b.dueDate);
-    return `<tr><td><strong>${b.book.title}</strong></td><td>${b.issueDate}</td><td>${b.dueDate}</td>
-    <td><span class="badge ${od?"b-overdue":"b-active"}">${od?"Overdue":"Active"}</span></td></tr>`;
-  }).join("");
-}
-function showHistory(){
-  document.getElementById("historyTab").classList.add("active");
-  document.getElementById("activeTab").classList.remove("active");
-  const tb=document.getElementById("booksTable");
-  const hist=allBorrows.filter(b=>b.returned);
-  if(!hist.length){tb.innerHTML=`<tr><td colspan="4" style="text-align:center;padding:32px;color:var(--muted);">No history yet</td></tr>`;return;}
-  tb.innerHTML=hist.map(b=>`<tr><td><strong>${b.book.title}</strong></td><td>${b.issueDate}</td><td>${b.dueDate}</td>
-  <td><span class="badge b-returned">Returned</span></td></tr>`).join("");
+  let list=type==='active'?allBorrows.filter(b=>!b.returned&&b.status!=='PENDING')
+    :type==='pending'?allBorrows.filter(b=>b.status==='PENDING')
+    :allBorrows.filter(b=>b.returned);
+  const tb=document.getElementById('bookTable');
+  if(!list.length){tb.innerHTML=`<tr><td colspan="5" style="text-align:center;padding:32px;color:var(--muted);">No books in this category</td></tr>`;return;}
+  tb.innerHTML=list.map(b=>{
+    const od=!b.returned&&new Date(b.dueDate)<today;
+    return `<tr>
+      <td><strong>${b.book?.title||'—'}</strong></td>
+      <td style="color:var(--muted);font-size:12.5px;">${b.book?.author||'—'}</td>
+      <td>${b.borrowDate||b.issueDate||'—'}</td>
+      <td>${b.dueDate||'—'}</td>
+      <td><span class="badge ${b.returned?'b-returned':b.status==='PENDING'?'b-pending':od?'b-overdue':'b-active'}">${b.returned?'Returned':b.status==='PENDING'?'Pending':od?'Overdue':'Active'}</span></td>
+    </tr>`;
+  }).join('');
 }
 </script>
 </body>

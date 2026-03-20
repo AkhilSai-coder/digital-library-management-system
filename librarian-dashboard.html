@@ -1,36 +1,32 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Librarian Dashboard | GRIET Central Library</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Dashboard | GRIET Central Library</title>
 <link rel="stylesheet" href="css/theme.css">
+<style>
+.dash-grid{display:grid;grid-template-columns:1fr 300px;gap:20px;align-items:start;}
+.health-row{display:flex;flex-direction:column;gap:4px;margin-bottom:16px;}
+@media(max-width:800px){.dash-grid{grid-template-columns:1fr;}}
+</style>
 </head>
 <body>
 <script src="js/toast.js"></script><script src="js/auth.js"></script>
 <div class="dashboard-layout">
 <aside class="sidebar">
-  <div class="sidebar-logo">
-<img src="GRIET_Logo.png" alt="GRIET" style="height:100px; width: 260px;; flex-shrink:0; background-color: white; padding: 5px;">    <div class="sidebar-logo-text">
-    <div class="sidebar-logo-text">
-      <div class="sl-name"></div>
-      <div class="sl-sub"></div>
-    </div>
-  </div>
-
+  <div class="sidebar-logo"><img src="GRIET_Logo.png" alt="GRIET"></div>
   <div class="sidebar-brand">
     <div class="brand-tag">GRIET · Hyderabad</div>
     <div class="brand-name">Central<br>Library</div>
     <div class="brand-sub">Management System</div>
   </div>
   <nav>
-    <div class="sidebar-sep">Gate</div>
+    <div class="sidebar-sep">Main</div>
     <a class="active">⊞&nbsp; Dashboard</a>
     <a href="library-scanner.html">⬛&nbsp; Entry / Exit Scanner</a>
-    <a href="book-management.html">+&nbsp; Add / Manage Books</a>
+    <a href="book-management.html">＋&nbsp; Add / Manage Books</a>
     <div class="sidebar-sep">Circulation</div>
     <a href="issue-return.html">⇄&nbsp; Issue &amp; Return</a>
-    <a href="issue-return.html">✓&nbsp; Pending Requests</a>
     <a href="fine-management.html">₹&nbsp; Fine Management</a>
     <div class="sidebar-sep">Users</div>
     <a href="members.html">◎&nbsp; Members</a>
@@ -38,7 +34,7 @@
   </nav>
   <div class="sidebar-footer">
     <a href="change-password.html">⚙&nbsp; Settings</a>
-    <a onclick="logout()" style="cursor:pointer;">→&nbsp; Logout</a>
+    <a onclick="logout()">→&nbsp; Logout</a>
   </div>
 </aside>
 <main class="main">
@@ -68,7 +64,7 @@
     <div class="card c-green">
       <div class="card-label">Registered Users</div>
       <div class="card-value" id="totalUsers">—</div>
-      <div class="card-sub"><span class="dot dy"></span><span id="facCount">—</span>&nbsp;faculty&nbsp;·&nbsp;<span class="dot"></span><span id="stuCount">—</span>&nbsp;students</div>
+      <div class="card-sub"><span class="dot dy"></span><span id="facCount">—</span>&nbsp;faculty&nbsp;·&nbsp;<span id="stuCount">—</span>&nbsp;students</div>
     </div>
     <div class="card c-red">
       <div class="card-label">Pending Requests</div>
@@ -77,7 +73,7 @@
     </div>
   </div>
 
-  <div style="display:grid;grid-template-columns:1fr 300px;gap:22px;align-items:start;">
+  <div class="dash-grid">
     <div class="box">
       <div class="box-header">
         <span class="box-title">Overdue Members</span>
@@ -85,25 +81,34 @@
       </div>
       <div class="box-body table-wrap">
         <table>
-          <thead><tr><th>User ID</th><th>Book</th><th>Due Date</th><th>Status</th></tr></thead>
-          <tbody id="overdueTable"></tbody>
+          <thead><tr><th>User ID</th><th>Book</th><th>Due Date</th><th>Days Late</th><th>Status</th></tr></thead>
+          <tbody id="overdueTable"><tr><td colspan="5" style="text-align:center;padding:30px;color:var(--muted);">Loading…</td></tr></tbody>
         </table>
       </div>
     </div>
     <div class="box">
       <div class="box-header"><span class="box-title">Library Health</span><span class="badge b-active">Live</span></div>
-      <div class="box-body" style="padding:18px;">
-        <div style="margin-bottom:14px;">
-          <div style="display:flex;justify-content:space-between;font-size:12.5px;margin-bottom:6px;"><span style="color:var(--muted);">Utilisation Rate</span><span style="font-weight:700;color:var(--navy);" id="utilRate">—%</span></div>
-          <div style="height:5px;background:var(--cream2);border-radius:3px;overflow:hidden;"><div id="utilBar" style="height:100%;background:var(--gold);border-radius:3px;width:0%;transition:0.8s ease;"></div></div>
+      <div class="box-body" style="padding:18px 20px;">
+        <div class="health-row">
+          <div style="display:flex;justify-content:space-between;font-size:12.5px;margin-bottom:6px;">
+            <span style="color:var(--muted);">Utilisation Rate</span>
+            <strong id="utilRate" style="color:var(--navy);">—%</strong>
+          </div>
+          <div class="progress-bg" style="height:6px;"><div id="utilBar" class="progress-fill" style="background:var(--gold);width:0%;"></div></div>
         </div>
-        <div style="margin-bottom:14px;">
-          <div style="display:flex;justify-content:space-between;font-size:12.5px;margin-bottom:6px;"><span style="color:var(--muted);">On-Time Return Rate</span><span style="font-weight:700;color:var(--navy);" id="returnRate">—%</span></div>
-          <div style="height:5px;background:var(--cream2);border-radius:3px;overflow:hidden;"><div id="returnBar" style="height:100%;background:var(--green);border-radius:3px;width:0%;transition:0.8s ease;"></div></div>
+        <div class="health-row">
+          <div style="display:flex;justify-content:space-between;font-size:12.5px;margin-bottom:6px;">
+            <span style="color:var(--muted);">On-Time Return Rate</span>
+            <strong id="returnRate" style="color:var(--navy);">—%</strong>
+          </div>
+          <div class="progress-bg" style="height:6px;"><div id="returnBar" class="progress-fill" style="background:var(--green);width:0%;"></div></div>
         </div>
-        <div>
-          <div style="display:flex;justify-content:space-between;font-size:12.5px;margin-bottom:6px;"><span style="color:var(--muted);">Request Approval Rate</span><span style="font-weight:700;color:var(--navy);" id="approvalRate">—%</span></div>
-          <div style="height:5px;background:var(--cream2);border-radius:3px;overflow:hidden;"><div id="approvalBar" style="height:100%;background:var(--navy);border-radius:3px;width:0%;transition:0.8s ease;"></div></div>
+        <div class="health-row">
+          <div style="display:flex;justify-content:space-between;font-size:12.5px;margin-bottom:6px;">
+            <span style="color:var(--muted);">Approval Rate</span>
+            <strong id="approvalRate" style="color:var(--navy);">—%</strong>
+          </div>
+          <div class="progress-bg" style="height:6px;"><div id="approvalBar" class="progress-fill" style="background:var(--navy);width:0%;"></div></div>
         </div>
       </div>
     </div>
@@ -113,50 +118,53 @@
 <script>
 checkAuth();
 const h=new Date().getHours();
-document.getElementById("greetText").textContent=h<12?"Good Morning":h<17?"Good Afternoon":"Good Evening";
-document.getElementById("dateBadge").textContent=new Date().toLocaleDateString("en-IN",{weekday:"long",day:"numeric",month:"long",year:"numeric"});
+document.getElementById('greetText').textContent=h<12?'Good Morning':h<17?'Good Afternoon':'Good Evening';
+document.getElementById('dateBadge').textContent=new Date().toLocaleDateString('en-IN',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
 
 async function loadDashboard(){
-  const token=localStorage.getItem("token");
-  if(!token){window.location.href="login.html";return;}
   try{
-    const r=await fetch("https://library-backend-1-e3r2.onrender.com/admin/dashboard",{headers:{"Authorization":"Bearer "+token}});
-    if(r.ok){
-      const d=await r.json();
-      document.getElementById("totalBooks").textContent=d.totalBooks??0;
-      document.getElementById("availBooks").textContent=d.availableBooks??0;
-      document.getElementById("borrowedBooks").textContent=d.borrowedBooks??0;
-      document.getElementById("overdueBooks").textContent=d.overdueBooks??0;
-      document.getElementById("totalUsers").textContent=d.totalUsers??0;
-      document.getElementById("facCount").textContent=d.totalFaculty??0;
-      document.getElementById("stuCount").textContent=d.totalStudents??0;
-      document.getElementById("pendingReq").textContent=d.pendingRequests??0;
-      document.getElementById("fineCol").textContent=d.totalFineCollected??0;
-      const util=d.totalBooks>0?Math.round((d.borrowedBooks/d.totalBooks)*100):0;
-      document.getElementById("utilRate").textContent=util+"%";
-      document.getElementById("utilBar").style.width=util+"%";
-      const ret=d.borrowedBooks>0?Math.max(0,Math.round(((d.borrowedBooks-d.overdueBooks)/d.borrowedBooks)*100)):100;
-      document.getElementById("returnRate").textContent=ret+"%";
-      document.getElementById("returnBar").style.width=ret+"%";
-      const apr=d.pendingRequests>=0?85:85;
-      document.getElementById("approvalRate").textContent=apr+"%";
-      document.getElementById("approvalBar").style.width=apr+"%";
-    }
-    const br=await fetch("https://library-backend-1-e3r2.onrender.com/borrow/all",{headers:{"Authorization":"Bearer "+token}});
+    const [dr,br]=await Promise.all([
+      apiFetch('/admin/dashboard'),
+      apiFetch('/borrow/all')
+    ]);
+    const d=dr.ok?await dr.json():{};
     const borrows=br.ok?await br.json():[];
-    const today=new Date();const todayStr=today.toISOString().split("T")[0];
-    const tb=document.getElementById("overdueTable");tb.innerHTML="";let oc=0;
-    borrows.forEach(b=>{
-      if(!b.returned&&new Date(b.dueDate)<today){
-        oc++;
-        tb.innerHTML+=`<tr><td><strong>${b.user.collegeId}</strong></td><td>${b.book.title}</td><td>${b.dueDate}</td><td><span class="badge b-overdue">Overdue</span></td></tr>`;
-      }
-    });
-    if(oc===0)tb.innerHTML=`<tr><td colspan="4" style="text-align:center;padding:32px;color:var(--muted);">🎉 No overdue books</td></tr>`;
-    document.getElementById("overdueChip").textContent=oc+" overdue";
-  }catch(e){toast("Server error","error");}
+    const today=new Date();
+    const setText=(id,v)=>{const el=document.getElementById(id);if(el)el.textContent=v;};
+    setText('totalBooks',d.totalBooks??0);
+    setText('availBooks',d.availableBooks??0);
+    setText('borrowedBooks',d.borrowedBooks??0);
+    setText('overdueBooks',d.overdueBooks??0);
+    setText('totalUsers',d.totalUsers??0);
+    setText('facCount',d.totalFaculty??0);
+    setText('stuCount',d.totalStudents??0);
+    setText('pendingReq',d.pendingRequests??0);
+    setText('fineCol',d.totalFineCollected??0);
+    const util=d.totalBooks>0?Math.round((d.borrowedBooks/d.totalBooks)*100):0;
+    setText('utilRate',util+'%');
+    document.getElementById('utilBar').style.width=util+'%';
+    const ret=d.borrowedBooks>0?Math.max(0,Math.round(((d.borrowedBooks-(d.overdueBooks||0))/d.borrowedBooks)*100)):100;
+    setText('returnRate',ret+'%');
+    document.getElementById('returnBar').style.width=ret+'%';
+    setText('approvalRate','85%');
+    document.getElementById('approvalBar').style.width='85%';
+    const od=borrows.filter(b=>!b.returned&&new Date(b.dueDate)<today);
+    setText('overdueChip',od.length+' overdue');
+    const tb=document.getElementById('overdueTable');
+    if(!od.length){tb.innerHTML=`<tr><td colspan="5" class="empty-state" style="padding:32px;text-align:center;color:var(--muted);">🎉 No overdue books</td></tr>`;return;}
+    tb.innerHTML=od.sort((a,b)=>new Date(a.dueDate)-new Date(b.dueDate)).map(b=>{
+      const days=Math.floor((today-new Date(b.dueDate))/86400000);
+      return `<tr>
+        <td><strong>${b.user?.collegeId||'—'}</strong></td>
+        <td style="max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${b.book?.title||'—'}</td>
+        <td>${b.dueDate}</td>
+        <td><span class="badge ${days>7?'b-overdue':'b-pending'}">${days}d</span></td>
+        <td><span class="badge b-overdue">Overdue</span></td>
+      </tr>`;
+    }).join('');
+  }catch(e){toast('Server error','error');}
 }
-document.addEventListener("DOMContentLoaded",loadDashboard);
+document.addEventListener('DOMContentLoaded',loadDashboard);
 </script>
 </body>
 </html>
