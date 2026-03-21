@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<title>Login | GRIET Central Library</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,800;1,600&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--navy:#081c3a;--navy2:#0d2a57;--gold:#c9a84c;--gold2:#e8c97e;--muted:#64748b;--text:#1a1a2e;--border:#e2e8f0;}
+*{margin:0;padding:0;box-sizing:border-box;}
+html,body{height:100%;font-family:'DM Sans',sans-serif;overflow:hidden;}
+
+/* ── ANNOUNCE TICKER ── */
+.announce{background:var(--navy);height:36px;overflow:hidden;position:relative;}
+.announce-track{display:flex;gap:0;white-space:nowrap;animation:ticker 32s linear infinite;padding-top:9px;}
+.announce-track span{padding:0 40px;font-size:12px;color:rgba(255,255,255,0.75);font-weight:500;letter-spacing:0.3px;}
+.announce-track span::after{content:"◆";margin-left:40px;color:var(--gold);font-size:8px;}
+@keyframes ticker{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+
+/* ── LAYOUT ── */
+.page{display:grid;grid-template-columns:1fr 1fr;height:calc(100vh - 36px);}
+
+/* ── LEFT PANEL ── */
+.left{position:relative;overflow:hidden;}
+.left-img{position:absolute;inset:0;background:url("image/lib5.jpeg") center/cover no-repeat;transform:scale(1.06);animation:kz 14s ease forwards;}
+@keyframes kz{to{transform:scale(1);}}
+.left-overlay{position:absolute;inset:0;background:linear-gradient(100deg,rgba(6,18,40,0.95) 0%,rgba(6,18,40,0.8) 45%,rgba(6,18,40,0.3) 75%,transparent 100%);}
+.left-body{position:relative;z-index:2;height:100%;display:flex;flex-direction:column;justify-content:space-between;padding:44px;}
+
+/* ── LOGO ──
+   mix-blend-mode:screen makes the white background of the PNG transparent
+   on dark surfaces — the red GRIET seal and text show through naturally,
+   exactly like Image 1 (no white box, no blue tint). */
+.left-logo{display:flex;align-items:center;}
+.left-logo img{
+  height:70px;
+  width:auto;
+  object-fit:contain;
+  mix-blend-mode:screen;
+  filter:brightness(1.15) contrast(1.05) saturate(1.1);
+}
+
+/* HERO TEXT */
+.left-hero{flex:1;display:flex;flex-direction:column;justify-content:center;}
+.left-badge{display:inline-flex;align-items:center;gap:8px;padding:6px 16px;background:rgba(201,168,76,0.12);border:1px solid rgba(201,168,76,0.32);border-radius:30px;color:var(--gold2);font-size:10px;font-weight:700;letter-spacing:3px;text-transform:uppercase;margin-bottom:24px;width:fit-content;backdrop-filter:blur(8px);}
+.left-badge::before{content:"◆";font-size:6px;}
+.left-hero h1{font-family:'Playfair Display',serif;font-size:52px;font-weight:700;color:#fff;line-height:1.05;margin-bottom:18px;letter-spacing:-1.5px;}
+.left-hero h1 em{color:var(--gold);font-style:italic;display:block;}
+.left-hero p{font-size:15.5px;color:rgba(255,255,255,.62);line-height:1.8;max-width:380px;}
+
+/* QUICK LINKS */
+.left-links{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px;}
+.left-link{padding:7px 16px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);border-radius:20px;font-size:12px;color:rgba(255,255,255,.6);text-decoration:none;transition:0.2s;}
+.left-link:hover{background:rgba(201,168,76,0.15);border-color:rgba(201,168,76,0.3);color:var(--gold2);}
+
+/* STATS */
+.left-stats{display:flex;gap:12px;flex-wrap:wrap;}
+.lstat{background:rgba(255,255,255,.07);backdrop-filter:blur(14px);border:1px solid rgba(255,255,255,.1);border-radius:14px;padding:16px 22px;text-align:center;}
+.lstat .v{font-family:'Playfair Display',serif;font-size:24px;font-weight:700;color:var(--gold2);}
+.lstat .l{font-size:10px;color:rgba(255,255,255,.45);letter-spacing:1px;text-transform:uppercase;margin-top:3px;}
+
+/* ── RIGHT PANEL ── */
+.right{background:#f6f8fc;display:flex;flex-direction:column;justify-content:center;align-items:center;padding:48px 60px;overflow-y:auto;}
+.right-inner{width:100%;max-width:380px;}
+
+/* BACK LINK */
+.back-link{display:inline-flex;align-items:center;gap:7px;font-size:13px;font-weight:600;color:var(--muted);text-decoration:none;margin-bottom:32px;transition:.2s;}
+.back-link:hover{color:var(--navy);}
+.back-link svg{transition:.2s;}
+.back-link:hover svg{transform:translateX(-3px);}
+
+/* FORM HEADER */
+.form-icon{width:58px;height:58px;background:linear-gradient(135deg,var(--navy),var(--navy2));border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:26px;margin-bottom:20px;box-shadow:0 8px 24px rgba(8,28,58,0.2);}
+.form-title{font-family:'Playfair Display',serif;font-size:32px;font-weight:700;color:var(--navy);margin-bottom:6px;}
+.form-sub{font-size:13.5px;color:var(--muted);margin-bottom:28px;line-height:1.65;}
+
+/* COLD START NOTICE */
+.cold-notice{background:linear-gradient(135deg,rgba(201,168,76,0.1),rgba(201,168,76,0.05));border:1px solid rgba(201,168,76,0.3);border-radius:12px;padding:11px 14px;font-size:12px;color:#92711a;display:none;align-items:center;gap:8px;margin-bottom:16px;line-height:1.55;}
+.cold-notice.show{display:flex;}
+
+/* ROLE TABS */
+.role-tabs{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:26px;background:#eef2f7;padding:5px;border-radius:14px;}
+.rtab{padding:10px 6px;border:none;border-radius:10px;background:transparent;cursor:pointer;font-size:12.5px;font-weight:600;color:var(--muted);transition:.25s;display:flex;flex-direction:column;align-items:center;gap:4px;font-family:'DM Sans',sans-serif;}
+.rtab .tic{font-size:20px;}
+.rtab:hover{color:var(--navy);}
+.rtab.on{background:#fff;color:var(--navy);box-shadow:0 3px 12px rgba(8,28,58,.1);}
+
+/* INPUTS */
+.field{position:relative;margin-bottom:15px;}
+.field label{display:block;font-size:12.5px;font-weight:600;color:var(--navy);margin-bottom:7px;letter-spacing:.3px;}
+.field input{width:100%;padding:13px 16px;border:1.5px solid var(--border);border-radius:12px;font-size:14px;font-family:'DM Sans',sans-serif;background:#fff;color:var(--text);transition:.25s;}
+.field input:focus{outline:none;border-color:var(--navy);box-shadow:0 0 0 3px rgba(8,28,58,.07);}
+.field input.err{border-color:#ef4444;box-shadow:0 0 0 3px rgba(239,68,68,.07);}
+.field .eye{position:absolute;right:14px;top:37px;cursor:pointer;color:var(--muted);font-size:16px;user-select:none;transition:.2s;}
+.field .eye:hover{color:var(--navy);}
+
+/* ERROR */
+.err-msg{font-size:12.5px;color:#ef4444;margin:-6px 0 12px;display:none;align-items:center;gap:6px;}
+.err-msg.show{display:flex;}
+
+/* LOGIN BTN */
+.btn-login{width:100%;padding:15px;background:linear-gradient(135deg,var(--navy),var(--navy2));color:#fff;border:none;border-radius:13px;font-size:15px;font-weight:700;cursor:pointer;transition:.3s;font-family:'DM Sans',sans-serif;display:flex;align-items:center;justify-content:center;gap:10px;margin-top:8px;}
+.btn-login:hover{transform:translateY(-2px);box-shadow:0 14px 32px rgba(8,28,58,.28);}
+.btn-login:active{transform:translateY(0);}
+.btn-login:disabled{opacity:.7;cursor:not-allowed;transform:none;box-shadow:none;}
+.btn-login:hover:not(:disabled){background:linear-gradient(135deg,var(--navy2),#1d3a6b);}
+
+/* FOOTER NOTE */
+.form-footer{margin-top:22px;text-align:center;font-size:12px;color:var(--muted);line-height:1.8;}
+.form-footer a{color:var(--navy);font-weight:600;text-decoration:none;}
+.form-footer a:hover{color:var(--gold);}
+
+/* SUCCESS OVERLAY */
+.success-ov{position:fixed;inset:0;background:rgba(8,28,58,.96);z-index:999;display:none;flex-direction:column;align-items:center;justify-content:center;color:#fff;text-align:center;backdrop-filter:blur(8px);}
+.success-ov.show{display:flex;animation:fadeIn .4s ease;}
+@keyframes fadeIn{from{opacity:0;}to{opacity:1;}}
+.success-ring{width:80px;height:80px;border-radius:50%;background:linear-gradient(135deg,#059669,#047857);display:flex;align-items:center;justify-content:center;font-size:36px;margin-bottom:22px;animation:pop .4s cubic-bezier(.175,.885,.32,1.275);}
+@keyframes pop{from{transform:scale(0);}to{transform:scale(1);}}
+.success-ov h2{font-family:'Playfair Display',serif;font-size:32px;margin-bottom:8px;}
+.success-ov p{font-size:14.5px;opacity:.65;}
+.success-bar{width:220px;height:3px;background:rgba(255,255,255,.12);border-radius:3px;margin-top:32px;overflow:hidden;}
+.success-fill{height:100%;background:var(--gold);border-radius:3px;animation:fill 1.2s ease forwards;}
+@keyframes fill{from{width:0;}to{width:100%;}}
+
+/* TOAST */
+#toast-root{position:fixed;top:22px;right:22px;z-index:9999;display:flex;flex-direction:column;gap:9px;}
+.tst{padding:12px 18px;border-radius:12px;font-size:13.5px;font-weight:500;color:#fff;display:flex;align-items:center;gap:10px;box-shadow:0 16px 40px rgba(0,0,0,.18);animation:tIn .3s ease;min-width:260px;}
+.tst.out{animation:tOut .3s ease forwards;}
+.tst.error{background:linear-gradient(135deg,#dc2626,#b91c1c);}
+.tst.info{background:linear-gradient(135deg,var(--navy),var(--navy2));}
+@keyframes tIn{from{opacity:0;transform:translateX(40px);}to{opacity:1;transform:none;}}
+@keyframes tOut{to{opacity:0;transform:translateX(40px);}}
+
+/* SPINNER */
+@keyframes spin2{to{transform:rotate(360deg);}}
+.spin{animation:spin2 .7s linear infinite;display:inline-block;width:17px;height:17px;border:2.5px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;}
+
+/* ── MOBILE ── */
+@media(max-width:820px){
+  html,body{overflow:auto;}
+  .announce{display:none;}
+  .page{grid-template-columns:1fr;height:auto;}
+  .left{height:260px;display:block;}
+  .left-hero,.left-stats,.left-links{display:none;}
+  .left-logo{padding:24px 24px 0;}
+  .left-body{padding:0;}
+  .right{padding:32px 24px;min-height:calc(100vh - 260px);}
+  .right-inner{max-width:100%;}
+}
+</style>
+</head>
+<body>
+<script src="js/toast.js"></script>
+<div id="toast-root"></div>
+
+<!-- SUCCESS OVERLAY -->
+<div class="success-ov" id="successOv">
+  <div class="success-ring">&#10003;</div>
+  <h2 id="successTitle">Welcome Back!</h2>
+  <p id="successSub">Redirecting to your dashboard&hellip;</p>
+  <div class="success-bar"><div class="success-fill"></div></div>
+</div>
+
+<!-- ANNOUNCE TICKER -->
+<div class="announce">
+  <div class="announce-track">
+    <span>GRIET Central Library &mdash; Est. 1997</span>
+    <span>1,30,741 Volumes &middot; 6,396 eBooks &middot; 21,659 eJournals</span>
+    <span>NAAC A++ Accredited Institution</span>
+    <span>IEEE Xplore &middot; Springer &middot; Knimbus Remote Access</span>
+    <span>Mon&ndash;Fri: 9AM&ndash;8PM &middot; Sat: 9AM&ndash;5PM &middot; Closed Sundays</span>
+    <span>library@griet.ac.in</span>
+    <span>GRIET Central Library &mdash; Est. 1997</span>
+    <span>1,30,741 Volumes &middot; 6,396 eBooks &middot; 21,659 eJournals</span>
+    <span>NAAC A++ Accredited Institution</span>
+    <span>IEEE Xplore &middot; Springer &middot; Knimbus Remote Access</span>
+    <span>Mon&ndash;Fri: 9AM&ndash;8PM &middot; Sat: 9AM&ndash;5PM &middot; Closed Sundays</span>
+    <span>library@griet.ac.in</span>
+  </div>
+</div>
+
+<div class="page">
+
+  <!-- ══════════ LEFT PANEL ══════════ -->
+  <div class="left">
+    <div class="left-img"></div>
+    <div class="left-overlay"></div>
+    <div class="left-body">
+
+      <!-- LOGO: mix-blend-mode:screen removes white bg on the dark panel -->
+      <div class="left-logo">
+        <img src="GRIET_Logo.png" alt="GRIET Logo">
+      </div>
+
+      <div class="left-hero">
+        <div class="left-badge">NAAC A++ &middot; Est. 1997</div>
+        <h1>Your Gateway<br>to <em>Knowledge</em></h1>
+        <p>Access 1,30,741 print volumes, 6,396 eBooks and 21,659 eJournals &mdash; all from your personalised library portal.</p>
+        <div class="left-links">
+          <a href="https://griet.bestbookbuddies.com/" target="_blank" class="left-link">&#128218; Catalogue</a>
+          <a href="https://griet.knimbus.com/" target="_blank" class="left-link">&#127760; Remote Access</a>
+          <a href="https://ieeexplore.ieee.org/" target="_blank" class="left-link">&#9889; IEEE Xplore</a>
+        </div>
+      </div>
+
+      <div class="left-stats">
+        <div class="lstat"><div class="v">1,30,741</div><div class="l">Print Volumes</div></div>
+        <div class="lstat"><div class="v">6,396</div><div class="l">eBooks</div></div>
+        <div class="lstat"><div class="v">21,659</div><div class="l">eJournals</div></div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ══════════ RIGHT PANEL ══════════ -->
+  <div class="right">
+    <div class="right-inner">
+
+      <a href="index.html" class="back-link">
+        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+          <path d="M19 12H5M12 5l-7 7 7 7"/>
+        </svg>
+        Back to Home
+      </a>
+
+      <div class="form-icon" id="formIcon">&#128218;</div>
+      <div class="form-title" id="formTitle">Welcome Back</div>
+      <div class="form-sub"  id="formSub">Select your role and sign in to continue</div>
+
+      <!-- COLD START NOTICE -->
+      <div class="cold-notice" id="coldNotice">
+        &#9203; Server is starting up (cold start) &mdash; this may take 30&ndash;60 seconds. Please wait&hellip;
+      </div>
+
+      <!-- ROLE TABS -->
+      <div class="role-tabs">
+        <button class="rtab on" data-role="STUDENT" onclick="selectRole('STUDENT',this)">
+          <span class="tic">&#127891;</span>Student
+        </button>
+        <button class="rtab" data-role="FACULTY" onclick="selectRole('FACULTY',this)">
+          <span class="tic">&#128104;&#8205;&#127979;</span>Faculty
+        </button>
+        <button class="rtab" data-role="LIBRARIAN" onclick="selectRole('LIBRARIAN',this)">
+          <span class="tic">&#127963;&#65039;</span>Librarian
+        </button>
+      </div>
+
+      <!-- ID FIELD -->
+      <div class="field">
+        <label id="idLabel" for="userid">Roll No / College ID</label>
+        <input id="userid" type="text" placeholder="e.g. 22341A0501" autocomplete="username">
+      </div>
+
+      <!-- PASSWORD FIELD -->
+      <div class="field">
+        <label for="password">Password</label>
+        <input id="password" type="password" placeholder="Enter your password" autocomplete="current-password">
+        <span class="eye" id="eyeToggle" onclick="toggleEye()" title="Show/hide">&#128065;</span>
+      </div>
+
+      <!-- ERROR MESSAGE -->
+      <div class="err-msg" id="errMsg">
+        <svg width="14" height="14" fill="none" stroke="#ef4444" stroke-width="2.5" viewBox="0 0 24 24">
+          <circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/>
+        </svg>
+        <span id="errText"></span>
+      </div>
+
+      <!-- SIGN IN BUTTON -->
+      <button class="btn-login" id="loginBtn" onclick="doLogin()">
+        <span id="btnText">Sign In &rarr;</span>
+      </button>
+
+      <div class="form-footer">
+        <a href="index.html">&#127963; Browse Public Catalogue</a> &nbsp;&middot;&nbsp;
+        <a href="mailto:library@griet.ac.in">&#128231; Contact Library</a>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+var selectedRole = "STUDENT";
+var roleConfig = {
+  STUDENT: {
+    icon:"&#128218;",
+    title:"Student Login",
+    sub:"Sign in to borrow books, track due dates and access digital resources.",
+    label:"Roll No / College ID",
+    placeholder:"e.g. 22341A0501"
+  },
+  FACULTY: {
+    icon:"&#128104;&#8205;&#127979;",
+    title:"Faculty Login",
+    sub:"Sign in for extended borrowing and full e-resource access via your portal.",
+    label:"Employee ID",
+    placeholder:"e.g. FAC001"
+  },
+  LIBRARIAN: {
+    icon:"&#127963;&#65039;",
+    title:"Librarian Login",
+    sub:"Sign in for full administrative control over the library management system.",
+    label:"Librarian ID",
+    placeholder:"e.g. LIB001"
+  }
+};
+
+function selectRole(role, el){
+  selectedRole = role;
+  document.querySelectorAll(".rtab").forEach(t => t.classList.remove("on"));
+  el.classList.add("on");
+  var cfg = roleConfig[role];
+  document.getElementById("formIcon").innerHTML    = cfg.icon;
+  document.getElementById("formTitle").textContent = cfg.title;
+  document.getElementById("formSub").textContent   = cfg.sub;
+  document.getElementById("idLabel").textContent   = cfg.label;
+  document.getElementById("userid").placeholder    = cfg.placeholder;
+  document.getElementById("userid").value  = "";
+  document.getElementById("password").value = "";
+  clearErr();
+  document.getElementById("userid").focus();
+}
+
+function toggleEye(){
+  var pw  = document.getElementById("password");
+  var eye = document.getElementById("eyeToggle");
+  if(pw.type === "password"){ pw.type = "text";     eye.innerHTML = "&#128584;"; }
+  else                      { pw.type = "password"; eye.innerHTML = "&#128065;"; }
+}
+
+function showErr(msg){
+  document.getElementById("errText").textContent = msg;
+  document.getElementById("errMsg").classList.add("show");
+}
+function clearErr(){
+  document.getElementById("errMsg").classList.remove("show");
+  document.getElementById("userid").classList.remove("err");
+  document.getElementById("password").classList.remove("err");
+}
+function setLoading(on){
+  var btn = document.getElementById("loginBtn");
+  var txt = document.getElementById("btnText");
+  if(on){ btn.disabled = true;  txt.innerHTML = "<span class='spin'></span> Signing in&hellip;"; }
+  else  { btn.disabled = false; txt.innerHTML = "Sign In &rarr;"; }
+}
+function showSuccess(role){
+  var names = {STUDENT:"Student", FACULTY:"Faculty", LIBRARIAN:"Librarian"};
+  document.getElementById("successTitle").textContent = "Welcome, " + names[role] + "!";
+  document.getElementById("successSub").textContent   = "Redirecting to your dashboard…";
+  document.getElementById("successOv").classList.add("show");
+}
+function toast(msg, type, dur){
+  type = type||"info"; dur = dur||3500;
+  var el = document.createElement("div");
+  el.className = "tst " + type;
+  var icons = {error:"&#10060;", info:"&#8505;&#65039;"};
+  el.innerHTML = "<span>"+(icons[type]||"&#128172;")+"</span><span>"+msg+"</span>";
+  document.getElementById("toast-root").appendChild(el);
+  setTimeout(() => { el.classList.add("out"); setTimeout(() => el.remove(), 320); }, dur);
+}
+
+/* Enter key triggers login */
+document.addEventListener("keydown", e => { if(e.key === "Enter") doLogin(); });
+
+/* Cold start ping — show notice after 4s, hide once server responds */
+setTimeout(() => {
+  document.getElementById("coldNotice").classList.add("show");
+  fetch("https://library-backend-1-e3r2.onrender.com/books?page=0&size=1")
+    .then(() => document.getElementById("coldNotice").classList.remove("show"))
+    .catch(() => {});
+  setTimeout(() => document.getElementById("coldNotice").classList.remove("show"), 60000);
+}, 4000);
+
+async function doLogin(){
+  clearErr();
+  var collegeId = document.getElementById("userid").value.trim();
+  var password  = document.getElementById("password").value;
+
+  if(!collegeId){
+    showErr("Please enter your " + roleConfig[selectedRole].label);
+    document.getElementById("userid").focus();
+    return;
+  }
+  if(!password){
+    showErr("Please enter your password");
+    document.getElementById("password").focus();
+    return;
+  }
+
+  setLoading(true);
+  try {
+    var res = await fetch("https://library-backend-1-e3r2.onrender.com/auth/login", {
+      method: "POST",
+      headers: {"Content-Type":"application/json"},
+      body: JSON.stringify({collegeId, password, role: selectedRole})
+    });
+
+    if(!res.ok){
+      var errMsg = "Invalid credentials. Please try again.";
+      try { var j = await res.json(); errMsg = j.error || j.message || errMsg; } catch{}
+      showErr(errMsg);
+      document.getElementById("userid").classList.add("err");
+      document.getElementById("password").classList.add("err");
+      setLoading(false);
+      return;
+    }
+
+    var token = await res.text();
+    localStorage.setItem("token", token);
+    localStorage.setItem("role", selectedRole);
+    showSuccess(selectedRole);
+    setTimeout(() => {
+      if(selectedRole === "LIBRARIAN")    window.location.href = "librarian-dashboard.html";
+      else if(selectedRole === "FACULTY") window.location.href = "faculty-dashboard.html";
+      else                                window.location.href = "student-dashboard.html";
+    }, 1400);
+
+  } catch(e){
+    showErr("Server unreachable — please check your connection or try again.");
+    setLoading(false);
+  }
+}
+</script>
+</body>
+</html>

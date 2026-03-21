@@ -1,0 +1,963 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Book Catalogue | GRIET Central Library</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Outfit:wght@300;400;500;600;700&display=swap');
+:root {
+  --navy:    #081c3a;
+  --navy2:   #0d2a57;
+  --crimson: #b30000;
+  --crimson2:#d40000;
+  --gold:    #c9a84c;
+  --gold2:   #e8c96e;
+  --bg:      #f5f6f9;
+  --surface: #ffffff;
+  --muted:   #64748b;
+  --text:    #131d2e;
+  --border:  #e2e8f0;
+  --border2: #edf2f7;
+  --shadow:  rgba(8,28,58,0.10);
+  --shadow-deep: rgba(8,28,58,0.18);
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body { font-family:'Outfit',sans-serif; background:var(--bg); color:var(--text); overflow-x:hidden; }
+a { text-decoration:none; color:inherit; }
+::-webkit-scrollbar { width:5px; }
+::-webkit-scrollbar-track { background:#f1f5f9; }
+::-webkit-scrollbar-thumb { background:var(--navy2); border-radius:3px; }
+
+/* ── ANNOUNCE ── */
+.announce {
+  background: linear-gradient(90deg, var(--navy), var(--navy2));
+  color: rgba(232,201,110,0.9);
+  font-size: 12px; font-weight: 500; letter-spacing: 0.5px;
+  padding: 10px 0; overflow: hidden; position: relative;
+}
+.announce::before,.announce::after { content:""; position:absolute; top:0; width:80px; height:100%; z-index:1; }
+.announce::before { left:0; background:linear-gradient(to right, var(--navy), transparent); }
+.announce::after  { right:0; background:linear-gradient(to left, var(--navy), transparent); }
+.announce-track { display:flex; gap:80px; white-space:nowrap; animation: ticker 35s linear infinite; }
+.announce:hover .announce-track { animation-play-state:paused; }
+.announce-track span { display:inline-flex; align-items:center; gap:10px; }
+.announce-track span::before { content:"◆"; color:var(--gold2); font-size:7px; }
+@keyframes ticker { 0%{transform:translateX(0)} 100%{transform:translateX(-50%)} }
+
+/* ── HEADER ── */
+.site-header {
+  background: rgba(255,255,255,0.97);
+  backdrop-filter: blur(16px);
+  position: sticky; top:0; z-index:1000;
+  border-bottom: 1px solid var(--border);
+  box-shadow: 0 2px 24px var(--shadow);
+}
+.header-inner {
+  max-width:1280px; margin:auto; padding:0 48px;
+  display:flex; align-items:center; justify-content:space-between;
+  height: 72px;
+}
+.logo { display:flex; align-items:center; gap:14px; }
+.logo img { height:48px; width:auto; object-fit:contain; }
+.logo-text { display:flex; flex-direction:column; }
+.logo-name { font-family:'Cormorant Garamond',serif; font-size:19px; font-weight:700; color:var(--navy); line-height:1.1; }
+.logo-sub { font-size:10px; color:var(--muted); letter-spacing:0.5px; margin-top:1px; }
+.site-nav { display:flex; align-items:center; gap:4px; }
+.nav-link { padding:8px 16px; font-size:14px; font-weight:500; color:var(--navy); border-radius:9px; transition:all 0.2s; position:relative; }
+.nav-link:hover { color:var(--crimson); background:rgba(179,0,0,0.05); }
+.nav-link.active { color:var(--crimson); }
+.nav-link.active::after { content:""; position:absolute; bottom:-1px; left:16px; right:16px; height:2px; background:var(--crimson); border-radius:1px; }
+.nav-login { margin-left:12px; padding:9px 22px; background:var(--navy); color:#fff; border-radius:10px; font-size:13.5px; font-weight:600; transition:0.25s; display:inline-flex; align-items:center; gap:6px; }
+.nav-login:hover { background:var(--crimson); transform:translateY(-1px); box-shadow:0 6px 20px rgba(179,0,0,0.25); }
+
+/* ── PAGE HERO ── */
+.cat-hero {
+  background: linear-gradient(135deg, var(--navy) 0%, var(--navy2) 60%, #0f3060 100%);
+  padding: 70px 0 50px;
+  position: relative; overflow: hidden;
+}
+.cat-hero::before {
+  content:""; position:absolute; inset:0;
+  background: radial-gradient(ellipse at 80% 50%, rgba(201,168,76,0.1) 0%, transparent 60%),
+              radial-gradient(ellipse at 20% 80%, rgba(179,0,0,0.2) 0%, transparent 50%);
+  pointer-events:none;
+}
+.cat-hero-inner {
+  max-width:1240px; margin:auto; padding:0 56px;
+  display:flex; align-items:center; justify-content:space-between; gap:40px;
+  position:relative; z-index:1;
+}
+.cat-hero-badge {
+  display:inline-flex; align-items:center; gap:8px;
+  padding:6px 16px; margin-bottom:18px;
+  background:rgba(201,168,76,0.12); border:1px solid rgba(201,168,76,0.3);
+  border-radius:30px; color:var(--gold2);
+  font-size:10px; font-weight:700; letter-spacing:3px; text-transform:uppercase;
+}
+.cat-hero-badge::before { content:"◆"; font-size:6px; }
+.cat-hero-text h1 {
+  font-family:'Cormorant Garamond',serif;
+  font-size:clamp(34px,5vw,54px);
+  font-weight:700; color:#fff;
+  line-height:1.05; letter-spacing:-0.5px; margin-bottom:14px;
+}
+.cat-hero-text h1 em { color:var(--gold2); font-style:italic; }
+.cat-hero-text p { color:rgba(255,255,255,0.65); font-size:15px; max-width:440px; line-height:1.75; }
+.cat-hero-stats { display:flex; gap:0; flex-shrink:0; }
+.cat-hstat {
+  padding:20px 28px; text-align:center;
+  background:rgba(255,255,255,0.07); border:1px solid rgba(255,255,255,0.1);
+  backdrop-filter:blur(12px);
+}
+.cat-hstat:first-child { border-radius:14px 0 0 14px; }
+.cat-hstat:last-child  { border-radius:0 14px 14px 0; }
+.cat-hstat-num { font-family:'Cormorant Garamond',serif; font-size:30px; font-weight:700; color:var(--gold2); }
+.cat-hstat-label { font-size:10px; color:rgba(255,255,255,0.5); margin-top:4px; letter-spacing:1px; text-transform:uppercase; }
+
+/* ── BACK ROW ── */
+.back-row { max-width:1240px; margin:0 auto; padding:24px 56px 0; }
+.back-btn {
+  display:inline-flex; align-items:center; gap:8px;
+  padding:10px 20px; border:1.5px solid var(--border);
+  background:var(--surface); color:var(--navy);
+  border-radius:10px; font-size:13.5px; font-weight:600;
+  cursor:pointer; transition:0.2s; font-family:'Outfit',sans-serif;
+}
+.back-btn:hover { background:var(--navy); color:#fff; border-color:var(--navy); }
+
+/* ── MAIN LAYOUT ── */
+.cat-main {
+  max-width:1240px; margin:0 auto; padding:32px 56px 80px;
+  display:grid; grid-template-columns: 260px 1fr;
+  gap:28px; align-items:start;
+}
+
+/* ── SIDEBAR ── */
+.sidebar {
+  background:var(--surface); border-radius:18px;
+  border:1px solid var(--border2);
+  box-shadow:0 8px 40px var(--shadow);
+  position:sticky; top:92px; overflow:hidden;
+}
+
+/* Sidebar branding — compact strip */
+.sidebar-brand {
+  padding:16px 20px;
+  background:linear-gradient(135deg, var(--navy), var(--navy2));
+  display:flex; align-items:center; gap:12px;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+.sidebar-brand img {
+  height:36px; width:36px; object-fit:contain;
+  border-radius:8px; background:#fff; padding:3px; flex-shrink:0;
+}
+.sidebar-brand-text .sb-name {
+  font-family:'Cormorant Garamond',serif;
+  font-size:14px; font-weight:700; color:#fff; line-height:1.2;
+}
+.sidebar-brand-text .sb-sub {
+  font-size:9.5px; color:rgba(255,255,255,0.45);
+  letter-spacing:0.5px; margin-top:2px;
+}
+
+.sidebar-head {
+  padding:16px 20px 14px;
+  background:linear-gradient(135deg, #0d2a57, #1a3f6e);
+  color:#fff;
+}
+.sidebar-head h3 { font-size:14px; font-weight:600; display:flex; align-items:center; gap:7px; }
+.sidebar-head p { font-size:11px; opacity:0.5; margin-top:3px; }
+
+.sidebar-section { padding:16px 20px; border-bottom:1px solid var(--border2); }
+.sidebar-section:last-child { border-bottom:none; }
+.sidebar-label {
+  font-size:9px; font-weight:700; letter-spacing:3px;
+  text-transform:uppercase; color:var(--muted); margin-bottom:10px;
+}
+.filter-group { display:flex; flex-direction:column; gap:3px; }
+.filter-option {
+  display:flex; align-items:center; gap:9px;
+  padding:7px 10px; border-radius:8px;
+  cursor:pointer; transition:0.15s;
+  font-size:13px; color:var(--text);
+}
+.filter-option:hover { background:var(--bg); }
+.filter-option input[type="radio"] {
+  accent-color:var(--crimson); width:14px; height:14px; cursor:pointer; flex-shrink:0;
+}
+.filter-option.active { background:rgba(179,0,0,0.07); color:var(--crimson); font-weight:600; }
+
+.avail-toggle {
+  display:flex; align-items:center; justify-content:space-between;
+  padding:10px 13px; background:var(--bg); border-radius:10px; cursor:pointer;
+  border:1.5px solid var(--border2); transition:0.2s;
+}
+.avail-toggle:hover { border-color:var(--navy); }
+.avail-toggle span { font-size:13px; font-weight:500; }
+.toggle-switch {
+  width:40px; height:22px; background:var(--border);
+  border-radius:11px; position:relative; transition:0.25s; cursor:pointer; flex-shrink:0;
+}
+.toggle-switch.on { background:var(--crimson); }
+.toggle-switch::after {
+  content:""; position:absolute; top:3px; left:3px;
+  width:16px; height:16px; background:#fff; border-radius:50%; transition:0.25s;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.2);
+}
+.toggle-switch.on::after { left:21px; }
+
+.apply-btn {
+  width:100%; padding:11px;
+  background:linear-gradient(135deg, var(--navy), var(--navy2));
+  color:#fff; border:none; border-radius:10px;
+  font-size:13.5px; font-weight:600; cursor:pointer;
+  transition:0.2s; font-family:'Outfit',sans-serif; margin-top:2px;
+}
+.apply-btn:hover { background:var(--crimson); }
+
+/* ── SEARCH BAR ── */
+.search-row { display:flex; gap:12px; margin-bottom:22px; align-items:center; }
+.search-wrap {
+  flex:1; display:flex; background:var(--surface);
+  border:1.5px solid var(--border); border-radius:12px; overflow:hidden; transition:0.2s;
+}
+.search-wrap:focus-within { border-color:var(--navy); box-shadow:0 0 0 3px rgba(8,28,58,0.08); }
+.search-wrap input {
+  flex:1; padding:13px 18px; border:none; outline:none;
+  font-size:14px; font-family:'Outfit',sans-serif; color:var(--text); background:transparent;
+}
+.search-wrap button {
+  padding:0 20px; background:linear-gradient(135deg, var(--navy), var(--navy2));
+  color:#fff; border:none; cursor:pointer; font-size:16px; transition:0.2s;
+}
+.search-wrap button:hover { background:var(--crimson); }
+.sort-select {
+  padding:12px 14px; border:1.5px solid var(--border); border-radius:11px;
+  font-family:'Outfit',sans-serif; font-size:13px; background:var(--surface);
+  color:var(--text); cursor:pointer; outline:none; transition:0.2s; white-space:nowrap;
+}
+.sort-select:focus { border-color:var(--navy); }
+
+/* ── RESULTS META ── */
+.results-meta { display:flex; align-items:center; justify-content:space-between; margin-bottom:18px; }
+.results-count { font-size:13.5px; color:var(--muted); }
+.results-count b { color:var(--navy); }
+.view-toggle { display:flex; gap:6px; }
+.view-btn {
+  width:36px; height:36px; border-radius:8px;
+  border:1.5px solid var(--border); background:var(--surface);
+  color:var(--muted); cursor:pointer; transition:0.15s;
+  display:flex; align-items:center; justify-content:center; font-size:15px;
+}
+.view-btn.active { background:var(--navy); color:#fff; border-color:var(--navy); }
+
+/* ── ACTIVE FILTER CHIPS ── */
+.active-filters { display:flex; flex-wrap:wrap; gap:8px; margin-bottom:16px; }
+.filter-chip {
+  display:inline-flex; align-items:center; gap:7px;
+  padding:5px 13px; border-radius:20px;
+  background:rgba(179,0,0,0.08); border:1px solid rgba(179,0,0,0.18);
+  color:var(--crimson); font-size:12px; font-weight:600;
+}
+.chip-remove { cursor:pointer; font-size:11px; opacity:0.6; }
+.chip-remove:hover { opacity:1; }
+
+/* ── BOOK GRID ── */
+.book-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(270px,1fr)); gap:20px; }
+.book-grid.list-view { grid-template-columns:1fr; }
+
+/* ── BOOK CARD ── */
+.book-card {
+  background:var(--surface); border-radius:16px;
+  border:1px solid var(--border2);
+  box-shadow:0 4px 20px var(--shadow);
+  transition:0.3s; position:relative; overflow:hidden;
+  display:flex; flex-direction:column;
+}
+.book-card:hover { transform:translateY(-6px); box-shadow:0 20px 50px var(--shadow-deep); border-color:rgba(8,28,58,0.15); }
+.book-card::before {
+  content:""; position:absolute; top:0; left:0; right:0; height:3px;
+  background:linear-gradient(90deg, var(--navy), var(--crimson), var(--gold));
+  transform:scaleX(0); transform-origin:left; transition:0.3s;
+}
+.book-card:hover::before { transform:scaleX(1); }
+.book-cover {
+  height:148px; display:flex; align-items:center; justify-content:center;
+  position:relative; overflow:hidden;
+}
+.book-cover-pattern {
+  position:absolute; inset:0; opacity:0.06;
+  background-image:repeating-linear-gradient(45deg,#fff 0,#fff 1px,transparent 0,transparent 50%);
+  background-size:14px 14px;
+}
+.book-cover-icon { font-size:48px; position:relative; z-index:1; filter:drop-shadow(0 4px 10px rgba(0,0,0,0.3)); }
+.book-cover-dept {
+  position:absolute; top:11px; right:11px;
+  background:rgba(201,168,76,0.2); border:1px solid rgba(201,168,76,0.4);
+  color:var(--gold2); font-size:9px; font-weight:700;
+  letter-spacing:2px; padding:4px 10px; border-radius:20px; text-transform:uppercase;
+}
+.book-avail-dot {
+  position:absolute; bottom:11px; left:11px;
+  display:flex; align-items:center; gap:6px;
+  font-size:11px; font-weight:600; color:#fff;
+}
+.avail-indicator {
+  width:8px; height:8px; border-radius:50%; background:#22c55e;
+  box-shadow:0 0 0 3px rgba(34,197,94,0.25);
+  animation:pulse 2s ease-in-out infinite;
+}
+.avail-indicator.unavailable { background:#ef4444; box-shadow:0 0 0 3px rgba(239,68,68,0.25); animation:none; }
+@keyframes pulse {
+  0%,100%{box-shadow:0 0 0 3px rgba(34,197,94,0.25)}
+  50%{box-shadow:0 0 0 6px rgba(34,197,94,0.1)}
+}
+.book-body { padding:16px 18px; flex:1; display:flex; flex-direction:column; }
+.book-title { font-family:'Cormorant Garamond',serif; font-size:16.5px; font-weight:700; color:var(--navy); margin-bottom:5px; line-height:1.35; }
+.book-author { font-size:12.5px; color:var(--muted); margin-bottom:11px; }
+.book-meta { display:flex; flex-wrap:wrap; gap:5px; margin-bottom:13px; }
+.book-tag {
+  padding:3px 10px; border-radius:20px;
+  font-size:10.5px; font-weight:600;
+  background:var(--bg); color:var(--navy); border:1px solid var(--border);
+}
+.book-tag.cat { background:rgba(179,0,0,0.07); color:var(--crimson); border-color:rgba(179,0,0,0.15); }
+.book-footer { margin-top:auto; padding-top:11px; border-top:1px solid var(--border2); display:flex; gap:8px; }
+.req-btn {
+  flex:1; padding:10px; border:none; border-radius:9px;
+  font-size:13px; font-weight:600; cursor:pointer; transition:0.2s;
+  font-family:'Outfit',sans-serif;
+  background:linear-gradient(135deg, var(--navy), var(--navy2)); color:#fff;
+}
+.req-btn:hover { background:var(--crimson); transform:translateY(-1px); }
+.req-btn.requested { background:rgba(34,197,94,0.1); color:#16a34a; border:1.5px solid rgba(34,197,94,0.3); cursor:default; }
+.req-btn.requested:hover { transform:none; background:rgba(34,197,94,0.1); }
+.req-btn.unavail { background:var(--bg); color:var(--muted); border:1.5px solid var(--border); cursor:not-allowed; }
+.req-btn.unavail:hover { transform:none; }
+.req-btn.loading { opacity:0.6; cursor:not-allowed; }
+.detail-btn {
+  width:38px; height:38px; flex-shrink:0;
+  border:1.5px solid var(--border); border-radius:9px;
+  background:transparent; color:var(--muted); font-size:15px;
+  cursor:pointer; transition:0.2s;
+  display:flex; align-items:center; justify-content:center;
+}
+.detail-btn:hover { background:var(--bg); color:var(--navy); border-color:var(--navy); }
+
+/* ── LIST VIEW ── */
+.book-grid.list-view .book-card { flex-direction:row; align-items:stretch; }
+.book-grid.list-view .book-cover { width:120px; height:auto; flex-shrink:0; }
+.book-grid.list-view .book-cover-icon { font-size:36px; }
+.book-grid.list-view .book-body { flex-direction:row; align-items:center; gap:18px; flex-wrap:wrap; }
+.book-grid.list-view .book-title { font-size:15px; min-width:160px; flex:1; }
+.book-grid.list-view .book-meta { margin-bottom:0; }
+.book-grid.list-view .book-footer { margin-top:0; padding-top:0; border-top:none; flex-shrink:0; }
+
+/* ── EMPTY STATE ── */
+.empty-state { grid-column:1/-1; text-align:center; padding:80px 20px; color:var(--muted); }
+.empty-state .empty-icon { font-size:54px; margin-bottom:16px; opacity:0.35; }
+.empty-state h3 { font-family:'Cormorant Garamond',serif; font-size:22px; color:var(--navy); margin-bottom:8px; }
+
+/* ── PAGINATION ── */
+.pagination { display:flex; align-items:center; justify-content:center; gap:7px; margin-top:36px; }
+.page-btn {
+  width:38px; height:38px; border-radius:9px;
+  border:1.5px solid var(--border); background:var(--surface);
+  color:var(--text); font-size:13.5px; font-weight:500;
+  cursor:pointer; transition:0.2s;
+  display:flex; align-items:center; justify-content:center;
+}
+.page-btn:hover { border-color:var(--navy); color:var(--navy); }
+.page-btn.active { background:var(--navy); color:#fff; border-color:var(--navy); }
+.page-btn:disabled { opacity:0.35; cursor:not-allowed; }
+
+/* ── MODAL ── */
+.modal-overlay {
+  position:fixed; inset:0;
+  background:rgba(8,28,58,0.6); backdrop-filter:blur(6px);
+  z-index:2000; display:none; align-items:center; justify-content:center; padding:24px;
+}
+.modal-overlay.open { display:flex; animation:fadeIn 0.2s ease; }
+@keyframes fadeIn { from{opacity:0} to{opacity:1} }
+.modal {
+  background:var(--surface); border-radius:22px;
+  width:100%; max-width:540px; max-height:90vh; overflow-y:auto;
+  box-shadow:0 40px 100px rgba(0,0,0,0.3); animation:slideUp 0.3s ease;
+}
+@keyframes slideUp { from{opacity:0;transform:translateY(22px)} to{opacity:1;transform:none} }
+.modal-cover {
+  height:190px; display:flex; align-items:center; justify-content:center;
+  font-size:68px; position:relative;
+}
+.modal-cover-pattern { position:absolute; inset:0; opacity:0.05; background-image:repeating-linear-gradient(45deg,#fff 0,#fff 1px,transparent 0,transparent 50%); background-size:14px 14px; }
+.modal-close {
+  position:absolute; top:14px; right:14px;
+  width:34px; height:34px; background:rgba(255,255,255,0.15);
+  border:none; border-radius:9px; color:#fff; font-size:15px;
+  cursor:pointer; display:flex; align-items:center; justify-content:center;
+}
+.modal-body { padding:26px; }
+.modal-title { font-family:'Cormorant Garamond',serif; font-size:24px; font-weight:700; color:var(--navy); margin-bottom:7px; line-height:1.25; }
+.modal-author { font-size:14px; color:var(--muted); margin-bottom:18px; }
+.modal-tags { display:flex; flex-wrap:wrap; gap:7px; margin-bottom:20px; }
+.modal-details { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:24px; }
+.modal-detail { background:var(--bg); border-radius:11px; padding:12px 15px; border:1px solid var(--border); }
+.modal-detail-label { font-size:10px; font-weight:700; letter-spacing:2px; text-transform:uppercase; color:var(--muted); margin-bottom:4px; }
+.modal-detail-val { font-size:14px; font-weight:600; color:var(--navy); }
+.modal-req-btn {
+  width:100%; padding:14px;
+  background:linear-gradient(135deg, var(--navy), var(--crimson));
+  color:#fff; border:none; border-radius:12px;
+  font-size:15px; font-weight:600; cursor:pointer; transition:0.2s;
+  font-family:'Outfit',sans-serif;
+}
+.modal-req-btn:hover { background:var(--crimson); }
+
+/* ── TOAST ── */
+.toast-container { position:fixed; bottom:28px; left:50%; transform:translateX(-50%); z-index:3000; display:flex; flex-direction:column; gap:10px; pointer-events:none; }
+.toast { padding:12px 22px; border-radius:12px; font-size:13.5px; font-weight:600; color:#fff; box-shadow:0 8px 28px rgba(0,0,0,0.2); animation:toastIn 0.3s ease; pointer-events:all; white-space:nowrap; }
+.toast.success { background:linear-gradient(135deg,#16a34a,#22c55e); }
+.toast.error   { background:linear-gradient(135deg,#dc2626,#ef4444); }
+.toast.info    { background:linear-gradient(135deg,var(--navy),var(--navy2)); }
+@keyframes toastIn { from{opacity:0;transform:translateY(12px)} to{opacity:1;transform:none} }
+
+/* ── FOOTER ── */
+.site-footer { background:var(--navy); color:rgba(255,255,255,0.4); text-align:center; padding:28px; font-size:13px; }
+.site-footer em { color:var(--gold2); font-style:normal; }
+
+/* ── RESPONSIVE ── */
+@media(max-width:992px){
+  .cat-main { grid-template-columns:1fr; }
+  .sidebar { position:static; }
+  .cat-hero-stats { display:none; }
+}
+@media(max-width:640px){
+  .cat-hero-inner,.cat-main,.back-row { padding:0 20px; }
+  .cat-main { padding:24px 20px 60px; }
+  .search-row { flex-direction:column; }
+  .header-inner { padding:0 20px; }
+  .site-nav .nav-link { display:none; }
+}
+</style>
+</head>
+<body>
+
+<!-- ANNOUNCE TICKER -->
+<div class="announce">
+  <div class="announce-track">
+    <span>New arrivals added weekly</span>
+    <span>IEEE Xplore access via Knimbus</span>
+    <span>Request books online — pickup in 24 hrs</span>
+    <span>Inter-library loan available</span>
+    <span>Digital copies of rare journals now accessible</span>
+    <span>New arrivals added weekly</span>
+    <span>IEEE Xplore access via Knimbus</span>
+    <span>Request books online — pickup in 24 hrs</span>
+    <span>Inter-library loan available</span>
+    <span>Digital copies of rare journals now accessible</span>
+  </div>
+</div>
+
+<!-- HEADER -->
+<header class="site-header">
+  <div class="header-inner">
+    <a href="index.html" class="logo">
+      <img src="GRIET_Logo.png" alt="GRIET Logo">
+      <div class="logo-text">
+        <div class="logo-name"></div>
+        <div class="logo-sub"></div>
+      </div>
+    </a>
+    <nav class="site-nav">
+      <a href="index.html" class="nav-link">Home</a>
+      <a href="about.html" class="nav-link">About</a>
+      <a href="service.html" class="nav-link">Services</a>
+      <a href="catalogue.html" class="nav-link active">Catalogue</a>
+      <a href="login.html" id="loginNav" class="nav-login">Dashboard →</a>
+    </nav>
+  </div>
+</header>
+
+<!-- HERO -->
+<div class="cat-hero">
+  <div class="cat-hero-inner">
+    <div class="cat-hero-text">
+      <div class="cat-hero-badge">Library Catalogue</div>
+      <h1>Book <em>Catalogue</em></h1>
+      <p>Explore our comprehensive collection of academic titles, journals and digital resources. Request books directly from your dashboard.</p>
+    </div>
+    <div class="cat-hero-stats">
+      <div class="cat-hstat">
+        <div class="cat-hstat-num" id="totalCount">—</div>
+        <div class="cat-hstat-label">Total Books</div>
+      </div>
+      <div class="cat-hstat">
+        <div class="cat-hstat-num" id="availCount">—</div>
+        <div class="cat-hstat-label">Available</div>
+      </div>
+      <div class="cat-hstat">
+        <div class="cat-hstat-num" id="deptCount">—</div>
+        <div class="cat-hstat-label">Departments</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- BACK BUTTON -->
+<div class="back-row">
+  <button class="back-btn" onclick="window.location.href='index.html'">← Back to Home</button>
+</div>
+
+<!-- MAIN -->
+<div class="cat-main">
+
+  <!-- ── SIDEBAR ── -->
+  <aside class="sidebar">
+
+    <!-- Compact brand strip -->
+    <div class="sidebar-brand">
+      <img src="GRIET_Logo.png" alt="GRIET">
+      <div class="sidebar-brand-text">
+        <div class="sb-name">GRIET Central Library</div>
+        <div class="sb-sub">Gokaraju Rangaraju IET</div>
+      </div>
+    </div>
+
+    <!-- Filter heading -->
+    <div class="sidebar-head">
+      <h3>🔎 Filters</h3>
+      <p>Refine your search</p>
+    </div>
+
+    <!-- Availability toggle -->
+    <div class="sidebar-section">
+      <div class="sidebar-label">Availability</div>
+      <div class="avail-toggle" onclick="toggleAvail()">
+        <span>Available Only</span>
+        <div class="toggle-switch" id="availToggle"></div>
+      </div>
+    </div>
+
+    <!-- Department filter -->
+    <div class="sidebar-section">
+      <div class="sidebar-label">Department / Branch</div>
+      <div class="filter-group">
+        <label class="filter-option"><input type="radio" name="dept" value="all" checked> All Departments</label>
+        <label class="filter-option"><input type="radio" name="dept" value="CSE"> 💻 CSE</label>
+        <label class="filter-option"><input type="radio" name="dept" value="ECE"> 📡 ECE</label>
+        <label class="filter-option"><input type="radio" name="dept" value="MECH"> ⚙️ Mechanical</label>
+        <label class="filter-option"><input type="radio" name="dept" value="CIVIL"> 🏗️ Civil</label>
+        <label class="filter-option"><input type="radio" name="dept" value="EEE"> ⚡ EEE</label>
+        <label class="filter-option"><input type="radio" name="dept" value="IT"> 🖥️ IT</label>
+        <label class="filter-option"><input type="radio" name="dept" value="AIML"> 🤖 AI &amp; ML</label>
+        <label class="filter-option"><input type="radio" name="dept" value="GENERAL"> 📚 General</label>
+      </div>
+    </div>
+
+    <!-- Category filter -->
+    <div class="sidebar-section">
+      <div class="sidebar-label">Category</div>
+      <div class="filter-group">
+        <label class="filter-option"><input type="radio" name="cat" value="all" checked> All Categories</label>
+        <label class="filter-option"><input type="radio" name="cat" value="Algorithms"> Algorithms</label>
+        <label class="filter-option"><input type="radio" name="cat" value="Operating Systems"> Operating Systems</label>
+        <label class="filter-option"><input type="radio" name="cat" value="AI/ML"> AI / ML</label>
+        <label class="filter-option"><input type="radio" name="cat" value="Electronics"> Electronics</label>
+        <label class="filter-option"><input type="radio" name="cat" value="Mathematics"> Mathematics</label>
+        <label class="filter-option"><input type="radio" name="cat" value="Physics"> Physics</label>
+      </div>
+    </div>
+
+    <!-- Clear filters -->
+    <div class="sidebar-section">
+      <button class="apply-btn" onclick="clearFilters()">✕ Clear All Filters</button>
+    </div>
+
+  </aside>
+
+  <!-- ── CONTENT AREA ── -->
+  <div class="cat-content">
+
+    <div class="search-row">
+      <div class="search-wrap">
+        <input type="text" id="searchInput" placeholder="Search by title, author, ISBN…">
+        <button>🔍</button>
+      </div>
+      <select class="sort-select" id="sortSelect">
+        <option value="default">Sort: Default</option>
+        <option value="title-az">Title: A → Z</option>
+        <option value="title-za">Title: Z → A</option>
+        <option value="avail">Available First</option>
+      </select>
+    </div>
+
+    <div class="active-filters" id="activeFilters"></div>
+
+    <div class="results-meta">
+      <div class="results-count" id="resultsCount">Loading collection…</div>
+      <div class="view-toggle">
+        <button class="view-btn active" id="gridBtn" onclick="setView('grid')" title="Grid view">⊞</button>
+        <button class="view-btn" id="listBtn" onclick="setView('list')" title="List view">☰</button>
+      </div>
+    </div>
+
+    <div class="book-grid" id="bookGrid"></div>
+    <div class="pagination" id="pagination"></div>
+
+  </div>
+</div>
+
+<!-- TOAST CONTAINER -->
+<div class="toast-container" id="toastContainer"></div>
+
+<!-- DETAIL MODAL -->
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal" id="modalContent"></div>
+</div>
+
+<footer class="site-footer">© 2026 <em>GRIET Central Library</em> · All Rights Reserved</footer>
+
+<script>
+/* ─── Data & State ─── */
+let allBooks = [];
+let myRequestedBookIds = new Set();
+let currentView = 'grid';
+let showAvailOnly = false;
+let currentPage = 1;
+const PAGE_SIZE = 12;
+
+const deptIcons = {CSE:'💻',ECE:'📡',MECH:'⚙️',CIVIL:'🏗️',EEE:'⚡',IT:'🖥️',AIML:'🤖',GENERAL:'📚'};
+const coverColors = {
+  CSE:     'linear-gradient(135deg,#081c3a,#0d2a57)',
+  ECE:     'linear-gradient(135deg,#0a1f3c,#1a4080)',
+  MECH:    'linear-gradient(135deg,#3b1a00,#8b4513)',
+  CIVIL:   'linear-gradient(135deg,#2d1a00,#7c4010)',
+  EEE:     'linear-gradient(135deg,#1a0d2e,#5b21b6)',
+  IT:      'linear-gradient(135deg,#001a2e,#0e4a6e)',
+  AIML:    'linear-gradient(135deg,#2d0000,#b30000)',
+  GENERAL: 'linear-gradient(135deg,#1a1a2e,#2d2d4e)',
+};
+
+/* ─── Init ─── */
+document.addEventListener("DOMContentLoaded", async () => {
+  updateLoginNav();
+  await loadMyRequests();
+  await loadBooks();
+
+  document.getElementById("searchInput").addEventListener("input", () => { currentPage=1; renderFiltered(); });
+  document.getElementById("sortSelect").addEventListener("change", renderFiltered);
+  document.querySelectorAll('input[name="dept"], input[name="cat"]').forEach(el => {
+    el.addEventListener("change", () => { currentPage=1; renderFiltered(); updateFilterChips(); });
+  });
+  document.getElementById("modalOverlay").addEventListener("click", e => {
+    if(e.target === document.getElementById("modalOverlay")) closeModal();
+  });
+});
+
+function updateLoginNav(){
+  const role = localStorage.getItem("role");
+  if(!role) return;
+  const nav = document.getElementById("loginNav");
+  nav.textContent = "Dashboard →";
+  nav.href = role==="LIBRARIAN" ? "librarian-dashboard.html" :
+             role==="FACULTY"   ? "faculty-dashboard.html"   :
+             "student-dashboard.html";
+}
+
+async function loadMyRequests(){
+  const token = localStorage.getItem("token");
+  if(!token) return;
+  try {
+    const r = await fetch("https://library-backend-1-e3r2.onrender.com/request/my",
+      {headers:{"Authorization":"Bearer "+token}});
+    if(r.ok){
+      const data = await r.json();
+      data.forEach(req => { if(req.status==="PENDING") myRequestedBookIds.add(req.book.id); });
+    }
+  } catch(e){ console.error(e); }
+}
+
+async function loadBooks(){
+  const token = localStorage.getItem("token");
+  const headers = token ? {"Authorization":"Bearer "+token} : {};
+  try {
+    const r = await fetch("https://library-backend-1-e3r2.onrender.com/books?page=0&size=200", {headers});
+    if(!r.ok){ showToast("Failed to load books","error"); loadDemoBooks(); return; }
+    const data = await r.json();
+    allBooks = Array.isArray(data) ? data : (data.content || []);
+  } catch(e){ console.error("loadBooks error:", e); loadDemoBooks(); }
+  updateHeroStats();
+  renderFiltered();
+}
+
+function loadDemoBooks(){
+  const depts = ['CSE','ECE','MECH','CIVIL','EEE','IT','AIML','GENERAL'];
+  const cats  = ['Algorithms','Operating Systems','AI/ML','Electronics','Mathematics','Physics'];
+  allBooks = Array.from({length:50}, (_,i) => ({
+    id: i+1,
+    title: `Book Title ${i+1}`,
+    author: `Author ${i+1}`,
+    branch: depts[i%depts.length],
+    category: cats[i%cats.length],
+    year: 2018+(i%7),
+    publisher: ['Pearson','McGraw Hill','Wiley','O\'Reilly'][i%4],
+    available: i%3!==0
+  }));
+  updateHeroStats();
+  renderFiltered();
+}
+
+function updateHeroStats(){
+  document.getElementById("totalCount").textContent = allBooks.length.toLocaleString();
+  document.getElementById("availCount").textContent = allBooks.filter(b=>b.available).length.toLocaleString();
+  document.getElementById("deptCount").textContent  = new Set(allBooks.map(b=>b.branch).filter(Boolean)).size;
+}
+
+/* ─── Render ─── */
+function renderFiltered(){
+  const q    = document.getElementById("searchInput").value.toLowerCase().trim();
+  const dept = document.querySelector('input[name="dept"]:checked')?.value || "all";
+  const cat  = document.querySelector('input[name="cat"]:checked')?.value  || "all";
+  const sort = document.getElementById("sortSelect").value;
+
+  let books = allBooks.filter(b => {
+    const matchQ     = !q || (b.title||"").toLowerCase().includes(q) || (b.author||"").toLowerCase().includes(q);
+    const matchDept  = dept==="all" || (b.branch||"")=== dept;
+    const matchCat   = cat==="all"  || (b.category||"")=== cat;
+    const matchAvail = !showAvailOnly || b.available;
+    return matchQ && matchDept && matchCat && matchAvail;
+  });
+
+  if(sort==="title-az") books.sort((a,b)=>(a.title||"").localeCompare(b.title||""));
+  else if(sort==="title-za") books.sort((a,b)=>(b.title||"").localeCompare(a.title||""));
+  else if(sort==="avail") books.sort((a,b)=>b.available-a.available);
+
+  const total = books.length;
+  const paged = books.slice((currentPage-1)*PAGE_SIZE, currentPage*PAGE_SIZE);
+  document.getElementById("resultsCount").innerHTML =
+    `Showing <b>${paged.length}</b> of <b>${total}</b> book${total!==1?'s':''}`;
+
+  renderBooks(paged);
+  renderPagination(total);
+}
+
+function renderBooks(books){
+  const grid = document.getElementById("bookGrid");
+  grid.innerHTML = "";
+  grid.className = "book-grid" + (currentView==="list" ? " list-view" : "");
+
+  if(!books.length){
+    grid.innerHTML = `<div class="empty-state">
+      <div class="empty-icon">📭</div>
+      <h3>No Books Found</h3>
+      <p>Try adjusting your search or filters.</p>
+    </div>`;
+    return;
+  }
+
+  books.forEach(book => {
+    const dept = book.branch || "GENERAL";
+    const icon = deptIcons[dept] || "📚";
+    const bg   = coverColors[dept] || coverColors.GENERAL;
+    const isRequested = myRequestedBookIds.has(book.id);
+    const isUnavail   = !book.available;
+
+    let btnCls = "req-btn", btnTxt = "Request";
+    if(isRequested){ btnCls="req-btn requested"; btnTxt="✓ Requested"; }
+    else if(isUnavail){ btnCls="req-btn unavail"; btnTxt="Not Available"; }
+
+    const card = document.createElement("div");
+    card.className = "book-card";
+    card.innerHTML = `
+      <div class="book-cover" style="background:${bg}">
+        <div class="book-cover-pattern"></div>
+        <div class="book-cover-icon">${icon}</div>
+        <div class="book-cover-dept">${dept}</div>
+        <div class="book-avail-dot">
+          <div class="avail-indicator ${isUnavail?'unavailable':''}"></div>
+          ${isUnavail ? "Checked Out" : "Available"}
+        </div>
+      </div>
+      <div class="book-body">
+        <div class="book-title">${book.title || "Unknown Title"}</div>
+        <div class="book-author">${book.author || book.authors || "Unknown Author"}</div>
+        <div class="book-meta">
+          ${book.category ? `<span class="book-tag cat">${book.category}</span>` : ""}
+          ${book.year     ? `<span class="book-tag">📅 ${book.year}</span>` : ""}
+          ${book.publisher? `<span class="book-tag">${book.publisher.split(" ")[0]}</span>` : ""}
+        </div>
+        <div class="book-footer">
+          <button class="${btnCls}" id="btn-${book.id}"
+            ${isRequested||isUnavail?"disabled":""}
+            onclick="requestBook(${book.id},event)">${btnTxt}</button>
+          <button class="detail-btn" onclick="showDetail(${book.id})" title="Details">ℹ</button>
+        </div>
+      </div>`;
+    grid.appendChild(card);
+  });
+}
+
+function renderPagination(total){
+  const pages = Math.ceil(total / PAGE_SIZE);
+  const el = document.getElementById("pagination");
+  el.innerHTML = "";
+  if(pages <= 1) return;
+
+  const prev = document.createElement("button");
+  prev.className="page-btn"; prev.textContent="‹"; prev.disabled=(currentPage===1);
+  prev.onclick=()=>{ currentPage--; renderFiltered(); scrollTo({top:300,behavior:"smooth"}); };
+  el.appendChild(prev);
+
+  for(let i=1;i<=pages;i++){
+    const b = document.createElement("button");
+    b.className = "page-btn" + (i===currentPage?" active":"");
+    b.textContent = i;
+    b.onclick = (p => ()=>{ currentPage=p; renderFiltered(); scrollTo({top:300,behavior:"smooth"}); })(i);
+    el.appendChild(b);
+  }
+
+  const next = document.createElement("button");
+  next.className="page-btn"; next.textContent="›"; next.disabled=(currentPage===pages);
+  next.onclick=()=>{ currentPage++; renderFiltered(); scrollTo({top:300,behavior:"smooth"}); };
+  el.appendChild(next);
+}
+
+/* ─── Request Book ─── */
+async function requestBook(bookId, e){
+  if(e) e.stopPropagation();
+  if(myRequestedBookIds.has(bookId)){ showToast("Already requested!","info"); return; }
+  const token = localStorage.getItem("token");
+  if(!token){
+    showToast("Login required to request books","error");
+    setTimeout(()=>window.location.href="login.html",1200);
+    return;
+  }
+  const btn = document.getElementById("btn-"+bookId);
+  if(!btn) return;
+  btn.classList.add("loading"); btn.disabled=true; btn.textContent="Sending…";
+  try {
+    const r = await fetch(`https://library-backend-1-e3r2.onrender.com/request/${bookId}`,
+      {method:"POST",headers:{"Authorization":"Bearer "+token}});
+    if(r.ok){
+      myRequestedBookIds.add(bookId);
+      btn.className="req-btn requested"; btn.textContent="✓ Requested"; btn.disabled=true;
+      showToast("✅ Request sent to Librarian!","success");
+    } else {
+      const err = await r.text();
+      if(err.includes("already")){
+        myRequestedBookIds.add(bookId);
+        btn.className="req-btn requested"; btn.textContent="✓ Requested"; btn.disabled=true;
+        showToast("Already requested","info");
+      } else {
+        btn.classList.remove("loading"); btn.disabled=false; btn.textContent="Request";
+        showToast("Failed: "+err,"error");
+      }
+    }
+  } catch(err){
+    btn.classList.remove("loading"); btn.disabled=false; btn.textContent="Request";
+    showToast("Server error. Try again.","error");
+  }
+}
+
+/* ─── Detail Modal ─── */
+function showDetail(bookId){
+  const book = allBooks.find(b=>b.id===bookId);
+  if(!book) return;
+  const dept = book.branch || "GENERAL";
+  const icon = deptIcons[dept] || "📚";
+  const bg   = coverColors[dept] || coverColors.GENERAL;
+  const isRequested = myRequestedBookIds.has(book.id);
+  const isUnavail   = !book.available;
+  let btnTxt = "Request", btnDis = "";
+  if(isRequested){ btnTxt="✓ Already Requested"; btnDis="disabled"; }
+  else if(isUnavail){ btnTxt="Currently Unavailable"; btnDis="disabled"; }
+
+  document.getElementById("modalContent").innerHTML = `
+    <div class="modal-cover" style="background:${bg}">
+      <div class="modal-cover-pattern"></div>
+      ${icon}
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="modal-title">${book.title||"Unknown Title"}</div>
+      <div class="modal-author">By ${book.author||"Unknown Author"}</div>
+      <div class="modal-tags">
+        <span class="book-tag cat">${dept}</span>
+        ${book.category?`<span class="book-tag cat">${book.category}</span>`:""}
+        <span class="book-tag" style="
+          background:${isUnavail?"rgba(239,68,68,0.1)":"rgba(34,197,94,0.1)"};
+          color:${isUnavail?"#dc2626":"#16a34a"};
+          border-color:${isUnavail?"rgba(239,68,68,0.25)":"rgba(34,197,94,0.25)"}">
+          ${isUnavail?"Checked Out":"Available"}
+        </span>
+      </div>
+      <div class="modal-details">
+        ${book.publisher?`<div class="modal-detail"><div class="modal-detail-label">Publisher</div><div class="modal-detail-val">${book.publisher}</div></div>`:""}
+        ${book.year?`<div class="modal-detail"><div class="modal-detail-label">Year</div><div class="modal-detail-val">${book.year}</div></div>`:""}
+        <div class="modal-detail"><div class="modal-detail-label">Department</div><div class="modal-detail-val">${dept}</div></div>
+        <div class="modal-detail"><div class="modal-detail-label">Status</div><div class="modal-detail-val">${isUnavail?"Checked Out":"✓ Available"}</div></div>
+      </div>
+      <button class="modal-req-btn" ${btnDis} onclick="requestBook(${book.id},event)">${btnTxt}</button>
+    </div>`;
+  document.getElementById("modalOverlay").classList.add("open");
+}
+function closeModal(){ document.getElementById("modalOverlay").classList.remove("open"); }
+
+/* ─── Filters ─── */
+function toggleAvail(){
+  showAvailOnly = !showAvailOnly;
+  document.getElementById("availToggle").classList.toggle("on", showAvailOnly);
+  currentPage = 1; renderFiltered(); updateFilterChips();
+}
+function setView(v){
+  currentView = v;
+  document.getElementById("gridBtn").classList.toggle("active", v==="grid");
+  document.getElementById("listBtn").classList.toggle("active", v==="list");
+  renderFiltered();
+}
+function updateFilterChips(){
+  const area = document.getElementById("activeFilters");
+  area.innerHTML = "";
+  const dept = document.querySelector('input[name="dept"]:checked')?.value;
+  const cat  = document.querySelector('input[name="cat"]:checked')?.value;
+  if(dept && dept!=="all") addChip(dept, ()=>{
+    document.querySelector('input[name="dept"][value="all"]').checked=true;
+    currentPage=1; renderFiltered(); updateFilterChips();
+  });
+  if(cat && cat!=="all") addChip(cat, ()=>{
+    document.querySelector('input[name="cat"][value="all"]').checked=true;
+    currentPage=1; renderFiltered(); updateFilterChips();
+  });
+  if(showAvailOnly) addChip("Available Only", ()=>{ toggleAvail(); });
+
+  function addChip(label, removeFn){
+    const c = document.createElement("div");
+    c.className = "filter-chip";
+    c.innerHTML = `${label}<span class="chip-remove" onclick="(${removeFn.toString()})()">✕</span>`;
+    area.appendChild(c);
+  }
+}
+function clearFilters(){
+  document.querySelector('input[name="dept"][value="all"]').checked = true;
+  document.querySelector('input[name="cat"][value="all"]').checked  = true;
+  if(showAvailOnly) toggleAvail();
+  document.getElementById("searchInput").value = "";
+  currentPage = 1; renderFiltered(); updateFilterChips();
+}
+
+/* ─── Toast ─── */
+function showToast(msg, type="info"){
+  const c = document.getElementById("toastContainer");
+  const t = document.createElement("div");
+  t.className = `toast ${type}`; t.textContent = msg;
+  c.appendChild(t);
+  setTimeout(()=>{
+    t.style.opacity="0"; t.style.transform="translateY(12px)"; t.style.transition="0.3s";
+    setTimeout(()=>t.remove(), 300);
+  }, 3200);
+}
+</script>
+</body>
+</html>

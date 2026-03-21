@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Members | GRIET Central Library</title>
+<link rel="stylesheet" href="css/theme.css">
+</head>
+<body>
+<script src="js/toast.js"></script><script src="js/auth.js"></script>
+<div class="dashboard-layout">
+<aside class="sidebar">
+  <div class="sidebar-logo"><img src="GRIET_Logo.png" alt="GRIET"></div>
+  <div class="sidebar-brand">
+    <div class="brand-tag">GRIET · Hyderabad</div>
+    <div class="brand-name">Central<br>Library</div>
+    <div class="brand-sub">Management System</div>
+  </div>
+  <nav>
+    <div class="sidebar-sep">Main</div>
+    <a href="librarian-dashboard.html">⊞&nbsp; Dashboard</a>
+    <a href="library-scanner.html">⬛&nbsp; Entry / Exit Scanner</a>
+    <a href="book-management.html">＋&nbsp; Add / Manage Books</a>
+    <div class="sidebar-sep">Circulation</div>
+    <a href="issue-return.html">⇄&nbsp; Issue &amp; Return</a>
+    <a href="fine-management.html">₹&nbsp; Fine Management</a>
+    <div class="sidebar-sep">Users</div>
+    <a class="active">◎&nbsp; Members</a>
+    <a href="reports.html">↗&nbsp; Reports</a>
+  </nav>
+  <div class="sidebar-footer">
+    <a href="change-password.html">⚙&nbsp; Settings</a>
+    <a onclick="logout()">→&nbsp; Logout</a>
+  </div>
+</aside>
+<main class="main">
+  <div class="top-bar">
+    <div>
+      <div class="page-eyebrow">Users</div>
+      <h1>Members</h1>
+      <p>All registered students and faculty</p>
+    </div>
+  </div>
+  <div class="search-row">
+    <div class="search-wrap">
+      <input type="text" id="searchInput" placeholder="Search by Roll No / User ID…">
+      <button>🔍</button>
+    </div>
+  </div>
+  <div class="box">
+    <div class="box-header">
+      <span class="box-title">All Members</span>
+      <span class="badge b-info" id="memberCount">0 members</span>
+    </div>
+    <div class="box-body table-wrap">
+      <table>
+        <thead><tr><th>User ID</th><th>Role</th><th>Active Issues</th><th>Total History</th><th>Action</th></tr></thead>
+        <tbody id="membersTable"><tr><td colspan="5" style="text-align:center;padding:30px;color:var(--muted);">Loading…</td></tr></tbody>
+      </table>
+    </div>
+  </div>
+</main>
+</div>
+<script>
+checkAuth();
+let allMembers=[];
+document.addEventListener('DOMContentLoaded',loadMembers);
+
+async function loadMembers(){
+  try{
+    const r=await apiFetch('/members');
+    allMembers=r.ok?await r.json():[];
+    renderMembers(allMembers);
+  }catch{toast('Failed to load members','error');}
+}
+
+function renderMembers(members){
+  document.getElementById('memberCount').textContent=members.length+' members';
+  const tb=document.getElementById('membersTable');
+  if(!members.length){tb.innerHTML=`<tr><td colspan="5" style="text-align:center;padding:32px;color:var(--muted);">No members found</td></tr>`;return;}
+  tb.innerHTML=members.map(m=>`<tr>
+    <td><strong>${m.userId||m.collegeId||'—'}</strong></td>
+    <td><span class="role-badge">${m.role||'—'}</span></td>
+    <td>${m.activeCount??0}</td>
+    <td>${m.historyCount??0}</td>
+    <td><button class="btn btn-ghost btn-sm" onclick="openMember('${m.userId||m.collegeId}','${m.role}')">View →</button></td>
+  </tr>`).join('');
+}
+
+document.getElementById('searchInput').addEventListener('input',function(){
+  const v=this.value.toLowerCase();
+  renderMembers(allMembers.filter(m=>(m.userId||m.collegeId||'').toLowerCase().includes(v)));
+});
+
+function openMember(userId,userRole){
+  localStorage.setItem('selectedMember',JSON.stringify({userId,userRole}));
+  window.location.href='member-details.html';
+}
+</script>
+</body>
+</html>

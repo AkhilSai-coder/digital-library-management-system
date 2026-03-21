@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<title>Entry / Exit Scanner | GRIET Central Library</title>
+<link rel="stylesheet" href="css/theme.css">
+<style>
+/* ── SCANNER-SPECIFIC ─────────────────────────────────── */
+.scanner-shell{max-width:900px;margin:0 auto;display:flex;flex-direction:column;gap:24px;}
+
+/* KPI strip */
+.kpi-strip{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;}
+.kpi{background:var(--white);border-radius:var(--r);border:1px solid var(--border);padding:18px 20px 16px;position:relative;overflow:hidden;box-shadow:var(--shadow);transition:.2s;}
+.kpi::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;}
+.kpi.kpi-green::before{background:var(--green);}
+.kpi.kpi-navy::before{background:var(--navy);}
+.kpi.kpi-gold::before{background:var(--gold);}
+.kpi-lbl{font-size:9.5px;font-weight:700;letter-spacing:1.8px;text-transform:uppercase;color:var(--muted);margin-bottom:8px;}
+.kpi-val{font-family:'Playfair Display',serif;font-size:38px;font-weight:700;color:var(--navy);line-height:1;}
+.kpi-sub{font-size:11.5px;color:var(--muted);margin-top:6px;}
+.live-dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--green);margin-right:5px;animation:blink 1.4s infinite;}
+@keyframes blink{0%,100%{opacity:1;}50%{opacity:.3;}}
+
+/* Scan card */
+.scan-card{background:var(--white);border-radius:var(--r);border:1px solid var(--border);box-shadow:var(--shadow);padding:28px 30px;}
+.scan-card-title{font-family:'Playfair Display',serif;font-size:19px;color:var(--navy);font-weight:700;margin-bottom:3px;}
+.scan-card-sub{font-size:12.5px;color:var(--muted);margin-bottom:22px;}
+.info-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:18px;}
+
+/* Big scan input */
+.scan-input-wrap{display:flex;background:var(--cream);border:2px solid var(--border);border-radius:11px;overflow:hidden;transition:border-color .2s,box-shadow .2s;margin-bottom:14px;}
+.scan-input-wrap:focus-within{border-color:var(--navy);box-shadow:0 0 0 4px rgba(11,30,54,.07);}
+.scan-input-wrap .scan-icon{padding:0 16px;font-size:20px;display:flex;align-items:center;color:var(--muted);background:transparent;border:none;cursor:default;}
+.scan-input-wrap input{flex:1;padding:14px 10px 14px 0;border:none;outline:none;background:transparent;font-size:16px;font-family:'DM Sans',sans-serif;color:var(--text);letter-spacing:1.5px;}
+.scan-input-wrap input::placeholder{color:var(--muted);letter-spacing:0;font-size:14px;}
+
+/* Action buttons */
+.action-row{display:flex;gap:12px;}
+.btn-entry,.btn-exit{flex:1;padding:13px;border:none;border-radius:11px;font-size:14px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .18s;}
+.btn-entry{background:linear-gradient(135deg,var(--green),#059659);color:#fff;box-shadow:0 4px 16px rgba(15,120,82,.3);}
+.btn-entry:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(15,120,82,.4);}
+.btn-exit{background:linear-gradient(135deg,var(--navy),var(--navy2));color:#fff;box-shadow:0 4px 16px rgba(11,30,54,.3);}
+.btn-exit:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(11,30,54,.4);}
+.btn-entry:disabled,.btn-exit:disabled{opacity:.5;cursor:not-allowed;transform:none!important;}
+.scan-hint{font-size:12px;color:var(--muted);margin-top:11px;display:flex;align-items:center;gap:6px;}
+
+/* Result card */
+.result-card{border-radius:var(--r);padding:24px 28px;border:1.5px solid;display:none;animation:fadeIn .28s ease;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(12px);}to{opacity:1;transform:translateY(0);}}
+.result-card.entry{background:#eef9f4;border-color:#6ee7b7;}
+.result-card.exit{background:#eff6ff;border-color:#93c5fd;}
+.result-card.error{background:#fef2f2;border-color:#fca5a5;}
+.result-icon{font-size:36px;margin-bottom:8px;}
+.result-type{font-size:9px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;margin-bottom:4px;}
+.result-card.entry .result-type{color:var(--green);}
+.result-card.exit   .result-type{color:var(--navy);}
+.result-card.error  .result-type{color:var(--red);}
+.result-msg{font-family:'Playfair Display',serif;font-size:20px;font-weight:700;color:var(--navy);margin-bottom:16px;}
+.result-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;}
+.result-item label{font-size:10px;font-weight:700;letter-spacing:1.4px;text-transform:uppercase;color:var(--muted);display:block;margin-bottom:3px;}
+.result-item span{font-size:13.5px;font-weight:600;color:var(--navy);}
+.dur-badge{display:inline-flex;align-items:center;gap:6px;background:var(--navy);color:#fff;padding:6px 14px;border-radius:20px;font-size:13px;font-weight:600;margin-top:14px;}
+
+/* Filter bar */
+.filter-bar{display:flex;gap:10px;align-items:center;flex-wrap:wrap;}
+.filter-bar select{padding:8px 12px;border:1.5px solid var(--border);border-radius:8px;font-size:12.5px;font-family:'DM Sans',sans-serif;background:var(--white);color:var(--text);cursor:pointer;transition:.16s;}
+.filter-bar select:focus{outline:none;border-color:var(--navy);}
+.filter-lbl{font-size:11.5px;font-weight:600;color:var(--muted);white-space:nowrap;}
+.count-chips{display:flex;gap:8px;margin-left:auto;flex-wrap:wrap;}
+.chip{padding:5px 13px;border-radius:20px;font-size:12px;font-weight:700;}
+.chip-green{background:#ecfdf5;color:#065f46;border:1px solid #6ee7b7;}
+.chip-blue{background:#eff6ff;color:#1d4ed8;border:1px solid #93c5fd;}
+.chip-navy{background:#eef2f7;color:var(--navy);border:1px solid var(--border);}
+
+/* Log table highlight */
+.row-inside{background:#f0fdf9!important;}
+
+/* Export button */
+.btn-export{background:linear-gradient(135deg,#0f7852,#047857);color:#fff;box-shadow:0 3px 12px rgba(15,120,82,.25);}
+.btn-export:hover{transform:translateY(-1px);box-shadow:0 5px 16px rgba(15,120,82,.35);}
+
+@media(max-width:600px){
+  .kpi-strip{grid-template-columns:1fr 1fr;}
+  .info-row{grid-template-columns:1fr;}
+  .result-grid{grid-template-columns:1fr 1fr;}
+  .action-row{flex-direction:column;}
+  .scan-card{padding:20px 18px;}
+  .count-chips{margin-left:0;width:100%;}
+}
+@media(max-width:380px){
+  .kpi-strip{grid-template-columns:1fr;}
+}
+</style>
+</head>
+<body>
+<script src="js/toast.js"></script>
+<script src="js/auth.js"></script>
+
+<div class="dashboard-layout">
+<aside class="sidebar">
+  <div class="sidebar-logo">
+    <img src="GRIET_Logo.png" alt="GRIET">
+  </div>
+  <div class="sidebar-brand">
+    <div class="brand-tag">GRIET · Hyderabad</div>
+    <div class="brand-name">Central<br>Library</div>
+    <div class="brand-sub">Management System</div>
+  </div>
+  <nav>
+    <div class="sidebar-sep">Main</div>
+    <a href="librarian-dashboard.html">⊞&nbsp; Dashboard</a>
+    <a href="book-management.html">＋&nbsp; Add / Manage Books</a>
+    <div class="sidebar-sep">Circulation</div>
+    <a href="issue-return.html">⇄&nbsp; Issue &amp; Return</a>
+    <a href="fine-management.html">₹&nbsp; Fine Management</a>
+    <div class="sidebar-sep">Gate</div>
+    <a class="active">⬛&nbsp; Entry / Exit Scanner</a>
+    <div class="sidebar-sep">Users</div>
+    <a href="members.html">◎&nbsp; Members</a>
+    <a href="reports.html">↗&nbsp; Reports</a>
+  </nav>
+  <div class="sidebar-footer">
+    <a href="change-password.html">⚙&nbsp; Settings</a>
+    <a onclick="logout()">→&nbsp; Logout</a>
+  </div>
+</aside>
+
+<main class="main">
+  <div class="top-bar">
+    <div>
+      <div class="page-eyebrow">Gate Management</div>
+      <h1>Entry / Exit Scanner</h1>
+      <p>Scan student ID barcode to record library entry or exit</p>
+    </div>
+    <div class="top-bar-right">
+      <div class="date-chip" id="dateBadge">—</div>
+      <button class="btn btn-ghost btn-sm" onclick="loadTodayLog()">↻ Refresh</button>
+      <button class="btn btn-export btn-sm" onclick="exportExcel()">⬇ Export Excel</button>
+    </div>
+  </div>
+
+  <div class="scanner-shell">
+
+    <!-- KPI STRIP -->
+    <div class="kpi-strip">
+      <div class="kpi kpi-green">
+        <div class="kpi-lbl">Currently Inside</div>
+        <div class="kpi-val" id="kpiInside">—</div>
+        <div class="kpi-sub"><span class="live-dot"></span>Live count</div>
+      </div>
+      <div class="kpi kpi-navy">
+        <div class="kpi-lbl">Total Today</div>
+        <div class="kpi-val" id="kpiTotal">—</div>
+        <div class="kpi-sub">Entries recorded</div>
+      </div>
+      <div class="kpi kpi-gold">
+        <div class="kpi-lbl">Exited Today</div>
+        <div class="kpi-val" id="kpiExited">—</div>
+        <div class="kpi-sub">Completed visits</div>
+      </div>
+    </div>
+
+    <!-- SCAN CARD -->
+    <div class="scan-card">
+      <div class="scan-card-title">🪪 ID Card Barcode Scanner</div>
+      <div class="scan-card-sub">Fill student details, scan barcode, then click Entry or Exit</div>
+
+      <div class="info-row">
+        <div class="form-group" style="margin-bottom:0">
+          <label class="form-label">Year</label>
+          <select id="yearSelect" class="form-control">
+            <option value="">-- Year --</option>
+            <option value="1">1st Year</option>
+            <option value="2">2nd Year</option>
+            <option value="3">3rd Year</option>
+            <option value="4">4th Year</option>
+          </select>
+        </div>
+        <div class="form-group" style="margin-bottom:0">
+          <label class="form-label">Branch</label>
+          <select id="branchSelect" class="form-control">
+            <option value="">-- Branch --</option>
+            <option>CSE</option><option>CSE-AI</option><option>CSE-DS</option>
+            <option>CSE-CS</option><option>IT</option><option>ECE</option>
+            <option>EEE</option><option>MECH</option><option>CIVIL</option>
+            <option>MBA</option><option>MCA</option>
+          </select>
+        </div>
+        <div class="form-group" style="margin-bottom:0">
+          <label class="form-label">Section <span style="color:var(--muted);font-weight:400;">(opt)</span></label>
+          <input type="text" id="sectionInput" class="form-control" placeholder="A, B, C…">
+        </div>
+      </div>
+
+      <label class="form-label">College ID / Barcode</label>
+      <div class="scan-input-wrap">
+        <span class="scan-icon">▐▌</span>
+        <input type="text" id="barcodeInput" placeholder="Scan barcode or type College ID…"
+               autocomplete="off" autofocus onkeydown="handleKey(event)">
+      </div>
+
+      <div class="action-row">
+        <button class="btn-entry" id="entryBtn" onclick="submitScan('ENTRY')">
+          ✅&nbsp; Record Entry
+        </button>
+        <button class="btn-exit" id="exitBtn" onclick="submitScan('EXIT')">
+          👋&nbsp; Record Exit
+        </button>
+      </div>
+
+      <div class="scan-hint">
+        <span style="font-size:14px;">💡</span>
+        Barcode scanners auto-send <strong>Enter</strong> — triggers <strong>Entry</strong> by default. Click <strong>Record Exit</strong> when a student leaves.
+      </div>
+    </div>
+
+    <!-- RESULT CARD -->
+    <div class="result-card" id="resultCard">
+      <div class="result-icon" id="resultIcon"></div>
+      <div class="result-type" id="resultType"></div>
+      <div class="result-msg"  id="resultMsg"></div>
+      <div class="result-grid" id="resultGrid"></div>
+    </div>
+
+    <!-- FILTER BAR -->
+    <div class="filter-bar">
+      <span class="filter-lbl">Filter:</span>
+      <select id="filterYear" onchange="applyFilter()">
+        <option value="">All Years</option>
+        <option value="1">1st Year</option><option value="2">2nd Year</option>
+        <option value="3">3rd Year</option><option value="4">4th Year</option>
+      </select>
+      <select id="filterBranch" onchange="applyFilter()">
+        <option value="">All Branches</option>
+        <option>CSE</option><option>CSE-AI</option><option>CSE-DS</option>
+        <option>CSE-CS</option><option>IT</option><option>ECE</option>
+        <option>EEE</option><option>MECH</option><option>CIVIL</option>
+        <option>MBA</option><option>MCA</option>
+      </select>
+      <select id="filterStatus" onchange="applyFilter()">
+        <option value="">All Status</option>
+        <option value="inside">Currently Inside</option>
+        <option value="exited">Exited</option>
+      </select>
+      <div class="count-chips">
+        <span class="chip chip-green" id="chipInside">Inside: —</span>
+        <span class="chip chip-blue"  id="chipExited">Exited: —</span>
+        <span class="chip chip-navy"  id="chipTotal">Total: —</span>
+      </div>
+    </div>
+
+    <!-- LOG TABLE -->
+    <div class="box">
+      <div class="box-header">
+        <span class="box-title">Today's Entry / Exit Log</span>
+        <span class="badge b-info" id="logCount">— records</span>
+      </div>
+      <div class="box-body table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>College ID</th><th>Year</th><th>Branch</th><th>Section</th>
+              <th>Entry Time</th><th>Exit Time</th><th>Duration</th><th>Status</th>
+            </tr>
+          </thead>
+          <tbody id="liveLog">
+            <tr><td colspan="8" style="text-align:center;padding:36px;color:var(--muted);">Loading…</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </div><!-- /scanner-shell -->
+</main>
+</div>
+
+<script>
+checkAuth();
+const API = 'https://library-backend-1-e3r2.onrender.com';
+const tok = () => localStorage.getItem('token');
+
+document.getElementById('dateBadge').textContent =
+  new Date().toLocaleDateString('en-IN',{weekday:'short',day:'numeric',month:'short',year:'numeric'});
+
+function handleKey(e){ if(e.key==='Enter'){e.preventDefault();submitScan('ENTRY');} }
+
+/* ── Submit Scan ── */
+async function submitScan(mode){
+  const input    = document.getElementById('barcodeInput');
+  const entryBtn = document.getElementById('entryBtn');
+  const exitBtn  = document.getElementById('exitBtn');
+  const rawId    = input.value.trim();
+  const year     = document.getElementById('yearSelect').value;
+  const branch   = document.getElementById('branchSelect').value;
+  const section  = document.getElementById('sectionInput').value.trim();
+  if(!rawId){ input.focus(); return; }
+
+  entryBtn.disabled = exitBtn.disabled = true;
+  entryBtn.textContent = exitBtn.textContent = '⏳';
+
+  let url = `${API}/api/scan?collegeId=${encodeURIComponent(rawId)}&mode=${mode}`;
+  if(year)    url += `&year=${encodeURIComponent(year)}`;
+  if(branch)  url += `&branch=${encodeURIComponent(branch)}`;
+  if(section) url += `&section=${encodeURIComponent(section)}`;
+
+  try{
+    const res  = await fetch(url,{method:'POST',headers:{Authorization:'Bearer '+tok(),'Content-Type':'application/json'}});
+    const data = await res.json();
+    if(!res.ok) showResult('error',data.error||'Something went wrong');
+    else{ showResult(data.type==='ENTRY'?'entry':'exit',null,data); loadTodayLog(); }
+  }catch(err){ showResult('error','Network error — is the server running?'); }
+  finally{
+    entryBtn.disabled = exitBtn.disabled = false;
+    entryBtn.innerHTML = '✅&nbsp; Record Entry';
+    exitBtn.innerHTML  = '👋&nbsp; Record Exit';
+    input.value = ''; input.focus();
+  }
+}
+
+/* ── Result card ── */
+function showResult(type, errMsg, data){
+  const card = document.getElementById('resultCard');
+  const old  = card.querySelector('.dur-badge');
+  if(old) old.remove();
+  card.className = `result-card ${type}`;
+  card.style.display = 'block';
+  if(type==='error'){
+    document.getElementById('resultIcon').textContent='⚠️';
+    document.getElementById('resultType').textContent='Error';
+    document.getElementById('resultMsg').textContent=errMsg;
+    document.getElementById('resultGrid').innerHTML='';
+    return;
+  }
+  const isE = type==='entry';
+  document.getElementById('resultIcon').textContent = isE?'✅':'👋';
+  document.getElementById('resultType').textContent = isE?'Entry Recorded':'Exit Recorded';
+  document.getElementById('resultMsg').textContent  = data.message;
+  const g = document.getElementById('resultGrid');
+  g.innerHTML=`
+    <div class="result-item"><label>College ID</label><span>${data.collegeId}</span></div>
+    <div class="result-item"><label>Year</label><span>${data.year?data.year+(data.year==1?'st':data.year==2?'nd':data.year==3?'rd':'th')+' Year':'—'}</span></div>
+    <div class="result-item"><label>Branch</label><span>${data.branch||'—'}${data.section?' / '+data.section:''}</span></div>
+    <div class="result-item"><label>${isE?'Entry Time':'Entered At'}</label><span>${fmtT(data.entryTime)}</span></div>
+    ${!isE?`<div class="result-item"><label>Exit Time</label><span>${fmtT(data.exitTime)}</span></div>
+    <div class="result-item"><label>Duration</label><span>${data.durationMinutes!=null?fmtDur(data.durationMinutes):'—'}</span></div>`
+    :`<div class="result-item"></div><div class="result-item"></div>`}`;
+  if(!isE&&data.durationMinutes!=null)
+    g.insertAdjacentHTML('afterend',`<div class="dur-badge">🕐 ${fmtDur(data.durationMinutes)} spent in library</div>`);
+}
+
+/* ── Load today's log ── */
+let allLogs=[];
+async function loadTodayLog(){
+  const tb=document.getElementById('liveLog');
+  tb.innerHTML=`<tr><td colspan="8" style="text-align:center;padding:30px;color:var(--muted);">Loading…</td></tr>`;
+  try{
+    const res=await fetch(`${API}/api/logs/today`,{headers:{Authorization:'Bearer '+tok()}});
+    if(!res.ok) throw new Error();
+    allLogs=await res.json();
+    applyFilter();
+  }catch{
+    tb.innerHTML=`<tr><td colspan="8" style="text-align:center;padding:30px;color:var(--red);">Failed to load log</td></tr>`;
+  }
+}
+
+/* ── Filter + render ── */
+function applyFilter(){
+  const fy=document.getElementById('filterYear').value;
+  const fb=document.getElementById('filterBranch').value;
+  const fs=document.getElementById('filterStatus').value;
+  const filtered=allLogs.filter(l=>{
+    if(fy && String(l.year||'')!==fy) return false;
+    if(fb && (l.branch||'')!==fb) return false;
+    if(fs==='inside' &&  l.exitTime) return false;
+    if(fs==='exited' && !l.exitTime) return false;
+    return true;
+  });
+  const inside = allLogs.filter(l=>!l.exitTime).length;
+  const exited = allLogs.filter(l=> l.exitTime).length;
+  document.getElementById('chipInside').textContent=`Inside: ${inside}`;
+  document.getElementById('chipExited').textContent=`Exited: ${exited}`;
+  document.getElementById('chipTotal').textContent =`Total: ${allLogs.length}`;
+  document.getElementById('logCount').textContent  =`${filtered.length} records`;
+  // KPI strip
+  document.getElementById('kpiInside').textContent=inside;
+  document.getElementById('kpiTotal').textContent =allLogs.length;
+  document.getElementById('kpiExited').textContent=exited;
+  renderTable(filtered);
+}
+
+function renderTable(logs){
+  const tb=document.getElementById('liveLog');
+  if(!logs.length){
+    tb.innerHTML=`<tr><td colspan="8" style="text-align:center;padding:36px;color:var(--muted);">No records found</td></tr>`;
+    return;
+  }
+  tb.innerHTML=logs.map(l=>{
+    const inside=!l.exitTime;
+    const yr=l.year?l.year+(l.year==1?'st':l.year==2?'nd':l.year==3?'rd':'th'):'—';
+    return `<tr class="${inside?'row-inside':''}">
+      <td><strong>${l.collegeId}</strong></td>
+      <td>${yr}</td>
+      <td>${l.branch||'—'}</td>
+      <td>${l.section||'—'}</td>
+      <td>${fmtT(l.entryTime)}</td>
+      <td>${l.exitTime?fmtT(l.exitTime):'—'}</td>
+      <td>${l.durationMinutes!=null?fmtDur(l.durationMinutes):'—'}</td>
+      <td>${inside?'<span class="badge b-inside">Inside</span>':'<span class="badge b-exited">Exited</span>'}</td>
+    </tr>`;
+  }).join('');
+}
+
+/* ── Export Excel ── */
+function exportExcel(){
+  const url=`${API}/api/logs/export`;
+  const a=document.createElement('a');
+  a.href=url; a.download='library-log.xlsx';
+  // Pass token as query param fallback for download links
+  a.href=`${url}?token=${encodeURIComponent(tok())}`;
+  a.click();
+  toast('Downloading Excel export…','success');
+}
+
+/* ── Helpers ── */
+function fmtT(iso){
+  if(!iso) return '—';
+  return new Date(iso).toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:true});
+}
+function fmtDur(m){
+  if(m<60) return m+'m';
+  const h=Math.floor(m/60),mn=m%60;
+  return mn>0?`${h}h ${mn}m`:`${h}h`;
+}
+
+loadTodayLog();
+</script>
+</body>
+</html>

@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Recommend Books | GRIET Library</title>
+<link rel="stylesheet" href="css/theme.css">
+</head>
+<body>
+<script src="js/toast.js"></script><script src="js/auth.js"></script>
+<div class="dashboard-layout">
+<aside class="sidebar">
+  <div class="sidebar-logo"><img src="GRIET_Logo.png" alt="GRIET"></div>
+  <div class="sidebar-brand">
+    <div class="brand-tag">GRIET · Hyderabad</div>
+    <div class="brand-name">Central<br>Library</div>
+    <div class="brand-sub">Faculty Portal</div>
+  </div>
+  <nav>
+    <div class="sidebar-sep">Menu</div>
+    <a href="faculty-dashboard.html">⊞&nbsp; Dashboard</a>
+    <a href="catalogue.html">◫&nbsp; Book Catalogue</a>
+    <a  href="faculty-mybook.html">📖&nbsp; My Books</a>
+    <a  href="faculty-fines.html">₹&nbsp; Fines</a>
+    <a class="active" href="faculty-recomendation.html">⭐&nbsp; Recommend Books</a>
+  </nav>
+  <div class="sidebar-footer">
+    <a href="change-password.html">⚙&nbsp; Change Password</a>
+    <a onclick="logout()">→&nbsp; Logout</a>
+  </div>
+</aside>
+<main class="main">
+  <div class="top-bar">
+    <div>
+      <div class="page-eyebrow">Faculty</div>
+      <h1>Recommend Books</h1>
+    </div>
+  </div>
+  <div class="box">
+    <div class="box-body" style="padding:40px;text-align:center;color:var(--muted);">
+      <div style="font-size:48px;margin-bottom:12px;">📖</div>
+      <p style="font-size:15px;font-weight:500;">This section loads from the backend API.</p>
+      <p style="font-size:13px;margin-top:6px;">Content renders based on your authenticated session.</p>
+    </div>
+  </div>
+</main>
+</div>
+<script>checkAuth();</script>
+</body>
+</html>

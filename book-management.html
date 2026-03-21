@@ -6,12 +6,24 @@
 <link rel="stylesheet" href="css/theme.css">
 <style>
 .book-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px;padding:16px;}
-.book-card{background:var(--white);border-radius:12px;border:1px solid var(--border);padding:18px;transition:.2s;box-shadow:var(--shadow);}
-.book-card:hover{transform:translateY(-2px);box-shadow:var(--shadow2);}
-.book-card-title{font-family:'Playfair Display',serif;font-size:15px;font-weight:700;color:var(--navy);margin-bottom:5px;line-height:1.3;}
-.book-card-author{font-size:12.5px;color:var(--muted);margin-bottom:10px;}
-.book-card-meta{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;}
-.book-card-actions{display:flex;gap:8px;}
+.modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:1000;align-items:center;justify-content:center;padding:16px;}
+.modal.open{display:flex;}
+.modal-box{background:#fff;border-radius:18px;width:100%;max-width:680px;max-height:90vh;display:flex;flex-direction:column;box-shadow:0 24px 64px rgba(8,28,58,0.25);animation:slideUp .25s ease;}
+@keyframes slideUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:none}}
+.modal-header{display:flex;justify-content:space-between;align-items:center;padding:24px 28px 0;flex-shrink:0;}
+.modal-header h3{font-size:19px;font-weight:700;color:var(--navy);}
+.modal-close{background:none;border:none;font-size:22px;cursor:pointer;color:var(--muted);padding:4px 8px;border-radius:6px;line-height:1;}
+.modal-close:hover{background:var(--border2);}
+.modal-body{overflow-y:auto;padding:20px 28px;flex:1;}
+.modal-footer{padding:16px 28px 24px;display:flex;gap:10px;flex-shrink:0;border-top:1px solid var(--border2);}
+.field-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+.field-grid .full{grid-column:1/-1;}
+.form-group{display:flex;flex-direction:column;gap:5px;}
+.form-label{font-size:12px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px;}
+.form-label .req{color:var(--red,#b30000);}
+.form-control{padding:10px 13px;border:1.5px solid var(--border);border-radius:10px;font-size:13.5px;font-family:inherit;color:var(--text);background:#fff;transition:.15s;}
+.form-control:focus{outline:none;border-color:var(--navy);box-shadow:0 0 0 3px rgba(8,28,58,0.08);}
+.section-divider{grid-column:1/-1;font-size:10.5px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--muted);padding:6px 0 2px;border-bottom:1px solid var(--border2);margin-top:6px;}
 </style>
 </head>
 <body>
@@ -70,105 +82,283 @@
     </div>
     <div class="box-body table-wrap">
       <table>
-        <thead><tr><th>Acc. No</th><th>Title</th><th>Author</th><th>Branch</th><th>Copies</th><th>Available</th><th>Actions</th></tr></thead>
-        <tbody id="bookTable"><tr><td colspan="7" style="text-align:center;padding:30px;color:var(--muted);">Loading…</td></tr></tbody>
+        <thead>
+          <tr>
+            <th>Acc. No</th>
+            <th>Title</th>
+            <th>Author(s)</th>
+            <th>Branch</th>
+            <th>Year</th>
+            <th>Available</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="bookTable">
+          <tr><td colspan="7" style="text-align:center;padding:30px;color:var(--muted);">Loading…</td></tr>
+        </tbody>
       </table>
     </div>
   </div>
 </main>
 </div>
 
-<!-- ADD MODAL -->
+<!-- ══════════════════════════════════════
+     ADD BOOK MODAL — all 15 fields
+══════════════════════════════════════ -->
 <div class="modal" id="addModal">
   <div class="modal-box">
     <div class="modal-header">
-      <h3>Add New Book</h3>
+      <h3>＋ Add New Book</h3>
       <button class="modal-close" onclick="closeModal()">✕</button>
     </div>
     <div class="modal-body">
       <div class="field-grid">
-        <div class="form-group full"><label class="form-label">Title</label><input id="m-title" class="form-control" placeholder="Book title"></div>
-        <div class="form-group"><label class="form-label">Author</label><input id="m-author" class="form-control" placeholder="Author name"></div>
-        <div class="form-group"><label class="form-label">ISBN</label><input id="m-isbn" class="form-control" placeholder="ISBN"></div>
-        <div class="form-group"><label class="form-label">Accession No.</label><input id="m-accno" class="form-control" placeholder="Acc. Number"></div>
-        <div class="form-group"><label class="form-label">Branch / Department</label><input id="m-branch" class="form-control" placeholder="CSE, ECE…"></div>
-        <div class="form-group"><label class="form-label">Total Copies</label><input id="m-copies" class="form-control" type="number" value="1" min="1"></div>
-        <div class="form-group full"><label class="form-label">Edition / Year</label><input id="m-edition" class="form-control" placeholder="e.g. 3rd Edition, 2022"></div>
+
+        <!-- ── BASIC INFO ── -->
+        <div class="section-divider">Basic Information</div>
+
+        <div class="form-group full">
+          <label class="form-label">Title <span class="req">*</span></label>
+          <input id="m-title" class="form-control" placeholder="Full book title">
+        </div>
+
+        <div class="form-group full">
+          <label class="form-label">Author(s) <span class="req">*</span></label>
+          <input id="m-authors" class="form-control" placeholder="e.g. Thomas H. Cormen, Charles E. Leiserson">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Accession Number <span class="req">*</span></label>
+          <input id="m-accno" class="form-control" placeholder="e.g. CSE-2024-001">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">ISBN</label>
+          <input id="m-isbn" class="form-control" placeholder="e.g. 978-0-262-03293-3">
+        </div>
+
+        <!-- ── PUBLICATION ── -->
+        <div class="section-divider">Publication Details</div>
+
+        <div class="form-group">
+          <label class="form-label">Publisher</label>
+          <input id="m-publisher" class="form-control" placeholder="e.g. MIT Press">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Place of Publication</label>
+          <input id="m-place" class="form-control" placeholder="e.g. New Delhi">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Year of Publication</label>
+          <input id="m-year" class="form-control" type="number" placeholder="e.g. 2023" min="1900" max="2099">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Pages</label>
+          <input id="m-pages" class="form-control" type="number" placeholder="e.g. 1312" min="1">
+        </div>
+
+        <!-- ── CLASSIFICATION ── -->
+        <div class="section-divider">Classification</div>
+
+        <div class="form-group">
+          <label class="form-label">Branch / Department</label>
+          <select id="m-branch" class="form-control">
+            <option value="">-- Select Branch --</option>
+            <option>CSE</option><option>CSE-AI</option><option>CSE-DS</option>
+            <option>ECE</option><option>EEE</option><option>MECH</option>
+            <option>CIVIL</option><option>IT</option><option>MBA</option>
+            <option>MCA</option><option>AIML</option><option>GENERAL</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Category</label>
+          <input id="m-category" class="form-control" placeholder="e.g. Algorithms, Circuits">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Type</label>
+          <select id="m-type" class="form-control">
+            <option value="">-- Select Type --</option>
+            <option value="TEXTBOOK">Textbook</option>
+            <option value="REFERENCE">Reference</option>
+            <option value="JOURNAL">Journal</option>
+            <option value="MAGAZINE">Magazine</option>
+            <option value="NOVEL">Novel</option>
+            <option value="OTHER">Other</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Recommended Year</label>
+          <select id="m-recyear" class="form-control">
+            <option value="0">All Years</option>
+            <option value="1">1st Year</option>
+            <option value="2">2nd Year</option>
+            <option value="3">3rd Year</option>
+            <option value="4">4th Year</option>
+          </select>
+        </div>
+
+        <!-- ── PROCUREMENT ── -->
+        <div class="section-divider">Procurement Details</div>
+
+        <div class="form-group">
+          <label class="form-label">Source</label>
+          <input id="m-source" class="form-control" placeholder="e.g. Donated, Purchased">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Price (₹)</label>
+          <input id="m-price" class="form-control" type="number" placeholder="e.g. 850" min="0" step="0.01">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Bill No.</label>
+          <input id="m-billno" class="form-control" placeholder="e.g. INV-2024-456">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Bill Date</label>
+          <input id="m-billdate" class="form-control" type="date">
+        </div>
+
       </div>
     </div>
     <div class="modal-footer">
-      <button class="btn btn-ghost" onclick="closeModal()">Cancel</button>
-      <button class="btn btn-navy" onclick="addBook()">Add Book</button>
+      <button class="btn btn-ghost" style="flex:1;" onclick="closeModal()">Cancel</button>
+      <button class="btn btn-navy" style="flex:2;justify-content:center;" onclick="addBook()" id="addBtn">
+        ＋ Add Book
+      </button>
     </div>
   </div>
 </div>
 
 <script>
 checkAuth();
-let allBooks=[];
-document.addEventListener('DOMContentLoaded',loadBooks);
+let allBooks = [];
+document.addEventListener('DOMContentLoaded', loadBooks);
 
-async function loadBooks(){
-  try{
-    const r=await apiFetch('/books?page=0&size=500');
-    const data=r.ok?await r.json():{};
-    allBooks=data.content||data||[];
+async function loadBooks() {
+  try {
+    const r = await apiFetch('/books?page=0&size=500');
+    const data = r.ok ? await r.json() : {};
+    allBooks = data.content || data || [];
     filterBooks();
-  }catch{toast('Failed to load books','error');}
+  } catch { toast('Failed to load books', 'error'); }
 }
 
-function filterBooks(){
-  const q=document.getElementById('searchInput').value.toLowerCase();
-  const av=document.getElementById('filterAvail').value;
-  let list=allBooks.filter(b=>{
-    const match=!q||(b.title||'').toLowerCase().includes(q)||(b.author||b.authors||'').toLowerCase().includes(q)||(b.accessionNumber||'').toLowerCase().includes(q);
-    if(!match) return false;
-    if(av==='available') return (b.availableCopies??b.totalCopies??1)>0;
-    if(av==='borrowed') return (b.availableCopies??b.totalCopies??1)===0;
+function filterBooks() {
+  const q  = document.getElementById('searchInput').value.toLowerCase();
+  const av = document.getElementById('filterAvail').value;
+  let list = allBooks.filter(b => {
+    const match = !q ||
+      (b.title  || '').toLowerCase().includes(q) ||
+      (b.authors|| '').toLowerCase().includes(q) ||
+      (b.accessionNumber || '').toLowerCase().includes(q);
+    if (!match) return false;
+    if (av === 'available') return b.available !== false;
+    if (av === 'borrowed')  return b.available === false;
     return true;
   });
-  document.getElementById('bookCount').textContent=list.length+' books';
-  const tb=document.getElementById('bookTable');
-  if(!list.length){tb.innerHTML=`<tr><td colspan="7" style="text-align:center;padding:30px;color:var(--muted);">No books found</td></tr>`;return;}
-  tb.innerHTML=list.map(b=>`<tr>
-    <td><code style="font-size:12px;">${b.accessionNumber||'—'}</code></td>
-    <td style="max-width:200px;"><strong style="display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${b.title||'—'}</strong></td>
-    <td style="color:var(--muted);font-size:12.5px;">${b.author||b.authors||'—'}</td>
-    <td>${b.branch||b.department||'—'}</td>
-    <td>${b.totalCopies??1}</td>
-    <td><span class="badge ${(b.availableCopies??1)>0?'b-active':'b-overdue'}">${b.availableCopies??1}</span></td>
+  document.getElementById('bookCount').textContent = list.length + ' books';
+  const tb = document.getElementById('bookTable');
+  if (!list.length) {
+    tb.innerHTML = `<tr><td colspan="7" style="text-align:center;padding:30px;color:var(--muted);">No books found</td></tr>`;
+    return;
+  }
+  tb.innerHTML = list.map(b => `<tr>
+    <td><code style="font-size:12px;">${b.accessionNumber || '—'}</code></td>
+    <td style="max-width:200px;"><strong style="display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${b.title || '—'}</strong></td>
+    <td style="color:var(--muted);font-size:12.5px;max-width:150px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${b.authors || '—'}</td>
+    <td>${b.branch || '—'}</td>
+    <td>${b.year || '—'}</td>
+    <td><span class="badge ${b.available !== false ? 'b-active' : 'b-overdue'}">${b.available !== false ? 'Yes' : 'No'}</span></td>
     <td><button class="btn btn-del btn-xs" onclick="deleteBook(${b.id})">Delete</button></td>
   </tr>`).join('');
 }
 
-function openAddModal(){ document.getElementById('addModal').style.display='flex'; }
-function closeModal(){ document.getElementById('addModal').style.display='none'; }
-
-async function addBook(){
-  const body={
-    title:document.getElementById('m-title').value.trim(),
-    author:document.getElementById('m-author').value.trim(),
-    isbn:document.getElementById('m-isbn').value.trim(),
-    accessionNumber:document.getElementById('m-accno').value.trim(),
-    branch:document.getElementById('m-branch').value.trim(),
-    totalCopies:parseInt(document.getElementById('m-copies').value)||1,
-    edition:document.getElementById('m-edition').value.trim()
-  };
-  if(!body.title){toast('Title is required','error');return;}
-  try{
-    const r=await apiFetch('/books',{method:'POST',body:JSON.stringify(body)});
-    if(r.ok){toast('Book added successfully','success');closeModal();loadBooks();}
-    else toast('Failed to add book','error');
-  }catch{toast('Network error','error');}
+function openAddModal() {
+  // Reset all fields
+  ['m-title','m-authors','m-accno','m-isbn','m-publisher','m-place',
+   'm-year','m-pages','m-category','m-source','m-price','m-billno','m-billdate']
+    .forEach(id => { document.getElementById(id).value = ''; });
+  document.getElementById('m-branch').value = '';
+  document.getElementById('m-type').value = '';
+  document.getElementById('m-recyear').value = '0';
+  document.getElementById('addModal').classList.add('open');
+  setTimeout(() => document.getElementById('m-title').focus(), 150);
 }
 
-async function deleteBook(id){
-  if(!confirm('Delete this book?')) return;
-  try{
-    const r=await apiFetch('/books/'+id,{method:'DELETE'});
-    if(r.ok){toast('Book deleted');loadBooks();}
-    else toast('Failed to delete','error');
-  }catch{toast('Network error','error');}
+function closeModal() {
+  document.getElementById('addModal').classList.remove('open');
+}
+
+// Close on backdrop click
+document.getElementById('addModal').addEventListener('click', function(e) {
+  if (e.target === this) closeModal();
+});
+
+async function addBook() {
+  const title   = document.getElementById('m-title').value.trim();
+  const authors = document.getElementById('m-authors').value.trim();
+  const accno   = document.getElementById('m-accno').value.trim();
+
+  if (!title)   { toast('Title is required', 'error'); document.getElementById('m-title').focus(); return; }
+  if (!authors) { toast('Author(s) is required', 'error'); document.getElementById('m-authors').focus(); return; }
+  if (!accno)   { toast('Accession Number is required', 'error'); document.getElementById('m-accno').focus(); return; }
+
+  const billDateVal = document.getElementById('m-billdate').value;
+
+  const body = {
+    title,
+    authors,
+    accessionNumber: accno,
+    isbn:            document.getElementById('m-isbn').value.trim()       || null,
+    publisher:       document.getElementById('m-publisher').value.trim()  || null,
+    placeOfPublication: document.getElementById('m-place').value.trim()   || null,
+    year:            parseInt(document.getElementById('m-year').value)     || 0,
+    pages:           parseInt(document.getElementById('m-pages').value)    || 0,
+    category:        document.getElementById('m-category').value.trim()   || null,
+    branch:          document.getElementById('m-branch').value            || null,
+    type:            document.getElementById('m-type').value              || null,
+    recommendedYear: parseInt(document.getElementById('m-recyear').value) || 0,
+    source:          document.getElementById('m-source').value.trim()     || null,
+    price:           parseFloat(document.getElementById('m-price').value) || 0,
+    billNo:          document.getElementById('m-billno').value.trim()     || null,
+    billDate:        billDateVal || null,
+  };
+
+  const btn = document.getElementById('addBtn');
+  btn.disabled = true; btn.textContent = '⏳ Adding…';
+
+  try {
+    const r = await apiFetch('/books/admin/add-book', {
+      method: 'POST',
+      body: JSON.stringify(body)
+    });
+    if (r.ok) {
+      toast('✓ Book added successfully!', 'success');
+      closeModal();
+      loadBooks();
+    } else {
+      const err = await r.json().catch(() => ({}));
+      toast(err.message || 'Failed to add book — check required fields', 'error');
+    }
+  } catch { toast('Network error', 'error'); }
+  finally { btn.disabled = false; btn.textContent = '＋ Add Book'; }
+}
+
+async function deleteBook(id) {
+  if (!confirm('Delete this book permanently?')) return;
+  try {
+    const r = await apiFetch('/books/admin/delete/' + id, { method: 'DELETE' });
+    if (r.ok) { toast('Book deleted', 'success'); loadBooks(); }
+    else toast('Failed to delete', 'error');
+  } catch { toast('Network error', 'error'); }
 }
 </script>
 </body>
