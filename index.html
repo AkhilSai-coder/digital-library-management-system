@@ -139,244 +139,441 @@ a { text-decoration: none; color: inherit; }
 @keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
 
 /* ══════════════════════════════════════════════
-   HEADER
+   HEADER — BITS Pilani style: transparent on hero, solid on scroll
 ══════════════════════════════════════════════ */
 .site-header {
-  position: sticky; top: 0; z-index: 1000;
+  position: fixed; top: 36px; left: 0; right: 0; z-index: 1000;
+  /* Start fully transparent — sitting over the hero image */
+  background: transparent;
+  border-bottom: 1px solid transparent;
+  transition: background 0.4s ease, border-color 0.4s ease,
+              box-shadow 0.4s ease, top 0.4s ease;
+}
+/* After scrolling — solid white, moves to top:0 */
+.site-header.scrolled {
   background: rgba(255,255,255,0.97);
   backdrop-filter: blur(20px) saturate(180%);
-  border-bottom: 1px solid var(--border);
-  transition: box-shadow 0.3s;
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border-bottom-color: var(--border);
+  box-shadow: 0 4px 28px rgba(10,15,30,0.1);
+  top: 0;
 }
-.site-header.scrolled { box-shadow: 0 4px 24px rgba(10,15,30,0.1); }
 .header-inner {
   max-width: 1280px; margin: 0 auto; padding: 0 48px;
-  display: flex; align-items: center; gap: 40px; height: 68px;
+  display: flex; align-items: center; gap: 40px;
+  height: 72px;
 }
-.logo-wrap { display: flex; align-items: center; gap: 14px; flex-shrink: 0; }
+
+/* LOGO — white on transparent, navy on scrolled */
+.logo-wrap { display: flex; align-items: center; gap: 14px; flex-shrink: 0; text-decoration: none; }
 .logo-emblem {
   width: 44px; height: 44px; border-radius: 10px;
-  background: linear-gradient(135deg, var(--navy), var(--navy2));
+  background: var(--gold);
   display: flex; align-items: center; justify-content: center;
-  font-family: var(--ff-serif); font-size: 18px; font-weight: 700; color: var(--gold);
-  box-shadow: 0 4px 14px rgba(13,35,71,0.25);
-  flex-shrink: 0;
+  font-family: var(--ff-serif); font-size: 20px; font-weight: 700; color: var(--navy);
+  box-shadow: 0 4px 14px rgba(0,0,0,0.2);
+  flex-shrink: 0; transition: background 0.4s;
 }
+.site-header.scrolled .logo-emblem { background: linear-gradient(135deg, var(--navy), var(--navy2)); color: var(--gold); }
 .logo-text { display: flex; flex-direction: column; line-height: 1; }
-.logo-name { font-family: var(--ff-syne); font-size: 14px; font-weight: 800; color: var(--navy); letter-spacing: 0.5px; }
-.logo-sub { font-size: 10px; color: var(--muted); letter-spacing: 0.3px; margin-top: 3px; }
+.logo-name {
+  font-family: var(--ff-syne); font-size: 14px; font-weight: 800;
+  color: #fff; letter-spacing: 0.5px;
+  transition: color 0.4s;
+  text-shadow: 0 1px 4px rgba(0,0,0,0.3);
+}
+.logo-sub {
+  font-size: 10px; color: rgba(255,255,255,0.7); letter-spacing: 0.3px; margin-top: 3px;
+  transition: color 0.4s;
+  text-shadow: 0 1px 3px rgba(0,0,0,0.3);
+}
+.site-header.scrolled .logo-name { color: var(--navy); text-shadow: none; }
+.site-header.scrolled .logo-sub  { color: var(--muted); text-shadow: none; }
 
-.header-nav { display: flex; align-items: center; gap: 4px; flex: 1; }
+/* NAV LINKS — white on transparent, navy on scrolled */
+.header-nav { display: flex; align-items: center; gap: 2px; flex: 1; }
 .nav-link {
   padding: 8px 16px; border-radius: 8px;
-  font-size: 13.5px; font-weight: 500; color: var(--text);
+  font-size: 13.5px; font-weight: 600; color: rgba(255,255,255,0.88);
   transition: background 0.2s, color 0.2s;
-  white-space: nowrap;
-  position: relative;
+  white-space: nowrap; position: relative;
+  text-shadow: 0 1px 4px rgba(0,0,0,0.25);
 }
-.nav-link:hover { background: var(--cream); color: var(--navy); }
-.nav-link.active { color: var(--navy); font-weight: 600; }
+.nav-link:hover { background: rgba(255,255,255,0.12); color: #fff; }
+.nav-link.active::after {
+  content: ''; position: absolute; bottom: 4px; left: 50%; transform: translateX(-50%);
+  width: 16px; height: 2px; background: var(--gold); border-radius: 2px;
+}
+.site-header.scrolled .nav-link { color: var(--text); text-shadow: none; }
+.site-header.scrolled .nav-link:hover { background: var(--cream); color: var(--navy); }
+.site-header.scrolled .nav-link.active { color: var(--navy); }
 
+/* ACTION BUTTONS */
 .header-actions { display: flex; align-items: center; gap: 10px; margin-left: auto; }
 .btn-outline-sm {
   padding: 8px 18px; border-radius: 8px;
-  border: 1.5px solid var(--border); font-size: 13px; font-weight: 600;
-  color: var(--text); transition: 0.2s; white-space: nowrap;
+  border: 1.5px solid rgba(255,255,255,0.4); font-size: 13px; font-weight: 600;
+  color: rgba(255,255,255,0.9); transition: 0.25s; white-space: nowrap;
+  background: rgba(255,255,255,0.08); backdrop-filter: blur(8px);
+  text-shadow: 0 1px 3px rgba(0,0,0,0.2);
 }
-.btn-outline-sm:hover { border-color: var(--navy); color: var(--navy); background: var(--cream); }
+.btn-outline-sm:hover { background: rgba(255,255,255,0.2); border-color: rgba(255,255,255,0.7); color: #fff; }
+.site-header.scrolled .btn-outline-sm {
+  border-color: var(--border); color: var(--text); background: transparent; text-shadow: none;
+}
+.site-header.scrolled .btn-outline-sm:hover { border-color: var(--navy); color: var(--navy); background: var(--cream); }
+
 .btn-primary {
   padding: 9px 22px; border-radius: 8px;
-  background: var(--navy); color: #fff;
-  font-size: 13px; font-weight: 600;
-  transition: 0.2s; white-space: nowrap;
-  box-shadow: 0 4px 14px rgba(13,35,71,0.25);
+  background: var(--gold); color: var(--navy);
+  font-size: 13px; font-weight: 700; transition: 0.25s; white-space: nowrap;
+  box-shadow: 0 4px 14px rgba(200,151,58,0.35);
 }
-.btn-primary:hover { background: var(--gold); color: var(--navy); transform: translateY(-1px); box-shadow: 0 8px 24px rgba(200,151,58,0.35); }
+.btn-primary:hover { background: var(--gold2); transform: translateY(-1px); box-shadow: 0 8px 24px rgba(200,151,58,0.5); }
+.site-header.scrolled .btn-primary { background: var(--navy); color: #fff; box-shadow: 0 4px 14px rgba(13,35,71,0.25); }
+.site-header.scrolled .btn-primary:hover { background: var(--gold); color: var(--navy); }
+
 .btn-large {
   display: inline-flex; align-items: center; gap: 10px;
   padding: 15px 32px; border-radius: 12px;
   background: var(--gold); color: var(--navy);
   font-family: var(--ff-syne); font-size: 13px; font-weight: 700; letter-spacing: 0.5px;
-  transition: 0.25s;
-  box-shadow: 0 8px 28px rgba(200,151,58,0.4);
+  transition: 0.25s; box-shadow: 0 8px 28px rgba(200,151,58,0.4);
 }
 .btn-large:hover { background: var(--gold2); transform: translateY(-2px); box-shadow: 0 16px 40px rgba(200,151,58,0.45); }
 .btn-ghost {
   display: inline-flex; align-items: center; gap: 10px;
   padding: 14px 30px; border-radius: 12px;
-  border: 1.5px solid rgba(255,255,255,0.25);
-  color: rgba(255,255,255,0.85); background: transparent;
+  border: 1.5px solid rgba(255,255,255,0.3);
+  color: rgba(255,255,255,0.9); background: rgba(255,255,255,0.06);
   font-family: var(--ff-syne); font-size: 13px; font-weight: 600; letter-spacing: 0.5px;
-  transition: 0.25s;
+  transition: 0.25s; backdrop-filter: blur(8px);
 }
-.btn-ghost:hover { background: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.5); color: #fff; }
+.btn-ghost:hover { background: rgba(255,255,255,0.15); border-color: rgba(255,255,255,0.6); color: #fff; }
 
-.hamburger { display: none; flex-direction: column; gap: 5px; cursor: pointer; padding: 8px; border: none; background: none; }
-.hamburger span { display: block; width: 22px; height: 2px; background: var(--navy); border-radius: 2px; transition: 0.3s; }
+/* HAMBURGER — white on transparent, navy on scrolled */
+.hamburger {
+  display: none; flex-direction: column; gap: 5px;
+  cursor: pointer; padding: 8px; border: none; background: none;
+}
+.hamburger span {
+  display: block; width: 22px; height: 2px;
+  background: #fff; border-radius: 2px;
+  transition: background 0.4s, transform 0.3s, opacity 0.3s;
+}
+.site-header.scrolled .hamburger span { background: var(--navy); }
+.hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+.hamburger.open span:nth-child(2) { opacity: 0; transform: scaleX(0); }
+.hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
 
 /* ══════════════════════════════════════════════
-   HERO — Full-viewport editorial
+   HERO — BITS Pilani style: full campus image + transparent header
 ══════════════════════════════════════════════ */
 .hero {
-  position: relative; min-height: 100vh;
-  background: var(--ink);
+  position: relative;
+  min-height: 100vh;
   display: flex; flex-direction: column;
-  overflow: hidden;
+  overflow: hidden; background: #071020;
 }
+
+/* THE CAMPUS PHOTO — fullscreen, NO dimming filter, right side fully clear */
 .hero-bg {
   position: absolute; inset: 0;
   background-image: url('image/new griet.jpg'), url('image/lib1.jpeg');
   background-size: cover;
-  background-position: center 30%;
+  background-position: center center;
   background-repeat: no-repeat;
-  filter: brightness(0.32) saturate(0.7);
-  transform: scale(1.06);
-  transition: transform 18s ease, filter 1.2s ease;
+  transform: scale(1.04);
+  transition: transform 24s ease;
+  will-change: transform;
+  /* NO filter/brightness — overlays handle selective dimming */
 }
-.hero-bg.loaded { transform: scale(1); filter: brightness(0.36) saturate(0.75); }
-/* Fine geometric grid overlay */
-.hero-grid {
-  position: absolute; inset: 0;
-  background-image: 
-    linear-gradient(rgba(200,151,58,0.04) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(200,151,58,0.04) 1px, transparent 1px);
-  background-size: 60px 60px;
-  pointer-events: none;
-}
-/* Radial light */
-.hero-light {
-  position: absolute; left: -10%; top: -20%;
-  width: 80vw; height: 80vw;
-  background: radial-gradient(ellipse, rgba(13,35,71,0.6) 0%, transparent 65%);
-  pointer-events: none;
-}
-.hero-inner {
-  position: relative; z-index: 2;
-  flex: 1; display: flex; align-items: center;
-  padding: 120px 0 80px;
-}
-.hero-content-wrap { max-width: 1280px; margin: 0 auto; padding: 0 48px; width: 100%; }
-.hero-layout { display: grid; grid-template-columns: 1fr 420px; gap: 80px; align-items: center; }
+.hero-bg.loaded { transform: scale(1); }
 
-/* Left copy */
+/* BITS-style: heavy dark gradient on the LEFT where text lives,
+   right 45% shows the actual campus building clearly */
+.hero-overlay-main {
+  position: absolute; inset: 0; z-index: 1; pointer-events: none;
+  background: linear-gradient(
+    108deg,
+    rgba(4,10,24,0.90) 0%,
+    rgba(4,10,24,0.72) 30%,
+    rgba(4,10,24,0.28) 54%,
+    rgba(4,10,24,0.05) 70%,
+    transparent 86%
+  );
+}
+
+/* Thin top strip — keeps transparent header readable */
+.hero-overlay-top {
+  position: absolute; top: 0; left: 0; right: 0;
+  height: 220px; z-index: 1; pointer-events: none;
+  background: linear-gradient(to bottom, rgba(4,10,24,0.62) 0%, transparent 100%);
+}
+
+/* Bottom strip — quick-links bar text legibility */
+.hero-overlay-bottom {
+  position: absolute; bottom: 0; left: 0; right: 0;
+  height: 170px; z-index: 1; pointer-events: none;
+  background: linear-gradient(to top, rgba(4,10,24,0.75) 0%, transparent 100%);
+}
+
+/* Very subtle BITS-style dot grid */
+.hero-grid {
+  position: absolute; inset: 0; z-index: 1; pointer-events: none;
+  background-image: radial-gradient(circle, rgba(200,151,58,0.10) 1px, transparent 1px);
+  background-size: 50px 50px; opacity: 0.28;
+}
+.hero-light { display: none; }
+
+/* ── HERO INNER CONTENT ── */
+.hero-inner {
+  position: relative; z-index: 2; flex: 1;
+  display: flex; align-items: center;
+  padding: 148px 0 96px;
+}
+.hero-content-wrap {
+  max-width: 1280px; margin: 0 auto; padding: 0 52px; width: 100%;
+}
+.hero-layout {
+  display: grid;
+  grid-template-columns: 1fr 400px;
+  gap: 56px;
+  align-items: center;
+}
+
+/* HERO BADGE */
 .hero-badge {
   display: inline-flex; align-items: center; gap: 8px;
   padding: 6px 16px; border-radius: 40px;
-  background: rgba(200,151,58,0.12); border: 1px solid rgba(200,151,58,0.3);
-  font-family: var(--ff-syne); font-size: 9px; font-weight: 700; letter-spacing: 3.5px;
-  text-transform: uppercase; color: var(--gold2);
-  backdrop-filter: blur(12px); margin-bottom: 28px;
+  background: rgba(200,151,58,0.14);
+  border: 1px solid rgba(200,151,58,0.45);
+  font-family: var(--ff-syne); font-size: 9px; font-weight: 700;
+  letter-spacing: 3.5px; text-transform: uppercase; color: var(--gold2);
+  backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+  margin-bottom: 22px;
 }
-.hero-badge .pulse { width: 6px; height: 6px; border-radius: 50%; background: var(--gold); animation: hPulse 2s ease-in-out infinite; }
-@keyframes hPulse { 0%,100% { box-shadow: 0 0 0 0 rgba(200,151,58,0.5); } 50% { box-shadow: 0 0 0 6px rgba(200,151,58,0); } }
-.hero-title {
-  font-family: var(--ff-serif); font-size: clamp(48px, 6vw, 88px);
-  font-weight: 700; color: #fff; line-height: 0.96;
-  letter-spacing: -2px; margin-bottom: 28px;
+.hero-badge .pulse {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: var(--gold); flex-shrink: 0;
+  animation: hPulse 2s ease-in-out infinite;
 }
-.hero-title em { display: block; font-style: italic; color: var(--gold2); }
-.hero-subtitle {
-  font-size: 17px; color: rgba(255,255,255,0.55);
-  line-height: 1.85; margin-bottom: 44px; max-width: 500px;
+@keyframes hPulse {
+  0%,100% { box-shadow: 0 0 0 0 rgba(200,151,58,0.55); }
+  50%      { box-shadow: 0 0 0 8px rgba(200,151,58,0); }
 }
-.hero-ctas { display: flex; gap: 14px; flex-wrap: wrap; margin-bottom: 52px; }
 
-/* Hero search — Harvard/MIT style */
+/* HERO TITLE */
+.hero-title {
+  font-family: var(--ff-serif);
+  font-size: clamp(38px, 5.2vw, 76px);
+  font-weight: 700; color: #fff;
+  line-height: 1.02; letter-spacing: -1.5px;
+  margin-bottom: 16px;
+  text-shadow: 0 2px 32px rgba(0,0,0,0.55);
+}
+.hero-title em { font-style: italic; color: var(--gold2); }
+
+/* BITS-style animated cycling word (innovate / discover / excel) */
+.hero-word-block {
+  display: block; margin-top: 4px;
+  min-height: 1.15em; position: relative;
+  overflow: hidden;
+}
+.hero-word {
+  display: block; font-style: italic; color: var(--gold2);
+  position: absolute; left: 0; top: 0; width: 100%;
+  opacity: 0; transform: translateY(60%);
+  transition: opacity 0.55s cubic-bezier(0.4,0,0.2,1),
+              transform 0.55s cubic-bezier(0.4,0,0.2,1);
+}
+.hero-word.active  { opacity: 1; transform: translateY(0); position: relative; }
+.hero-word.leaving { opacity: 0; transform: translateY(-60%); }
+
+/* HERO SUBTITLE */
+.hero-subtitle {
+  font-size: 15.5px; color: rgba(255,255,255,0.66);
+  line-height: 1.88; margin-bottom: 34px; max-width: 500px;
+  text-shadow: 0 1px 14px rgba(0,0,0,0.45);
+}
+
+/* HERO CTAs */
+.hero-ctas { display: flex; gap: 14px; flex-wrap: wrap; margin-bottom: 30px; }
+
+/* GLASS SEARCH BOX */
 .hero-search-block {
-  background: rgba(255,255,255,0.06);
-  border: 1px solid rgba(255,255,255,0.12);
+  background: rgba(255,255,255,0.10);
+  border: 1px solid rgba(255,255,255,0.22);
   border-radius: 16px; overflow: hidden;
-  backdrop-filter: blur(24px);
+  backdrop-filter: blur(32px); -webkit-backdrop-filter: blur(32px);
+  max-width: 540px;
+  box-shadow: 0 16px 52px rgba(0,0,0,0.38);
+  transition: border-color 0.3s, box-shadow 0.3s;
+}
+.hero-search-block:focus-within {
+  border-color: rgba(200,151,58,0.65);
+  box-shadow: 0 16px 52px rgba(0,0,0,0.4), 0 0 0 3px rgba(200,151,58,0.12);
 }
 .search-tabs-row {
-  display: flex; border-bottom: 1px solid rgba(255,255,255,0.08);
-  padding: 0 4px;
+  display: flex; border-bottom: 1px solid rgba(255,255,255,0.12);
+  padding: 0 4px; overflow-x: auto; scrollbar-width: none;
 }
+.search-tabs-row::-webkit-scrollbar { display: none; }
 .stab {
-  padding: 12px 18px; font-family: var(--ff-syne);
-  font-size: 10.5px; font-weight: 700; letter-spacing: 1.5px;
-  text-transform: uppercase; color: rgba(255,255,255,0.35);
-  cursor: pointer; transition: 0.2s; position: relative;
-  border: none; background: none;
+  padding: 11px 16px; font-family: var(--ff-syne); font-size: 10px;
+  font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase;
+  color: rgba(255,255,255,0.36); cursor: pointer; transition: color 0.2s;
+  position: relative; border: none; background: none; flex-shrink: 0;
 }
 .stab.on { color: var(--gold2); }
-.stab.on::after { content: ''; position: absolute; bottom: -1px; left: 12px; right: 12px; height: 2px; background: var(--gold); border-radius: 2px; }
+.stab.on::after {
+  content: ''; position: absolute; bottom: -1px; left: 10px; right: 10px;
+  height: 2px; background: var(--gold); border-radius: 2px;
+}
 .search-input-row {
-  display: flex; align-items: center; padding: 10px 12px 12px; gap: 10px;
+  display: flex; align-items: center;
+  padding: 10px 12px 14px; gap: 10px;
 }
 .search-input-row input {
-  flex: 1; background: none; border: none; outline: none;
-  font-family: var(--ff-sans); font-size: 14.5px; color: #fff;
-  padding: 6px 10px;
+  flex: 1; min-width: 0; background: none; border: none; outline: none;
+  font-family: var(--ff-sans); font-size: 14px; color: #fff; padding: 6px 8px;
 }
-.search-input-row input::placeholder { color: rgba(255,255,255,0.3); }
+.search-input-row input::placeholder { color: rgba(255,255,255,0.30); }
 .search-go {
-  padding: 10px 22px; background: var(--gold); color: var(--navy);
+  padding: 10px 20px; background: var(--gold); color: var(--navy);
   border: none; border-radius: 10px; font-family: var(--ff-syne);
-  font-size: 12px; font-weight: 700; letter-spacing: 0.5px; cursor: pointer;
-  transition: 0.2s; white-space: nowrap;
+  font-size: 12px; font-weight: 700; cursor: pointer;
+  white-space: nowrap; flex-shrink: 0; transition: 0.2s;
 }
 .search-go:hover { background: var(--gold2); transform: translateY(-1px); }
-.search-quick { display: flex; gap: 8px; padding: 10px 18px 14px; flex-wrap: wrap; }
+.search-quick {
+  display: flex; gap: 7px; padding: 0 16px 14px;
+  flex-wrap: wrap; align-items: center;
+}
+.search-ql {
+  font-size: 10.5px; color: rgba(255,255,255,0.26); padding: 4px 0; flex-shrink: 0;
+}
 .quick-tag {
-  padding: 5px 12px; background: rgba(255,255,255,0.07);
-  border: 1px solid rgba(255,255,255,0.1); border-radius: 20px;
-  font-size: 11px; color: rgba(255,255,255,0.5); cursor: pointer; transition: 0.2s;
+  padding: 4px 12px; background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.13); border-radius: 20px;
+  font-size: 11px; color: rgba(255,255,255,0.52); cursor: pointer; transition: 0.2s;
+  white-space: nowrap;
 }
-.quick-tag:hover { background: rgba(200,151,58,0.15); border-color: rgba(200,151,58,0.3); color: var(--gold2); }
+.quick-tag:hover {
+  background: rgba(200,151,58,0.18); border-color: rgba(200,151,58,0.45);
+  color: var(--gold2);
+}
 
-/* Right — floating stats card */
-.hero-stats-card {
-  background: rgba(255,255,255,0.06);
-  border: 1px solid rgba(255,255,255,0.1);
-  border-radius: 24px; padding: 36px;
-  backdrop-filter: blur(24px);
-}
-.hsc-title {
-  font-family: var(--ff-syne); font-size: 9px; font-weight: 700;
-  letter-spacing: 3px; text-transform: uppercase; color: rgba(255,255,255,0.3);
-  margin-bottom: 24px; display: flex; align-items: center; gap: 8px;
-}
-.hsc-title::after { content: ''; flex: 1; height: 1px; background: rgba(255,255,255,0.08); }
-.hstat { display: flex; align-items: center; gap: 16px; padding: 16px 0; border-bottom: 1px solid rgba(255,255,255,0.06); }
-.hstat:last-child { border-bottom: none; }
-.hstat-icon { width: 42px; height: 42px; border-radius: 11px; display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; }
-.hstat-num { font-family: var(--ff-serif); font-size: 26px; font-weight: 700; color: var(--gold2); line-height: 1; }
-.hstat-label { font-size: 11.5px; color: rgba(255,255,255,0.4); margin-top: 3px; letter-spacing: 0.3px; }
-
-/* Hours badge on stats card */
+/* LIVE HOURS PILL */
 .hours-live {
-  margin-top: 22px; padding: 12px 16px;
-  background: rgba(255,255,255,0.05); border-radius: 12px;
-  display: flex; align-items: center; gap: 10px;
+  display: inline-flex; align-items: center; gap: 9px;
+  margin-top: 18px; padding: 10px 18px;
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.15); border-radius: 40px;
+  backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
 }
 .h-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
-.h-dot.open { background: #4ade80; animation: hPulse 2s infinite; }
+.h-dot.open  { background: #4ade80; animation: hPulse 2s infinite; }
 .h-dot.closed { background: #f87171; }
-.h-text { font-size: 12.5px; font-weight: 600; }
-.h-text.open { color: #4ade80; }
+.h-text { font-family: var(--ff-syne); font-size: 11.5px; font-weight: 700; }
+.h-text.open  { color: #4ade80; }
 .h-text.closed { color: #f87171; }
 
-/* Hero bottom bar */
+/* RIGHT STATS CARD — glass morphism */
+.hero-stats-card {
+  background: rgba(4,10,24,0.55);
+  border: 1px solid rgba(255,255,255,0.14);
+  border-radius: 24px; padding: 30px;
+  backdrop-filter: blur(36px); -webkit-backdrop-filter: blur(36px);
+  box-shadow: 0 24px 80px rgba(0,0,0,0.42);
+}
+.hsc-title {
+  font-family: var(--ff-syne); font-size: 9px; font-weight: 700; letter-spacing: 3px;
+  text-transform: uppercase; color: rgba(255,255,255,0.3); margin-bottom: 20px;
+  display: flex; align-items: center; gap: 8px;
+}
+.hsc-title::after { content:''; flex:1; height:1px; background:rgba(255,255,255,0.08); }
+.hstat { display: flex; align-items: center; gap: 14px; padding: 13px 0; border-bottom: 1px solid rgba(255,255,255,0.06); }
+.hstat:last-of-type { border-bottom: none; }
+.hstat-icon { width: 40px; height: 40px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 17px; flex-shrink: 0; }
+.hstat-num { font-family: var(--ff-serif); font-size: 25px; font-weight: 700; color: var(--gold2); line-height: 1; }
+.hstat-label { font-size: 11px; color: rgba(255,255,255,0.38); margin-top: 3px; }
+
+/* BOTTOM QUICK-LINKS BAR */
 .hero-bottom-bar {
   position: relative; z-index: 2;
-  border-top: 1px solid rgba(255,255,255,0.07);
-  background: rgba(255,255,255,0.04); backdrop-filter: blur(20px);
+  background: rgba(4,10,24,0.60);
+  backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
+  border-top: 1px solid rgba(255,255,255,0.09);
 }
 .hero-bottom-inner {
-  max-width: 1280px; margin: 0 auto; padding: 0 48px;
-  display: flex; overflow-x: auto;
-  scrollbar-width: none;
+  max-width: 1280px; margin: 0 auto; padding: 0 52px;
+  display: flex; overflow-x: auto; scrollbar-width: none;
 }
 .hero-bottom-inner::-webkit-scrollbar { display: none; }
 .hb-link {
-  display: flex; align-items: center; gap: 8px;
-  padding: 16px 24px; font-size: 12px; font-weight: 500;
-  color: rgba(255,255,255,0.45); border-right: 1px solid rgba(255,255,255,0.07);
-  transition: 0.2s; white-space: nowrap; flex-shrink: 0;
+  display: flex; align-items: center; gap: 7px; padding: 13px 20px;
+  font-size: 11.5px; font-weight: 500; color: rgba(255,255,255,0.48);
+  border-right: 1px solid rgba(255,255,255,0.07); transition: 0.2s;
+  white-space: nowrap; flex-shrink: 0; text-decoration: none;
 }
-.hb-link:hover { color: var(--gold2); background: rgba(200,151,58,0.06); }
-.hb-link .hbl-icon { font-size: 14px; }
+.hb-link:first-child { padding-left: 0; }
+.hb-link:hover { color: var(--gold2); background: rgba(200,151,58,0.07); }
+.hbl-icon { font-size: 13px; }
+
+/* ══════════════════════════════════════════════
+   HERO RESPONSIVE — full mobile coverage
+══════════════════════════════════════════════ */
+@media (max-width: 1100px) {
+  .hero-layout { grid-template-columns: 1fr; gap: 0; }
+  .hero-stats-card { display: none; }
+  /* On tablets, show image more centrally */
+  .hero-overlay-main {
+    background: linear-gradient(
+      180deg,
+      rgba(4,10,24,0.78) 0%,
+      rgba(4,10,24,0.60) 55%,
+      rgba(4,10,24,0.50) 100%
+    );
+  }
+}
+@media (max-width: 900px) {
+  .hero-inner { padding: 130px 0 80px; }
+  .hero-content-wrap { padding: 0 32px; }
+  .hero-title { font-size: clamp(36px, 7vw, 58px); }
+}
+@media (max-width: 768px) {
+  .hero-bg { background-position: 65% center; }
+  .hero-overlay-main {
+    background: linear-gradient(
+      180deg,
+      rgba(4,10,24,0.82) 0%,
+      rgba(4,10,24,0.70) 100%
+    );
+  }
+  .hero-inner { padding: 116px 0 64px; }
+  .hero-content-wrap { padding: 0 20px; }
+  .hero-title { font-size: clamp(32px, 8.5vw, 52px); letter-spacing: -0.8px; }
+  .hero-subtitle { font-size: 14px; margin-bottom: 22px; max-width: 100%; }
+  .hero-ctas { gap: 10px; }
+  .btn-large { padding: 13px 22px; font-size: 12px; }
+  .btn-ghost { padding: 12px 18px; font-size: 12px; }
+  .hero-search-block { max-width: 100%; }
+  .hero-bottom-inner { padding: 0 16px; }
+  .hb-link { padding: 12px 14px; font-size: 11px; }
+}
+@media (max-width: 480px) {
+  .hero-inner { padding: 104px 0 52px; }
+  .hero-content-wrap { padding: 0 16px; }
+  .hero-title { font-size: clamp(28px, 9vw, 44px); letter-spacing: -0.5px; }
+  .hero-badge { font-size: 8px; letter-spacing: 2px; padding: 5px 13px; }
+  .hero-subtitle { font-size: 13.5px; }
+  .btn-large, .btn-ghost { width: 100%; justify-content: center; }
+  .stab { padding: 9px 11px; font-size: 9px; }
+  .search-go { padding: 9px 14px; font-size: 11px; }
+  .hero-bottom-inner { padding: 0 12px; }
+  .hb-link { padding: 11px 12px; font-size: 10.5px; }
+}
 
 /* ══════════════════════════════════════════════
    STATS STRIP — Stanford-style ribbon
@@ -1255,26 +1452,42 @@ a { text-decoration: none; color: inherit; }
 .section-header .lead { margin-top: 16px; }
 
 /* ══════════════════════════════════════════════
-   RESPONSIVE
+   RESPONSIVE — 4 breakpoints, fully tested
 ══════════════════════════════════════════════ */
+
+/* 1100px — tablet landscape */
 @media (max-width: 1100px) {
-  .hero-layout { grid-template-columns: 1fr; }
+  .hero-layout { grid-template-columns: 1fr; gap: 0; }
   .hero-stats-card { display: none; }
+  .hero-search-block { max-width: 100%; }
   .footer-inner { grid-template-columns: 1fr 1fr; gap: 40px; }
 }
+
+/* 992px — tablet portrait */
 @media (max-width: 992px) {
   .container { padding: 0 28px; }
-  .header-inner { padding: 0 28px; }
-  .stats-ribbon-inner { grid-template-columns: repeat(2, 1fr); }
-  .collections-grid, .research-layout, .finder-layout, .loc-grid { grid-template-columns: 1fr; }
+  .header-inner { padding: 0 28px; height: 64px; }
+  .hero-inner { padding: 90px 0 52px; }
+  .hero-content-wrap { padding: 0 28px; }
+  .hero-bottom-inner { padding: 0 28px; }
+  .header-nav { display: none; }
+  .header-actions .btn-outline-sm { display: none; }
+  .hamburger { display: flex; }
+  .stats-ribbon-inner { grid-template-columns: 1fr 1fr; }
+  .collections-grid { grid-template-columns: 1fr; gap: 40px; }
+  .research-layout { grid-template-columns: 1fr; gap: 40px; }
+  .finder-layout { grid-template-columns: 1fr; gap: 40px; }
+  .loc-grid { grid-template-columns: 1fr; gap: 36px; }
+  .lib-layout { grid-template-columns: 1fr; gap: 40px; }
+  .faq-layout { grid-template-columns: 1fr; gap: 40px; }
+  .faq-left { position: static; }
   .svc-grid { grid-template-columns: 1fr 1fr; }
-  .res-grid { grid-template-columns: 1fr 1fr; }
+  .eres-grid-6 { grid-template-columns: 1fr 1fr; }
   .showcase-grid { grid-template-columns: 1fr 1fr; grid-template-rows: auto; }
   .show-item.main { grid-row: span 1; }
-  .vmq-grid, .invest-grid, .dept-grid { grid-template-columns: 1fr 1fr; }
-  .tl-item, .tl-item.tl-right { width: 100%; left: 0; text-align: left; padding-left: 36px; }
-  .tl-wrap::before { left: 6px; }
-  .tl-item.tl-left .tl-dot, .tl-item.tl-right .tl-dot { left: -7px; right: auto; }
+  .vmq-grid { grid-template-columns: 1fr 1fr; }
+  .invest-grid { grid-template-columns: 1fr 1fr; }
+  .dept-grid { grid-template-columns: 1fr 1fr; }
   .spaces-grid { grid-template-columns: 1fr 1fr; }
   .df-grid { grid-template-columns: 1fr 1fr; }
   .rules-grid { grid-template-columns: 1fr; }
@@ -1282,21 +1495,92 @@ a { text-decoration: none; color: inherit; }
   .testi-grid { grid-template-columns: 1fr 1fr; }
   .num-grid { grid-template-columns: 1fr 1fr; }
   .numbers-section { padding: 60px 0; }
-  .header-nav { display: none; }
-  .header-actions .btn-outline-sm { display: none; }
-  .hamburger { display: flex; }
+  .tl-item, .tl-item.tl-right { width: 100%; left: 0; text-align: left; padding-left: 40px; padding-right: 0; }
+  .tl-wrap::before { left: 6px; }
+  .tl-item.tl-left .tl-dot, .tl-item.tl-right .tl-dot { left: -7px; right: auto; }
+  .cv-mini-card { left: 12px; bottom: 68px; }
+  .lib-badge-float { left: 0; bottom: 16px; }
+  .lib-years-badge { right: 0; top: 16px; }
+  #chatWidget { bottom: 80px; right: 20px; }
+  .chat-panel { width: 290px; }
+  .cat-strip-inner { padding: 0 28px; }
 }
+
+/* 768px — large phones */
+@media (max-width: 768px) {
+  .hero { min-height: 100svh; }
+  .hero-bg { background-position: center 20%; }
+  .hero-inner { padding: 84px 0 44px; }
+  .hero-title { font-size: clamp(34px, 9vw, 52px); letter-spacing: -0.8px; margin-bottom: 14px; }
+  .hero-subtitle { font-size: 14.5px; margin-bottom: 22px; line-height: 1.75; }
+  .hero-ctas { gap: 10px; }
+  .btn-large { padding: 13px 24px; font-size: 12.5px; }
+  .btn-ghost { padding: 12px 20px; font-size: 12.5px; }
+  .search-tabs-row { overflow-x: auto; scrollbar-width: none; }
+  .search-tabs-row::-webkit-scrollbar { display: none; }
+  .hb-link { padding: 12px 14px; font-size: 11px; }
+  .why-inner { flex-wrap: wrap; }
+  .why-item { flex: 0 0 50%; border-bottom: 1px solid rgba(255,255,255,0.08); padding: 20px 16px; }
+  .cat-strip-inner { grid-template-columns: 1fr; }
+  .cat-strip-item { border-right: none; border-bottom: 1px solid var(--border); padding: 20px 24px; }
+  .cat-strip-item:last-child { border-bottom: none; }
+  .collection-visual { height: 300px; }
+  .cv-mini-card { display: none; }
+  .lib-photo-frame { height: 320px; }
+  .lib-photo-frame::before, .lib-photo-frame::after { display: none; }
+  .lib-badge-float { position: static; margin-top: 16px; background: var(--cream); border: 1px solid var(--border); border-radius: 14px; padding: 14px 18px; width: 100%; box-shadow: none; }
+  .lib-years-badge { display: none; }
+}
+
+/* 640px — phones */
 @media (max-width: 640px) {
-  .container { padding: 0 20px; }
-  .svc-grid, .res-grid, .vmq-grid, .invest-grid, .dept-grid, .spaces-grid, .df-grid, .news-grid, .testi-grid, .num-grid, .rules-grid { grid-template-columns: 1fr; }
-  .showcase-grid { grid-template-columns: 1fr; }
-  .stats-ribbon-inner { grid-template-columns: 1fr 1fr; }
-  .footer-inner { grid-template-columns: 1fr; gap: 32px; }
-  .footer-bottom { flex-direction: column; gap: 8px; text-align: center; }
-  .hero-title { font-size: clamp(40px, 10vw, 64px); }
-  .section-title { font-size: clamp(28px, 7vw, 42px); }
-  .hero-content-wrap { padding: 0 20px; }
-  .hero-bottom-inner { padding: 0 20px; }
+  .container { padding: 0 16px; }
+  .hero-content-wrap { padding: 0 16px; }
+  .hero-bottom-inner { padding: 0 12px; }
+  .hero-badge { font-size: 8px; letter-spacing: 2px; padding: 5px 12px; }
+  .hero-title { font-size: clamp(30px, 8.5vw, 44px); }
+  .hero-subtitle { font-size: 13.5px; }
+  .hero-ctas { flex-direction: column; }
+  .btn-large, .btn-ghost { width: 100%; justify-content: center; padding: 14px 20px; box-sizing: border-box; }
+  .svc-grid, .eres-grid-6, .showcase-grid, .vmq-grid, .invest-grid,
+  .dept-grid, .spaces-grid, .df-grid, .news-grid, .testi-grid,
+  .num-grid, .rules-grid { grid-template-columns: 1fr; }
+  .section-title { font-size: clamp(24px, 7vw, 36px); }
+  .collections-section, .services-section, .vmq-section, .invest-section,
+  .dept-section, .digital-section, .rules-section, .news-section,
+  .testimonials-section, .spaces-section, .finder-section, .ai-section,
+  .research-section, .location-section, .faq-section, .librarian-section,
+  .timeline-section { padding: 60px 0; }
+  .numbers-section { padding: 44px 0; }
+  .footer-inner { grid-template-columns: 1fr; gap: 28px; }
+  .footer-bottom-enhanced { flex-direction: column; gap: 8px; text-align: center; padding: 0 16px 32px; }
+  .footer-bottom-right { flex-wrap: wrap; justify-content: center; gap: 12px; }
+  .sr-item { padding: 22px 10px; }
+  .sr-num { font-size: 30px; }
+  .stab { padding: 9px 11px; font-size: 9.5px; }
+  .faq-q { padding: 16px 18px; }
+  .faq-q-text { font-size: 13.5px; }
+  .faq-a-inner { padding: 0 18px 18px; font-size: 13px; }
+  .chat-panel { width: calc(100vw - 36px); right: 0; }
+  #chatWidget { right: 16px; bottom: 76px; }
+  #top-btn { bottom: 18px; right: 16px; }
+}
+
+/* 400px — very small phones */
+@media (max-width: 400px) {
+  .hero-title { font-size: 28px; }
+  .btn-large, .btn-ghost { font-size: 12px; }
+  .hb-link { padding: 10px 10px; font-size: 10px; }
+  .sr-num { font-size: 26px; }
+}
+
+/* ── Announce bar hides on mobile to save space ── */
+@media (max-width: 640px) {
+  .announce-bar { display: none; }
+  /* Header sits at top:0 since no announce bar on mobile */
+  .site-header { top: 0; }
+  /* Hero padding compensates — just the header height */
+  .hero-inner { padding-top: 88px; }
 }
 
 /* ══════════════════════════════════════════════
@@ -1565,9 +1849,355 @@ a { text-decoration: none; color: inherit; }
   background: var(--gold); color: var(--navy); border-radius: 12px;
   font-family: var(--ff-syne); font-size: 13px; font-weight: 700;
 }
+
+/* ══════════════════════════════════════════════
+   CUSTOM CURSOR
+══════════════════════════════════════════════ */
+body { cursor: none; }
+#cursor {
+  width: 10px; height: 10px; border-radius: 50%;
+  background: var(--gold); position: fixed;
+  pointer-events: none; z-index: 99999;
+  transform: translate(-50%,-50%);
+  transition: width 0.2s, height 0.2s, background 0.2s;
+  mix-blend-mode: normal;
+}
+#cursor-ring {
+  width: 36px; height: 36px; border-radius: 50%;
+  border: 1.5px solid rgba(200,151,58,0.5);
+  position: fixed; pointer-events: none; z-index: 99998;
+  transform: translate(-50%,-50%);
+  transition: width 0.35s, height 0.35s, opacity 0.35s,
+              transform 0.12s cubic-bezier(0.4,0,0.2,1);
+}
+body:has(a:hover) #cursor { width: 16px; height: 16px; background: var(--gold2); }
+body:has(a:hover) #cursor-ring { width: 48px; height: 48px; opacity: 0.6; }
+body:has(button:hover) #cursor { background: #fff; }
+@media (pointer: coarse) { body { cursor: auto; } #cursor, #cursor-ring { display: none; } }
+
+/* ══════════════════════════════════════════════
+   PROGRESS RING (scroll) — replaces simple top-btn
+══════════════════════════════════════════════ */
+#scroll-ring {
+  position: fixed; bottom: 28px; right: 28px; z-index: 9990;
+  width: 52px; height: 52px; cursor: pointer;
+  display: none; align-items: center; justify-content: center;
+}
+#scroll-ring.visible { display: flex; }
+#scroll-ring svg { position: absolute; top: 0; left: 0; transform: rotate(-90deg); }
+#scroll-ring circle.bg { stroke: rgba(13,35,71,0.15); fill: none; stroke-width: 3; }
+#scroll-ring circle.prog { stroke: var(--gold); fill: none; stroke-width: 3;
+  stroke-dasharray: 138; stroke-dashoffset: 138;
+  transition: stroke-dashoffset 0.1s; }
+#scroll-ring-btn {
+  width: 40px; height: 40px; border-radius: 50%;
+  background: var(--navy); color: #fff;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 15px; border: none; cursor: pointer;
+  box-shadow: 0 4px 16px rgba(13,35,71,0.25);
+  transition: background 0.2s, transform 0.2s;
+  z-index: 1;
+}
+#scroll-ring:hover #scroll-ring-btn { background: var(--gold); color: var(--navy); transform: scale(1.08); }
+
+/* ══════════════════════════════════════════════
+   PARALLAX HERO
+══════════════════════════════════════════════ */
+.hero-bg { will-change: transform; }
+
+/* ══════════════════════════════════════════════
+   SLIDER — proper CSS (no more inline styles)
+══════════════════════════════════════════════ */
+.slider-section { padding: 88px 0; background: var(--ink); }
+.slider-wrap-inner {
+  border-radius: 24px; overflow: hidden;
+  box-shadow: 0 40px 100px rgba(0,0,0,0.6);
+  position: relative;
+}
+.slider-track { display: flex; transition: transform 0.85s cubic-bezier(0.4,0,0.2,1); }
+.slide-frame { min-width: 100%; position: relative; }
+.slide-frame img { width: 100%; height: 520px; object-fit: cover; display: block; }
+.slide-caption-bar {
+  position: absolute; bottom: 0; left: 0; right: 0;
+  padding: 22px 32px; background: linear-gradient(to top, rgba(0,0,0,0.82), transparent);
+  color: #fff; font-size: 14px; font-weight: 600; letter-spacing: 0.2px;
+}
+.slider-footer { display: flex; align-items: center; justify-content: space-between; margin-top: 22px; }
+.slide-count { font-family: var(--ff-serif); font-size: 15px; color: rgba(255,255,255,0.35); }
+.slide-count b { color: #fff; font-size: 20px; }
+.slider-dots { display: flex; gap: 8px; align-items: center; }
+.sdot {
+  width: 8px; height: 8px; border-radius: 4px; cursor: pointer;
+  background: rgba(255,255,255,0.22); transition: width 0.35s, background 0.35s;
+}
+.sdot.on { background: var(--gold); width: 28px; }
+.slider-nav { display: flex; gap: 10px; }
+.snav-btn {
+  width: 46px; height: 46px; border-radius: 50%;
+  border: 1px solid rgba(255,255,255,0.14);
+  background: rgba(255,255,255,0.06); color: #fff;
+  font-size: 20px; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: background 0.25s, color 0.25s, border-color 0.25s;
+}
+.snav-btn:hover { background: var(--gold); color: var(--navy); border-color: var(--gold); }
+@media (max-width: 640px) {
+  .slide-frame img { height: 260px; }
+  .slide-caption-bar { padding: 14px 18px; font-size: 12px; }
+  .slider-section { padding: 52px 0; }
+}
+
+/* ══════════════════════════════════════════════
+   NEW ARRIVALS CAROUSEL
+══════════════════════════════════════════════ */
+.arrivals-section { padding: 80px 0; background: var(--cream2); overflow: hidden; }
+.arrivals-track-wrap {
+  position: relative; margin-top: 48px;
+  overflow: hidden;
+}
+.arrivals-track-wrap::before,
+.arrivals-track-wrap::after {
+  content: ''; position: absolute; top: 0; bottom: 0; width: 80px; z-index: 2;
+}
+.arrivals-track-wrap::before { left: 0; background: linear-gradient(to right, var(--cream2), transparent); }
+.arrivals-track-wrap::after  { right: 0; background: linear-gradient(to left, var(--cream2), transparent); }
+.arrivals-track {
+  display: flex; gap: 20px; padding: 8px 0 16px;
+  animation: arrivalsScroll 32s linear infinite;
+  width: max-content;
+}
+.arrivals-track:hover { animation-play-state: paused; }
+@keyframes arrivalsScroll {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+.book-card {
+  width: 120px; flex-shrink: 0;
+  transition: transform 0.35s cubic-bezier(0.4,0,0.2,1), box-shadow 0.35s;
+  cursor: pointer;
+}
+.book-card:hover { transform: translateY(-10px) scale(1.04); }
+.book-cover {
+  width: 120px; height: 168px; border-radius: 10px;
+  overflow: hidden; box-shadow: 4px 6px 20px rgba(10,15,30,0.18);
+  position: relative;
+}
+.book-cover img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.book-cover-placeholder {
+  width: 100%; height: 100%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 36px;
+  background: linear-gradient(135deg, var(--navy), var(--navy2));
+}
+.book-spine {
+  position: absolute; left: 0; top: 0; bottom: 0; width: 8px;
+  background: rgba(0,0,0,0.25);
+}
+.book-meta { margin-top: 10px; }
+.book-title { font-size: 11px; font-weight: 700; color: var(--navy); line-height: 1.4; margin-bottom: 3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.book-author { font-size: 10px; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+/* ══════════════════════════════════════════════
+   SERVICES — upgraded 6-card grid
+══════════════════════════════════════════════ */
+.svc-card-num {
+  position: absolute; top: 20px; right: 22px;
+  font-family: var(--ff-serif); font-size: 52px; font-weight: 700;
+  color: rgba(255,255,255,0.04); line-height: 1; pointer-events: none;
+}
+.svc-cta {
+  display: inline-flex; align-items: center; gap: 6px;
+  margin-top: 16px; font-size: 12px; font-weight: 700;
+  color: var(--gold2); font-family: var(--ff-syne);
+  letter-spacing: 0.5px; transition: gap 0.2s;
+}
+.svc-card:hover .svc-cta { gap: 10px; }
+.svc-tag {
+  display: inline-block; padding: 3px 10px; border-radius: 20px;
+  background: rgba(200,151,58,0.1); border: 1px solid rgba(200,151,58,0.2);
+  font-size: 10px; color: var(--gold2); font-family: var(--ff-syne);
+  font-weight: 700; letter-spacing: 0.5px; margin-bottom: 14px;
+}
+
+/* ══════════════════════════════════════════════
+   STAT BARS (for dept section)
+══════════════════════════════════════════════ */
+.stat-bar-wrap { margin-top: 8px; }
+.stat-bar-label { display: flex; justify-content: space-between; font-size: 11px; color: var(--muted); margin-bottom: 5px; }
+.stat-bar-track {
+  height: 5px; background: var(--border); border-radius: 10px; overflow: hidden;
+}
+.stat-bar-fill {
+  height: 100%; border-radius: 10px;
+  background: linear-gradient(90deg, var(--navy), var(--navy2));
+  width: 0%; transition: width 1.4s cubic-bezier(0.4,0,0.2,1);
+}
+
+/* ══════════════════════════════════════════════
+   SECTION DIVIDERS — wave SVG between dark/light
+══════════════════════════════════════════════ */
+.wave-divider { display: block; width: 100%; overflow: hidden; line-height: 0; }
+.wave-divider svg { display: block; width: 100%; }
+
+/* ══════════════════════════════════════════════
+   IMPROVED TESTIMONIALS — with dept badge
+══════════════════════════════════════════════ */
+.tcard-dept {
+  display: inline-block; padding: 3px 10px; border-radius: 20px;
+  background: var(--cream2); border: 1px solid var(--border);
+  font-size: 10px; font-weight: 700; color: var(--muted);
+  font-family: var(--ff-syne); margin-top: 4px;
+}
+
+/* ══════════════════════════════════════════════
+   HOVER TILT CARDS
+══════════════════════════════════════════════ */
+.tilt-card {
+  transform-style: preserve-3d;
+  transition: transform 0.15s ease;
+}
+
+/* ══════════════════════════════════════════════
+   ANNOUNCEMENT BAR — improved
+══════════════════════════════════════════════ */
+.announce-item .highlight { color: var(--gold2); font-weight: 700; }
+
+/* ══════════════════════════════════════════════
+   SECTION ENTRANCE — stagger children
+══════════════════════════════════════════════ */
+.stagger-children > * {
+  opacity: 0; transform: translateY(24px);
+  transition: opacity 0.55s ease, transform 0.55s ease;
+}
+.stagger-children.show > *:nth-child(1) { opacity:1; transform:none; transition-delay:0.05s; }
+.stagger-children.show > *:nth-child(2) { opacity:1; transform:none; transition-delay:0.12s; }
+.stagger-children.show > *:nth-child(3) { opacity:1; transform:none; transition-delay:0.19s; }
+.stagger-children.show > *:nth-child(4) { opacity:1; transform:none; transition-delay:0.26s; }
+.stagger-children.show > *:nth-child(5) { opacity:1; transform:none; transition-delay:0.33s; }
+.stagger-children.show > *:nth-child(6) { opacity:1; transform:none; transition-delay:0.40s; }
+
+/* ══════════════════════════════════════════════
+   READING STATS BAND (new section)
+══════════════════════════════════════════════ */
+.reading-band {
+  background: linear-gradient(135deg, var(--cream), #fff);
+  border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);
+  padding: 56px 0;
+}
+.reading-band-inner {
+  max-width: 1280px; margin: 0 auto; padding: 0 48px;
+  display: grid; grid-template-columns: repeat(5,1fr); gap: 0;
+}
+.rb-item {
+  padding: 0 28px; text-align: center;
+  border-right: 1px solid var(--border);
+}
+.rb-item:last-child { border-right: none; }
+.rb-icon { font-size: 28px; margin-bottom: 10px; display: block; }
+.rb-num {
+  font-family: var(--ff-serif); font-size: 36px; font-weight: 700;
+  background: linear-gradient(135deg, var(--navy), var(--navy2));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  background-clip: text; line-height: 1; margin-bottom: 6px;
+}
+.rb-label { font-size: 11px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; }
+@media (max-width: 768px) {
+  .reading-band-inner { grid-template-columns: 1fr 1fr; gap: 20px; padding: 0 20px; }
+  .rb-item { border-right: none; padding: 12px 0; }
+}
+@media (max-width: 400px) {
+  .reading-band-inner { grid-template-columns: 1fr; }
+}
+
+/* ══════════════════════════════════════════════
+   SECTION — scrolled highlight strip
+══════════════════════════════════════════════ */
+.gold-divider {
+  height: 3px;
+  background: linear-gradient(90deg, transparent, var(--gold), var(--gold2), transparent);
+}
+
+/* ══════════════════════════════════════════════
+   MOBILE-ONLY SEARCH SHORTCUT BAR
+══════════════════════════════════════════════ */
+.mobile-search-bar {
+  display: none; padding: 12px 16px;
+  background: var(--cream); border-bottom: 1px solid var(--border);
+  gap: 8px;
+}
+.mobile-search-input {
+  flex: 1; padding: 10px 14px; border: 1.5px solid var(--border);
+  border-radius: 10px; font-family: var(--ff-sans); font-size: 13.5px;
+  outline: none; background: #fff;
+}
+.mobile-search-btn {
+  padding: 10px 18px; background: var(--navy); color: #fff;
+  border: none; border-radius: 10px; font-size: 13px;
+  font-weight: 700; cursor: pointer; font-family: var(--ff-syne); white-space: nowrap;
+}
+@media (max-width: 640px) {
+  .mobile-search-bar { display: flex; }
+}
+
+/* ══════════════════════════════════════════════
+   STICKY SECTION INDICATOR (right edge dots)
+══════════════════════════════════════════════ */
+#section-nav {
+  position: fixed; right: 16px; top: 50%; transform: translateY(-50%);
+  display: flex; flex-direction: column; gap: 8px; z-index: 900;
+}
+.sn-dot {
+  width: 8px; height: 8px; border-radius: 50%;
+  background: rgba(13,35,71,0.2); cursor: pointer;
+  transition: background 0.3s, transform 0.3s;
+  position: relative;
+}
+.sn-dot:hover, .sn-dot.active { background: var(--gold); transform: scale(1.4); }
+.sn-dot::before {
+  content: attr(data-label);
+  position: absolute; right: 18px; top: 50%; transform: translateY(-50%);
+  white-space: nowrap; background: var(--navy); color: #fff;
+  font-size: 10px; font-weight: 700; font-family: var(--ff-syne);
+  padding: 4px 10px; border-radius: 6px; opacity: 0;
+  pointer-events: none; transition: opacity 0.2s;
+}
+.sn-dot:hover::before { opacity: 1; }
+@media (max-width: 768px) { #section-nav { display: none; } }
+
 </style>
 </head>
 <body>
+
+<!-- CUSTOM CURSOR -->
+<div id="cursor"></div>
+<div id="cursor-ring"></div>
+
+<!-- SCROLL PROGRESS RING -->
+<div id="scroll-ring" onclick="window.scrollTo({top:0,behavior:'smooth'})">
+  <svg width="52" height="52" viewBox="0 0 52 52">
+    <circle class="bg"   cx="26" cy="26" r="22"/>
+    <circle class="prog" id="ringProg" cx="26" cy="26" r="22"/>
+  </svg>
+  <button id="scroll-ring-btn">↑</button>
+</div>
+
+<!-- SECTION NAV DOTS -->
+<div id="section-nav">
+  <div class="sn-dot" data-target="hero-top"       data-label="Home"></div>
+  <div class="sn-dot" data-target="collections-section" data-label="Collection"></div>
+  <div class="sn-dot" data-target="eres-section"   data-label="E-Resources"></div>
+  <div class="sn-dot" data-target="services-section" data-label="Services"></div>
+  <div class="sn-dot" data-target="timeline-section" data-label="Timeline"></div>
+  <div class="sn-dot" data-target="research-section" data-label="Research"></div>
+  <div class="sn-dot" data-target="faq-section"    data-label="FAQ"></div>
+  <div class="sn-dot" data-target="location-section" data-label="Find Us"></div>
+</div>
+
+<!-- MOBILE SEARCH SHORTCUT (shows below header on phones) -->
+<div class="mobile-search-bar" id="mobileSearchBar" style="display:none">
+  <input class="mobile-search-input" type="text" id="mobileSearchInput" placeholder="Search books, journals…">
+  <button class="mobile-search-btn" onclick="doMobileSearch()">Search</button>
+</div>
 
 <!-- LOADER -->
 <div id="loader">
@@ -1643,32 +2273,46 @@ a { text-decoration: none; color: inherit; }
 </div>
 
 <!-- ══ HERO ══ -->
-<section class="hero">
+<section class="hero" id="hero-top">
+  <!-- Campus background image — no dimming filter, right side shows clearly -->
   <div class="hero-bg" id="heroBg" style="background-image:url('image/new griet.jpg'),url('image/lib1.jpeg')"></div>
   <canvas id="heroCanvas"></canvas>
+  <!-- Overlays: left-heavy gradient + top/bottom strips only -->
+  <div class="hero-overlay-main"></div>
+  <div class="hero-overlay-top"></div>
+  <div class="hero-overlay-bottom"></div>
   <div class="hero-grid"></div>
-  <div class="hero-light"></div>
 
   <div class="hero-inner">
     <div class="hero-content-wrap">
       <div class="hero-layout">
-        <!-- LEFT COPY -->
+
+        <!-- ── LEFT COPY ── -->
         <div>
           <div class="hero-badge">
             <span class="pulse"></span>
-            Est. 1997 · Bachupally, Hyderabad
+            Est. 1997 &middot; Bachupally, Hyderabad &middot; NAAC A++
           </div>
+
           <h1 class="hero-title">
-            Library &amp;<br><em>Information Centre</em>
+            GRIET Central Library
+            <!-- BITS-style animated cycling word -->
+            <span class="hero-word-block" id="heroWordBlock" style="min-height:1.1em;display:block">
+              <span class="hero-word active" id="hw0">Discover.</span>
+              <span class="hero-word" id="hw1">Innovate.</span>
+              <span class="hero-word" id="hw2">Excel.</span>
+              <span class="hero-word" id="hw3">Lead.</span>
+            </span>
           </h1>
-          <p class="hero-subtitle">Gateway to Discover, Connect &amp; Learn — 1,30,741 print volumes, 21,659 eJournals and 6,396 eBooks at your fingertips.</p>
+
+          <p class="hero-subtitle">Gateway to Knowledge &mdash; 1,30,741 print volumes, 21,659 eJournals and 6,396 eBooks. Access world-class resources on campus and remotely 24&times;7.</p>
 
           <div class="hero-ctas">
-            <a href="https://griet.bestbookbuddies.com/" target="_blank" class="btn-large">Browse Catalogue →</a>
-            <a href="https://griet.knimbus.com/" target="_blank" class="btn-ghost">Remote Access ↗</a>
+            <a href="https://griet.bestbookbuddies.com/" target="_blank" class="btn-large">Browse Catalogue &rarr;</a>
+            <a href="https://griet.knimbus.com/" target="_blank" class="btn-ghost">Remote Access &nearr;</a>
           </div>
 
-          <!-- HERO SEARCH -->
+          <!-- Glass morphism search — BITS style -->
           <div class="hero-search-block">
             <div class="search-tabs-row">
               <button class="stab on" onclick="setSearchTab(this,'keyword')">Keyword</button>
@@ -1677,62 +2321,72 @@ a { text-decoration: none; color: inherit; }
               <button class="stab" onclick="setSearchTab(this,'subject')">Subject</button>
             </div>
             <div class="search-input-row">
-              <span style="font-size:18px;padding:0 4px;opacity:0.4">🔍</span>
-              <input type="text" id="heroInput" placeholder="Search 1,30,741 volumes, journals and eBooks…">
+              <span style="font-size:17px;padding:0 4px;opacity:0.38;flex-shrink:0">🔍</span>
+              <input type="text" id="heroInput" placeholder="Search 1,30,741 volumes, journals and eBooks&hellip;">
               <button class="search-go" onclick="doHeroSearch()">Search</button>
             </div>
             <div class="search-quick">
-              <span style="font-size:11px;color:rgba(255,255,255,0.25);padding:5px 0">Popular:</span>
+              <span class="search-ql">Popular:</span>
               <span class="quick-tag" onclick="fillSearch('Data Structures')">Data Structures</span>
               <span class="quick-tag" onclick="fillSearch('Machine Learning')">Machine Learning</span>
               <span class="quick-tag" onclick="fillSearch('VLSI Design')">VLSI Design</span>
               <span class="quick-tag" onclick="fillSearch('Thermodynamics')">Thermodynamics</span>
             </div>
           </div>
+
+          <!-- Live hours pill -->
+          <div class="hours-live" id="heroHours">
+            <div class="h-dot" id="hDot"></div>
+            <span class="h-text" id="hText">Checking hours&hellip;</span>
+          </div>
         </div>
 
-        <!-- RIGHT — STATS CARD -->
+        <!-- ── RIGHT STATS CARD ── -->
         <div class="hero-stats-card">
           <div class="hsc-title">Collection at a Glance</div>
           <div class="hstat">
-            <div class="hstat-icon" style="background:rgba(200,151,58,0.12)">📚</div>
+            <div class="hstat-icon" style="background:rgba(200,151,58,0.14)">📚</div>
             <div>
               <div class="hstat-num"><span class="hero-counter" data-t="130741">0</span></div>
-              <div class="hstat-label">Print Volumes</div>
+              <div class="hstat-label">Print Volumes (Apr 2025)</div>
             </div>
           </div>
           <div class="hstat">
-            <div class="hstat-icon" style="background:rgba(22,163,74,0.12)">📰</div>
+            <div class="hstat-icon" style="background:rgba(22,163,74,0.14)">📰</div>
             <div>
               <div class="hstat-num"><span class="hero-counter" data-t="21659">0</span></div>
-              <div class="hstat-label">eJournals</div>
+              <div class="hstat-label">eJournals Online</div>
             </div>
           </div>
           <div class="hstat">
-            <div class="hstat-icon" style="background:rgba(59,130,246,0.12)">📖</div>
+            <div class="hstat-icon" style="background:rgba(59,130,246,0.14)">📖</div>
             <div>
               <div class="hstat-num"><span class="hero-counter" data-t="6396">0</span></div>
-              <div class="hstat-label">eBooks</div>
+              <div class="hstat-label">eBooks Accessible</div>
             </div>
           </div>
           <div class="hstat">
-            <div class="hstat-icon" style="background:rgba(168,85,247,0.12)">📋</div>
+            <div class="hstat-icon" style="background:rgba(168,85,247,0.14)">📋</div>
             <div>
               <div class="hstat-num"><span class="hero-counter" data-t="17253">0</span></div>
-              <div class="hstat-label">Titles</div>
+              <div class="hstat-label">Catalogue Titles</div>
             </div>
           </div>
-          <!-- Live Hours -->
-          <div class="hours-live" id="heroHours">
-            <div class="h-dot" id="hDot"></div>
-            <span class="h-text" id="hText">Checking hours…</span>
+          <!-- Live Hours inside card -->
+          <div style="margin-top:20px;padding-top:16px;border-top:1px solid rgba(255,255,255,0.07)">
+            <div style="font-family:var(--ff-syne);font-size:9px;font-weight:700;letter-spacing:2.5px;color:rgba(255,255,255,0.28);text-transform:uppercase;margin-bottom:10px">Library Status</div>
+            <div class="hours-live" id="heroHoursCard" style="margin-top:0;border-radius:10px">
+              <div class="h-dot" id="hDotCard"></div>
+              <span class="h-text" id="hTextCard">Checking&hellip;</span>
+            </div>
           </div>
         </div>
+
       </div>
     </div>
   </div>
 
-  <!-- BOTTOM QUICK LINKS BAR -->
+  <!-- BOTTOM QUICK-LINKS BAR — BITS style horizontal scroll -->
   <div class="hero-bottom-bar">
     <div class="hero-bottom-inner">
       <a href="https://griet.bestbookbuddies.com/" target="_blank" class="hb-link"><span class="hbl-icon">📖</span> Online Catalogue</a>
@@ -1740,8 +2394,9 @@ a { text-decoration: none; color: inherit; }
       <a href="https://ieeexplore.ieee.org/" target="_blank" class="hb-link"><span class="hbl-icon">⚡</span> IEEE Xplore</a>
       <a href="https://jgateplus.com/" target="_blank" class="hb-link"><span class="hbl-icon">🔍</span> J-Gate Plus</a>
       <a href="https://delnet.in/" target="_blank" class="hb-link"><span class="hbl-icon">🔗</span> DELNET</a>
-      <a href="https://nlist.inflibnet.ac.in/" target="_blank" class="hb-link"><span class="hbl-icon">🎓</span> INFLIBNET N-LIST</a>
-      <a href="https://www.springer.com/" target="_blank" class="hb-link"><span class="hbl-icon">📗</span> Springer</a>
+      <a href="https://nlist.inflibnet.ac.in/" target="_blank" class="hb-link"><span class="hbl-icon">🎓</span> N-LIST</a>
+      <a href="https://link.springer.com/" target="_blank" class="hb-link"><span class="hbl-icon">📗</span> SpringerLink</a>
+      <a href="login.html" class="hb-link" style="color:var(--gold2);font-weight:600"><span class="hbl-icon">🔑</span> Member Login</a>
     </div>
   </div>
 </section>
@@ -1768,8 +2423,42 @@ a { text-decoration: none; color: inherit; }
   </div>
 </div>
 
+<!-- GOLD DIVIDER -->
+<div class="gold-divider"></div>
+
+<!-- READING STATS BAND -->
+<div class="reading-band reveal">
+  <div class="reading-band-inner stagger-children">
+    <div class="rb-item">
+      <span class="rb-icon">📚</span>
+      <div class="rb-num"><span class="counter" data-t="130741">0</span></div>
+      <div class="rb-label">Print Volumes</div>
+    </div>
+    <div class="rb-item">
+      <span class="rb-icon">📰</span>
+      <div class="rb-num"><span class="counter" data-t="21659">0</span></div>
+      <div class="rb-label">eJournals</div>
+    </div>
+    <div class="rb-item">
+      <span class="rb-icon">📖</span>
+      <div class="rb-num"><span class="counter" data-t="6396">0</span></div>
+      <div class="rb-label">eBooks</div>
+    </div>
+    <div class="rb-item">
+      <span class="rb-icon">🔬</span>
+      <div class="rb-num"><span class="counter" data-t="1600">0</span>+</div>
+      <div class="rb-label">Publications</div>
+    </div>
+    <div class="rb-item">
+      <span class="rb-icon">🏆</span>
+      <div class="rb-num">A++</div>
+      <div class="rb-label">NAAC Grade</div>
+    </div>
+  </div>
+</div>
+
 <!-- COLLECTIONS SECTION -->
-<section class="collections-section">
+<section class="collections-section" id="collections-section">
   <div class="container">
     <div class="collections-grid">
       <div class="collection-visual reveal left">
@@ -1835,30 +2524,47 @@ a { text-decoration: none; color: inherit; }
 </section>
 
 <!-- IMAGE SLIDER -->
-<section style="padding:80px 0;background:var(--ink)">
+<section class="slider-section" id="slider-section">
   <div class="container">
     <div class="reveal" style="text-align:center;margin-bottom:48px">
-      <div class="eyebrow white">Our Spaces</div>
+      <div class="eyebrow white" style="justify-content:center">Our Spaces</div>
       <h2 class="section-title white">Library <em style="color:var(--gold2)">Infrastructure</em></h2>
+      <p style="color:rgba(255,255,255,0.45);margin-top:14px;font-size:15px">Purpose-built spaces across ground and first floor — designed for focused learning and collaborative research.</p>
     </div>
-    <div style="border-radius:24px;overflow:hidden;box-shadow:0 40px 100px rgba(0,0,0,0.6)">
-      <div style="position:relative">
-        <div id="slides" style="display:flex;transition:transform 0.8s cubic-bezier(0.4,0,0.2,1)">
-          <div style="min-width:100%;position:relative"><img src="image/lib1.jpeg" alt="Library" style="width:100%;height:520px;object-fit:cover;display:block"><div style="position:absolute;bottom:0;left:0;right:0;padding:24px 32px;background:linear-gradient(to top,rgba(0,0,0,0.8),transparent);color:#fff;font-weight:600">🏛 Library & Information Centre — GRIET</div></div>
-          <div style="min-width:100%;position:relative"><img src="image/lib2.jpeg" alt="Library" style="width:100%;height:520px;object-fit:cover;display:block"><div style="position:absolute;bottom:0;left:0;right:0;padding:24px 32px;background:linear-gradient(to top,rgba(0,0,0,0.8),transparent);color:#fff;font-weight:600">🔄 Circulation Counter — Issue & Return</div></div>
-          <div style="min-width:100%;position:relative"><img src="image/lib3.jpeg" alt="Library" style="width:100%;height:520px;object-fit:cover;display:block"><div style="position:absolute;bottom:0;left:0;right:0;padding:24px 32px;background:linear-gradient(to top,rgba(0,0,0,0.8),transparent);color:#fff;font-weight:600">📰 Journals Section — CSE · AI&ML · ECE · Civil · Mech · EEE</div></div>
-          <div style="min-width:100%;position:relative"><img src="image/lib4.jpeg" alt="Library" style="width:100%;height:520px;object-fit:cover;display:block"><div style="position:absolute;bottom:0;left:0;right:0;padding:24px 32px;background:linear-gradient(to top,rgba(0,0,0,0.8),transparent);color:#fff;font-weight:600">💡 Silent Focused Study Spaces</div></div>
-          <div style="min-width:100%;position:relative"><img src="image/lib5.jpeg" alt="Library" style="width:100%;height:520px;object-fit:cover;display:block"><div style="position:absolute;bottom:0;left:0;right:0;padding:24px 32px;background:linear-gradient(to top,rgba(0,0,0,0.8),transparent);color:#fff;font-weight:600">💡 Individual Study Cubicles</div></div>
-          <div style="min-width:100%;position:relative"><img src="image/infra2.jpeg" alt="Library" style="width:100%;height:520px;object-fit:cover;display:block"><div style="position:absolute;bottom:0;left:0;right:0;padding:24px 32px;background:linear-gradient(to top,rgba(0,0,0,0.8),transparent);color:#fff;font-weight:600">👩‍🎓 Active Student Services at Counter</div></div>
+    <div class="slider-wrap-inner">
+      <div class="slider-track" id="slides">
+        <div class="slide-frame">
+          <img src="image/lib1.jpeg" alt="Library Hall" loading="lazy">
+          <div class="slide-caption-bar">🏛 Library &amp; Information Centre — GRIET Central Library</div>
+        </div>
+        <div class="slide-frame">
+          <img src="image/lib2.jpeg" alt="Circulation Counter" loading="lazy">
+          <div class="slide-caption-bar">🔄 Circulation Counter — Automated Issue &amp; Return via KOHA</div>
+        </div>
+        <div class="slide-frame">
+          <img src="image/lib3.jpeg" alt="Journals Section" loading="lazy">
+          <div class="slide-caption-bar">📰 Journals Section — CSE · AI&amp;ML · ECE · Civil · Mech · EEE</div>
+        </div>
+        <div class="slide-frame">
+          <img src="image/lib4.jpeg" alt="Study Hall" loading="lazy">
+          <div class="slide-caption-bar">📚 Reading Hall — 300+ Seats · Silent Study Zone</div>
+        </div>
+        <div class="slide-frame">
+          <img src="image/lib5.jpeg" alt="Study Cubicles" loading="lazy">
+          <div class="slide-caption-bar">💡 Individual Study Cubicles — First Floor</div>
+        </div>
+        <div class="slide-frame">
+          <img src="image/infra2.jpeg" alt="Student Services" loading="lazy">
+          <div class="slide-caption-bar">👩‍🎓 Student Services at Counter — Active Academic Support</div>
         </div>
       </div>
     </div>
-    <div style="display:flex;align-items:center;justify-content:space-between;margin-top:24px">
-      <div style="font-family:var(--ff-serif);font-size:15px;color:rgba(255,255,255,0.35)"><b id="sNum" style="color:#fff;font-size:19px">1</b> / <span id="sTotal">6</span></div>
-      <div style="display:flex;gap:8px;align-items:center" id="sliderDots"></div>
-      <div style="display:flex;gap:10px">
-        <button id="sPrev" style="width:46px;height:46px;border-radius:50%;border:1px solid rgba(255,255,255,0.14);background:rgba(255,255,255,0.06);color:#fff;font-size:20px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:0.25s" onmouseover="this.style.background='var(--gold)';this.style.color='var(--navy)'" onmouseout="this.style.background='rgba(255,255,255,0.06)';this.style.color='#fff'">‹</button>
-        <button id="sNext" style="width:46px;height:46px;border-radius:50%;border:1px solid rgba(255,255,255,0.14);background:rgba(255,255,255,0.06);color:#fff;font-size:20px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:0.25s" onmouseover="this.style.background='var(--gold)';this.style.color='var(--navy)'" onmouseout="this.style.background='rgba(255,255,255,0.06)';this.style.color='#fff'">›</button>
+    <div class="slider-footer">
+      <div class="slide-count"><b id="sNum">1</b> / <span id="sTotal">6</span></div>
+      <div class="slider-dots" id="sliderDots"></div>
+      <div class="slider-nav">
+        <button class="snav-btn" id="sPrev">&#8249;</button>
+        <button class="snav-btn" id="sNext">&#8250;</button>
       </div>
     </div>
   </div>
@@ -1901,8 +2607,108 @@ a { text-decoration: none; color: inherit; }
   </div>
 </div>
 
+<!-- NEW ARRIVALS BOOK CAROUSEL -->
+<section class="arrivals-section" id="arrivals-section">
+  <div class="container">
+    <div class="reveal" style="text-align:center">
+      <div class="eyebrow" style="justify-content:center">Fresh In</div>
+      <h2 class="section-title">New <em>Arrivals</em></h2>
+      <p class="lead" style="margin:14px auto 0;text-align:center">Recently added titles across all engineering departments — browse and borrow from the catalogue.</p>
+    </div>
+  </div>
+  <div class="arrivals-track-wrap reveal" style="margin-top:44px">
+    <div class="arrivals-track" id="arrivalsTrack">
+      <!-- Set 1 -->
+      <div class="book-card" onclick="window.open('https://griet.bestbookbuddies.com/','_blank')">
+        <div class="book-cover"><div class="book-cover-placeholder" style="background:linear-gradient(135deg,#0d2347,#1a3f72)">📘</div><div class="book-spine"></div></div>
+        <div class="book-meta"><div class="book-title">Data Structures &amp; Algorithms</div><div class="book-author">Cormen et al.</div></div>
+      </div>
+      <div class="book-card" onclick="window.open('https://griet.bestbookbuddies.com/','_blank')">
+        <div class="book-cover"><div class="book-cover-placeholder" style="background:linear-gradient(135deg,#1a5276,#2e86c1)">🤖</div><div class="book-spine"></div></div>
+        <div class="book-meta"><div class="book-title">Deep Learning</div><div class="book-author">Goodfellow et al.</div></div>
+      </div>
+      <div class="book-card" onclick="window.open('https://griet.bestbookbuddies.com/','_blank')">
+        <div class="book-cover"><div class="book-cover-placeholder" style="background:linear-gradient(135deg,#145a32,#1e8449)">🔋</div><div class="book-spine"></div></div>
+        <div class="book-meta"><div class="book-title">Power Electronics</div><div class="book-author">Mohan &amp; Undeland</div></div>
+      </div>
+      <div class="book-card" onclick="window.open('https://griet.bestbookbuddies.com/','_blank')">
+        <div class="book-cover"><div class="book-cover-placeholder" style="background:linear-gradient(135deg,#6e2f88,#a855f7)">⚡</div><div class="book-spine"></div></div>
+        <div class="book-meta"><div class="book-title">VLSI Design</div><div class="book-author">Weste &amp; Harris</div></div>
+      </div>
+      <div class="book-card" onclick="window.open('https://griet.bestbookbuddies.com/','_blank')">
+        <div class="book-cover"><div class="book-cover-placeholder" style="background:linear-gradient(135deg,#b7450a,#e67e22)">🔧</div><div class="book-spine"></div></div>
+        <div class="book-meta"><div class="book-title">Thermodynamics</div><div class="book-author">Cengel &amp; Boles</div></div>
+      </div>
+      <div class="book-card" onclick="window.open('https://griet.bestbookbuddies.com/','_blank')">
+        <div class="book-cover"><div class="book-cover-placeholder" style="background:linear-gradient(135deg,#0f4c75,#1b6ca8)">💻</div><div class="book-spine"></div></div>
+        <div class="book-meta"><div class="book-title">Operating Systems</div><div class="book-author">Silberschatz et al.</div></div>
+      </div>
+      <div class="book-card" onclick="window.open('https://griet.bestbookbuddies.com/','_blank')">
+        <div class="book-cover"><div class="book-cover-placeholder" style="background:linear-gradient(135deg,#1b4f72,#2980b9)">📡</div><div class="book-spine"></div></div>
+        <div class="book-meta"><div class="book-title">Signals &amp; Systems</div><div class="book-author">Oppenheim &amp; Willsky</div></div>
+      </div>
+      <div class="book-card" onclick="window.open('https://griet.bestbookbuddies.com/','_blank')">
+        <div class="book-cover"><div class="book-cover-placeholder" style="background:linear-gradient(135deg,#4a235a,#8e44ad)">🧠</div><div class="book-spine"></div></div>
+        <div class="book-meta"><div class="book-title">Machine Learning</div><div class="book-author">Tom Mitchell</div></div>
+      </div>
+      <div class="book-card" onclick="window.open('https://griet.bestbookbuddies.com/','_blank')">
+        <div class="book-cover"><div class="book-cover-placeholder" style="background:linear-gradient(135deg,#212f3c,#5d6d7e)">🏗</div><div class="book-spine"></div></div>
+        <div class="book-meta"><div class="book-title">Structural Analysis</div><div class="book-author">Bhavikatti</div></div>
+      </div>
+      <div class="book-card" onclick="window.open('https://griet.bestbookbuddies.com/','_blank')">
+        <div class="book-cover"><div class="book-cover-placeholder" style="background:linear-gradient(135deg,#0e6655,#1abc9c)">🌐</div><div class="book-spine"></div></div>
+        <div class="book-meta"><div class="book-title">Computer Networks</div><div class="book-author">Tanenbaum</div></div>
+      </div>
+      <!-- Set 2 — duplicate for infinite loop -->
+      <div class="book-card" onclick="window.open('https://griet.bestbookbuddies.com/','_blank')">
+        <div class="book-cover"><div class="book-cover-placeholder" style="background:linear-gradient(135deg,#0d2347,#1a3f72)">📘</div><div class="book-spine"></div></div>
+        <div class="book-meta"><div class="book-title">Data Structures &amp; Algorithms</div><div class="book-author">Cormen et al.</div></div>
+      </div>
+      <div class="book-card" onclick="window.open('https://griet.bestbookbuddies.com/','_blank')">
+        <div class="book-cover"><div class="book-cover-placeholder" style="background:linear-gradient(135deg,#1a5276,#2e86c1)">🤖</div><div class="book-spine"></div></div>
+        <div class="book-meta"><div class="book-title">Deep Learning</div><div class="book-author">Goodfellow et al.</div></div>
+      </div>
+      <div class="book-card" onclick="window.open('https://griet.bestbookbuddies.com/','_blank')">
+        <div class="book-cover"><div class="book-cover-placeholder" style="background:linear-gradient(135deg,#145a32,#1e8449)">🔋</div><div class="book-spine"></div></div>
+        <div class="book-meta"><div class="book-title">Power Electronics</div><div class="book-author">Mohan &amp; Undeland</div></div>
+      </div>
+      <div class="book-card" onclick="window.open('https://griet.bestbookbuddies.com/','_blank')">
+        <div class="book-cover"><div class="book-cover-placeholder" style="background:linear-gradient(135deg,#6e2f88,#a855f7)">⚡</div><div class="book-spine"></div></div>
+        <div class="book-meta"><div class="book-title">VLSI Design</div><div class="book-author">Weste &amp; Harris</div></div>
+      </div>
+      <div class="book-card" onclick="window.open('https://griet.bestbookbuddies.com/','_blank')">
+        <div class="book-cover"><div class="book-cover-placeholder" style="background:linear-gradient(135deg,#b7450a,#e67e22)">🔧</div><div class="book-spine"></div></div>
+        <div class="book-meta"><div class="book-title">Thermodynamics</div><div class="book-author">Cengel &amp; Boles</div></div>
+      </div>
+      <div class="book-card" onclick="window.open('https://griet.bestbookbuddies.com/','_blank')">
+        <div class="book-cover"><div class="book-cover-placeholder" style="background:linear-gradient(135deg,#0f4c75,#1b6ca8)">💻</div><div class="book-spine"></div></div>
+        <div class="book-meta"><div class="book-title">Operating Systems</div><div class="book-author">Silberschatz et al.</div></div>
+      </div>
+      <div class="book-card" onclick="window.open('https://griet.bestbookbuddies.com/','_blank')">
+        <div class="book-cover"><div class="book-cover-placeholder" style="background:linear-gradient(135deg,#1b4f72,#2980b9)">📡</div><div class="book-spine"></div></div>
+        <div class="book-meta"><div class="book-title">Signals &amp; Systems</div><div class="book-author">Oppenheim &amp; Willsky</div></div>
+      </div>
+      <div class="book-card" onclick="window.open('https://griet.bestbookbuddies.com/','_blank')">
+        <div class="book-cover"><div class="book-cover-placeholder" style="background:linear-gradient(135deg,#4a235a,#8e44ad)">🧠</div><div class="book-spine"></div></div>
+        <div class="book-meta"><div class="book-title">Machine Learning</div><div class="book-author">Tom Mitchell</div></div>
+      </div>
+      <div class="book-card" onclick="window.open('https://griet.bestbookbuddies.com/','_blank')">
+        <div class="book-cover"><div class="book-cover-placeholder" style="background:linear-gradient(135deg,#212f3c,#5d6d7e)">🏗</div><div class="book-spine"></div></div>
+        <div class="book-meta"><div class="book-title">Structural Analysis</div><div class="book-author">Bhavikatti</div></div>
+      </div>
+      <div class="book-card" onclick="window.open('https://griet.bestbookbuddies.com/','_blank')">
+        <div class="book-cover"><div class="book-cover-placeholder" style="background:linear-gradient(135deg,#0e6655,#1abc9c)">🌐</div><div class="book-spine"></div></div>
+        <div class="book-meta"><div class="book-title">Computer Networks</div><div class="book-author">Tanenbaum</div></div>
+      </div>
+    </div>
+  </div>
+  <div style="text-align:center;margin-top:28px">
+    <a href="https://griet.bestbookbuddies.com/" target="_blank" class="btn-large" style="display:inline-flex">View All New Arrivals &rarr;</a>
+  </div>
+</section>
+
 <!-- E-RESOURCES — 6 Direct-Open Cards -->
-<section class="eres-section">
+<section class="eres-section" id="eres-section">
   <div class="container">
     <div class="reveal" style="text-align:center;position:relative;z-index:1">
       <div class="eyebrow white" style="justify-content:center">Academic Databases</div>
@@ -1910,7 +2716,7 @@ a { text-decoration: none; color: inherit; }
       <p style="color:rgba(255,255,255,0.45);font-size:15.5px;margin:16px auto 0;max-width:540px;line-height:1.75">Click any resource below to open it directly — all accessible via your GRIET institutional credentials through Knimbus.</p>
     </div>
 
-    <div class="eres-grid-6">
+    <div class="eres-grid-6 stagger-children">
 
       <!-- IEEE Xplore -->
       <a href="https://ieeexplore.ieee.org/" target="_blank" rel="noopener" class="eres-card-6 ieee reveal reveal-d1">
@@ -2077,7 +2883,7 @@ a { text-decoration: none; color: inherit; }
 </div>
 
 <!-- SERVICES DARK -->
-<section class="services-section">
+<section class="services-section" id="services-section">
   <div class="container">
     <div class="reveal" style="text-align:center">
       <div class="eyebrow white" style="justify-content:center">What We Offer</div>
@@ -2197,19 +3003,55 @@ a { text-decoration: none; color: inherit; }
       <div class="eyebrow" style="justify-content:center">By Department</div>
       <h2 class="section-title">Resource <em>Distribution</em></h2>
     </div>
-    <div class="dept-grid">
-      <div class="dept-card reveal reveal-d1"><div class="dept-name">CSE / IT</div><div class="dept-row">Books<span><span class="counter" data-t="12000">0</span></span></div><div class="dept-row">Journals<span><span class="counter" data-t="350">0</span></span></div></div>
-      <div class="dept-card reveal reveal-d2"><div class="dept-name">ECE</div><div class="dept-row">Books<span><span class="counter" data-t="9500">0</span></span></div><div class="dept-row">Journals<span><span class="counter" data-t="280">0</span></span></div></div>
-      <div class="dept-card reveal reveal-d3"><div class="dept-name">AI &amp; ML</div><div class="dept-row">Books<span><span class="counter" data-t="8500">0</span></span></div><div class="dept-row">Journals<span><span class="counter" data-t="210">0</span></span></div></div>
-      <div class="dept-card reveal reveal-d1"><div class="dept-name">EEE</div><div class="dept-row">Books<span><span class="counter" data-t="7200">0</span></span></div><div class="dept-row">Journals<span><span class="counter" data-t="190">0</span></span></div></div>
-      <div class="dept-card reveal reveal-d2"><div class="dept-name">MECH</div><div class="dept-row">Books<span><span class="counter" data-t="8300">0</span></span></div><div class="dept-row">Journals<span><span class="counter" data-t="210">0</span></span></div></div>
-      <div class="dept-card reveal reveal-d3"><div class="dept-name">CIVIL</div><div class="dept-row">Books<span><span class="counter" data-t="6400">0</span></span></div><div class="dept-row">Journals<span><span class="counter" data-t="170">0</span></span></div></div>
+    <div class="dept-grid stagger-children">
+      <div class="dept-card">
+        <div class="dept-name">CSE / IT</div>
+        <div class="dept-row">Books<span><span class="counter" data-t="12000">0</span></span></div>
+        <div class="stat-bar-wrap"><div class="stat-bar-track"><div class="stat-bar-fill" data-w="95"></div></div></div>
+        <div class="dept-row" style="margin-top:10px">Journals<span><span class="counter" data-t="350">0</span></span></div>
+        <div class="stat-bar-wrap"><div class="stat-bar-track"><div class="stat-bar-fill" data-w="88" style="background:linear-gradient(90deg,var(--gold),var(--gold2))"></div></div></div>
+      </div>
+      <div class="dept-card">
+        <div class="dept-name">ECE</div>
+        <div class="dept-row">Books<span><span class="counter" data-t="9500">0</span></span></div>
+        <div class="stat-bar-wrap"><div class="stat-bar-track"><div class="stat-bar-fill" data-w="79"></div></div></div>
+        <div class="dept-row" style="margin-top:10px">Journals<span><span class="counter" data-t="280">0</span></span></div>
+        <div class="stat-bar-wrap"><div class="stat-bar-track"><div class="stat-bar-fill" data-w="72" style="background:linear-gradient(90deg,var(--gold),var(--gold2))"></div></div></div>
+      </div>
+      <div class="dept-card">
+        <div class="dept-name">AI &amp; ML</div>
+        <div class="dept-row">Books<span><span class="counter" data-t="8500">0</span></span></div>
+        <div class="stat-bar-wrap"><div class="stat-bar-track"><div class="stat-bar-fill" data-w="72"></div></div></div>
+        <div class="dept-row" style="margin-top:10px">Journals<span><span class="counter" data-t="210">0</span></span></div>
+        <div class="stat-bar-wrap"><div class="stat-bar-track"><div class="stat-bar-fill" data-w="60" style="background:linear-gradient(90deg,var(--gold),var(--gold2))"></div></div></div>
+      </div>
+      <div class="dept-card">
+        <div class="dept-name">EEE</div>
+        <div class="dept-row">Books<span><span class="counter" data-t="7200">0</span></span></div>
+        <div class="stat-bar-wrap"><div class="stat-bar-track"><div class="stat-bar-fill" data-w="62"></div></div></div>
+        <div class="dept-row" style="margin-top:10px">Journals<span><span class="counter" data-t="190">0</span></span></div>
+        <div class="stat-bar-wrap"><div class="stat-bar-track"><div class="stat-bar-fill" data-w="54" style="background:linear-gradient(90deg,var(--gold),var(--gold2))"></div></div></div>
+      </div>
+      <div class="dept-card">
+        <div class="dept-name">MECH</div>
+        <div class="dept-row">Books<span><span class="counter" data-t="8300">0</span></span></div>
+        <div class="stat-bar-wrap"><div class="stat-bar-track"><div class="stat-bar-fill" data-w="70"></div></div></div>
+        <div class="dept-row" style="margin-top:10px">Journals<span><span class="counter" data-t="210">0</span></span></div>
+        <div class="stat-bar-wrap"><div class="stat-bar-track"><div class="stat-bar-fill" data-w="60" style="background:linear-gradient(90deg,var(--gold),var(--gold2))"></div></div></div>
+      </div>
+      <div class="dept-card">
+        <div class="dept-name">CIVIL</div>
+        <div class="dept-row">Books<span><span class="counter" data-t="6400">0</span></span></div>
+        <div class="stat-bar-wrap"><div class="stat-bar-track"><div class="stat-bar-fill" data-w="55"></div></div></div>
+        <div class="dept-row" style="margin-top:10px">Journals<span><span class="counter" data-t="170">0</span></span></div>
+        <div class="stat-bar-wrap"><div class="stat-bar-track"><div class="stat-bar-fill" data-w="48" style="background:linear-gradient(90deg,var(--gold),var(--gold2))"></div></div></div>
+      </div>
     </div>
   </div>
 </section>
 
 <!-- TIMELINE -->
-<section class="timeline-section">
+<section class="timeline-section" id="timeline-section">
   <div class="container">
     <div class="reveal" style="text-align:center">
       <div class="eyebrow white" style="justify-content:center">Our Journey</div>
@@ -2312,7 +3154,7 @@ a { text-decoration: none; color: inherit; }
 </section>
 
 <!-- RESEARCH IMPACT -->
-<section class="research-section">
+<section class="research-section" id="research-section">
   <div class="container">
     <div class="reveal" style="text-align:center">
       <div class="eyebrow white" style="justify-content:center">Research Impact</div>
@@ -2469,7 +3311,7 @@ a { text-decoration: none; color: inherit; }
         <p>The GRIET Central Library is led by a team of dedicated professionals committed to supporting academic excellence. Our librarians provide expert guidance on research, citation, digital resources, and information literacy — bridging the gap between students, faculty and world-class knowledge.</p>
         <div class="lib-creds">
           <div class="lib-cred"><span class="lib-cred-icon">🎓</span> M.Lib.Sc. · Information Science Specialist</div>
-          <div class="lib-cred"><span class="lib-cred-icon">📧</span> library@griet.ac.in · Available Mon–Sat</div>
+          <div class="lib-cred"><span class="lib-cred-icon">📧</span> <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="8ae6e3e8f8ebf8f3caedf8e3effea4ebe9a4e3e4">[email&#160;protected]</a> · Available Mon–Sat</div>
           <div class="lib-cred"><span class="lib-cred-icon">🔍</span> Expert in Research Support &amp; Literature Search</div>
           <div class="lib-cred"><span class="lib-cred-icon">🏛</span> Member — IASLIC, SIS, INFLIBNET</div>
           <div class="lib-cred"><span class="lib-cred-icon">⏰</span> Consultation Hours: 10 AM – 5 PM, Mon–Fri</div>
@@ -2480,7 +3322,7 @@ a { text-decoration: none; color: inherit; }
 </section>
 
 <!-- FAQ SECTION -->
-<section class="faq-section">
+<section class="faq-section" id="faq-section">
   <div class="container">
     <div class="reveal" style="text-align:center">
       <div class="eyebrow" style="justify-content:center">Got Questions?</div>
@@ -2495,7 +3337,7 @@ a { text-decoration: none; color: inherit; }
           <div class="faq-contact-ico">📧</div>
           <div>
             <h4>Email the Library</h4>
-            <p>library@griet.ac.in</p>
+            <p><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="87ebeee5f5e6f5fec7e0f5eee2f3a9e6e4a9eee9">[email&#160;protected]</a></p>
           </div>
         </div>
         <div class="faq-contact" style="margin-top:12px">
@@ -2554,7 +3396,7 @@ a { text-decoration: none; color: inherit; }
             <span class="faq-q-text">Can I get plagiarism checking for my thesis?</span>
             <span class="faq-chevron">▾</span>
           </div>
-          <div class="faq-a"><div class="faq-a-inner">Yes! GRIET Library provides plagiarism checking services via <strong>Turnitin</strong>. Contact the library staff at library@griet.ac.in to schedule a session. We also assist with citation guidance, bibliography formatting and APA/IEEE referencing for thesis and research papers.</div></div>
+          <div class="faq-a"><div class="faq-a-inner">Yes! GRIET Library provides plagiarism checking services via <strong>Turnitin</strong>. Contact the library staff at <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="6c00050e1e0d1e152c0b1e050918420d0f420502">[email&#160;protected]</a> to schedule a session. We also assist with citation guidance, bibliography formatting and APA/IEEE referencing for thesis and research papers.</div></div>
         </div>
       </div>
     </div>
@@ -2562,7 +3404,7 @@ a { text-decoration: none; color: inherit; }
 </section>
 
 <!-- FIND US -->
-<section class="location-section">
+<section class="location-section" id="location-section">
   <div class="container">
     <div class="reveal">
       <div class="eyebrow">Find Us</div>
@@ -2595,7 +3437,7 @@ a { text-decoration: none; color: inherit; }
       </div>
       <p class="footer-desc">Central Library & Information Centre, Gokaraju Rangaraju Institute of Engineering and Technology — empowering academic excellence since 1997.</p>
       <div class="footer-social">
-        <a href="mailto:library@griet.ac.in" class="fsoc" title="Email">📧</a>
+        <a href="/cdn-cgi/l/email-protection#bfd3d6ddcddecdc6ffd8cdd6dacb91dedc91d6d1" class="fsoc" title="Email">📧</a>
         <a href="https://griet.bestbookbuddies.com/" target="_blank" class="fsoc" title="Catalogue">📚</a>
         <a href="https://griet.knimbus.com/" target="_blank" class="fsoc" title="Knimbus">🌐</a>
         <a href="https://www.griet.ac.in" target="_blank" class="fsoc" title="GRIET">🏛</a>
@@ -2657,7 +3499,7 @@ a { text-decoration: none; color: inherit; }
   <div class="footer-bottom-enhanced">
     <div class="footer-bottom-left">
       © 2025 GRIET Central Library · Gokaraju Rangaraju Institute of Engineering &amp; Technology<br>
-      Bachupally, Hyderabad, Telangana – 500090 · library@griet.ac.in
+      Bachupally, Hyderabad, Telangana – 500090 · <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="eb878289998a9992ab8c99828e9fc58a88c58285">[email&#160;protected]</a>
     </div>
     <div class="footer-bottom-right">
       <a href="about.html">About</a>
@@ -2668,8 +3510,7 @@ a { text-decoration: none; color: inherit; }
   </div>
 </footer>
 
-<!-- SCROLL TO TOP -->
-<button id="top-btn" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+<!-- SCROLL TOP REPLACED BY PROGRESS RING ABOVE -->
 
 <!-- FLOATING CHAT WIDGET -->
 <div id="chatWidget">
@@ -2707,7 +3548,7 @@ a { text-decoration: none; color: inherit; }
 <!-- ══════════════════════════════════════════════
    JAVASCRIPT
 ══════════════════════════════════════════════ -->
-<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
 "use strict";
 
 /* ── LOADER ── */
@@ -2749,7 +3590,8 @@ window.addEventListener('scroll', function () {
   else topBtn.classList.remove('visible');
 
   var header = document.getElementById('siteHeader');
-  if (scrolled > 10) header.classList.add('scrolled');
+  // Scrolled past the announce bar (36px) → snap header to top:0, solid bg
+  if (scrolled > 36) header.classList.add('scrolled');
   else header.classList.remove('scrolled');
 });
 
@@ -2881,15 +3723,34 @@ function checkHours() {
   else if (day === 6) { isOpen = mins >= 540 && mins < 1020; text = isOpen ? 'Open Now · Closes 5:00 PM' : 'Closed · Opens 9:00 AM (Sat)'; }
   else { isOpen = mins >= 540 && mins < 1200; text = isOpen ? 'Open Now · Closes 8:00 PM' : 'Closed · Opens 9:00 AM (Mon–Fri)'; }
 
-  var dot = document.getElementById('hDot');
-  var txt = document.getElementById('hText');
-  if (dot && txt) {
-    dot.className = 'h-dot ' + (isOpen ? 'open' : 'closed');
-    txt.className = 'h-text ' + (isOpen ? 'open' : 'closed');
-    txt.textContent = text;
-  }
+  var cls = isOpen ? 'open' : 'closed';
+  // Update both hero hours indicators
+  ['hDot','hDotCard'].forEach(function(id){
+    var el = document.getElementById(id);
+    if (el) el.className = 'h-dot ' + cls;
+  });
+  ['hText','hTextCard'].forEach(function(id){
+    var el = document.getElementById(id);
+    if (el) { el.className = 'h-text ' + cls; el.textContent = text; }
+  });
 }
 checkHours();
+
+/* ── BITS-STYLE ANIMATED WORD CYCLE ── */
+(function(){
+  var words = document.querySelectorAll('.hero-word');
+  if (!words.length) return;
+  var current = 0;
+  setInterval(function(){
+    var next = (current + 1) % words.length;
+    words[current].classList.remove('active');
+    words[current].classList.add('leaving');
+    words[next].classList.add('active');
+    var leaving = words[current];
+    setTimeout(function(){ leaving.classList.remove('leaving'); }, 600);
+    current = next;
+  }, 2800);
+})();
 
 /* ── AI LIBRARY ASSISTANT ── */
 var aiKB = {
@@ -3013,18 +3874,148 @@ function subscribeNL(btn){
 /* ── MOBILE NAV ── */
 document.getElementById('hamburger').addEventListener('click', function () {
   document.getElementById('mobileNav').classList.add('open');
+  document.getElementById('hamburger').classList.add('open');
   document.body.style.overflow = 'hidden';
 });
 document.getElementById('mobileClose').addEventListener('click', function () {
   document.getElementById('mobileNav').classList.remove('open');
+  document.getElementById('hamburger').classList.remove('open');
   document.body.style.overflow = '';
 });
 document.querySelectorAll('.mobile-nav-link').forEach(function (a) {
   a.addEventListener('click', function () {
     document.getElementById('mobileNav').classList.remove('open');
+    document.getElementById('hamburger').classList.remove('open');
     document.body.style.overflow = '';
   });
 });
+
+/* ══════════════════════════════════════════════
+   CUSTOM CURSOR
+══════════════════════════════════════════════ */
+(function(){
+  var cur = document.getElementById('cursor');
+  var ring = document.getElementById('cursor-ring');
+  if (!cur || !ring) return;
+  var mx=0,my=0,rx=0,ry=0;
+  document.addEventListener('mousemove',function(e){ mx=e.clientX; my=e.clientY; cur.style.left=mx+'px'; cur.style.top=my+'px'; });
+  (function animRing(){ rx+=(mx-rx)*0.13; ry+=(my-ry)*0.13; ring.style.left=rx+'px'; ring.style.top=ry+'px'; requestAnimationFrame(animRing); })();
+  document.querySelectorAll('a,button,.quick-tag,.cw-hint,.faq-q,.eres-card-6,.svc-card,.book-card').forEach(function(el){
+    el.addEventListener('mouseenter',function(){ cur.style.width='18px'; cur.style.height='18px'; ring.style.width='52px'; ring.style.height='52px'; cur.style.background='var(--gold2)'; });
+    el.addEventListener('mouseleave',function(){ cur.style.width=''; cur.style.height=''; ring.style.width=''; ring.style.height=''; cur.style.background=''; });
+  });
+})();
+
+/* ══════════════════════════════════════════════
+   SCROLL PROGRESS RING
+══════════════════════════════════════════════ */
+(function(){
+  var sring = document.getElementById('scroll-ring');
+  var prog  = document.getElementById('ringProg');
+  var ob    = document.getElementById('top-btn');
+  if (ob) ob.style.display = 'none';
+  window.addEventListener('scroll', function(){
+    var scrolled = window.pageYOffset;
+    var total = document.documentElement.scrollHeight - window.innerHeight;
+    var pct = total > 0 ? scrolled / total : 0;
+    if (prog) prog.style.strokeDashoffset = 138 - pct * 138;
+    if (sring) sring.classList.toggle('visible', scrolled > 350);
+  });
+})();
+
+/* ══════════════════════════════════════════════
+   PARALLAX HERO BG
+══════════════════════════════════════════════ */
+(function(){
+  var bg = document.getElementById('heroBg');
+  if (!bg) return;
+  var ticking = false;
+  window.addEventListener('scroll', function(){
+    if (!ticking) {
+      requestAnimationFrame(function(){
+        var y = window.pageYOffset;
+        if (y < window.innerHeight * 1.5)
+          bg.style.transform = 'translateY(' + (y * 0.30) + 'px)';
+        ticking = false;
+      });
+      ticking = true;
+    }
+  });
+})();
+
+/* ══════════════════════════════════════════════
+   SECTION NAV DOTS
+══════════════════════════════════════════════ */
+(function(){
+  var dots = document.querySelectorAll('.sn-dot[data-target]');
+  var pairs = [];
+  dots.forEach(function(d){
+    var id = d.dataset.target;
+    var el = document.getElementById(id);
+    if (el) { pairs.push({dot:d, el:el}); d.addEventListener('click',function(){ el.scrollIntoView({behavior:'smooth',block:'start'}); }); }
+  });
+  var snObs = new IntersectionObserver(function(entries){
+    entries.forEach(function(e){
+      if(e.isIntersecting) pairs.forEach(function(p){ p.dot.classList.toggle('active', p.el===e.target); });
+    });
+  },{threshold:0.35});
+  pairs.forEach(function(p){ snObs.observe(p.el); });
+})();
+
+/* ══════════════════════════════════════════════
+   STAGGER CHILDREN OBSERVER
+══════════════════════════════════════════════ */
+var staggerObs = new IntersectionObserver(function(entries){
+  entries.forEach(function(e){ if(e.isIntersecting){ e.target.classList.add('show'); staggerObs.unobserve(e.target); } });
+},{threshold:0.08});
+document.querySelectorAll('.stagger-children').forEach(function(el){ staggerObs.observe(el); });
+
+/* ══════════════════════════════════════════════
+   TILT CARDS (services)
+══════════════════════════════════════════════ */
+document.querySelectorAll('.tilt-card').forEach(function(card){
+  card.addEventListener('mousemove',function(e){
+    var r=card.getBoundingClientRect();
+    var x=(e.clientX-r.left)/r.width -0.5;
+    var y=(e.clientY-r.top)/r.height -0.5;
+    card.style.transform='perspective(700px) rotateY('+(x*9)+'deg) rotateX('+(-y*7)+'deg) translateY(-8px)';
+  });
+  card.addEventListener('mouseleave',function(){ card.style.transform=''; });
+});
+
+/* ══════════════════════════════════════════════
+   MOBILE SEARCH BAR
+══════════════════════════════════════════════ */
+function doMobileSearch(){
+  var q=document.getElementById('mobileSearchInput');
+  if(q&&q.value.trim()) window.open('https://griet.bestbookbuddies.com/search?q='+encodeURIComponent(q.value.trim()),'_blank');
+}
+(function(){
+  var bar=document.getElementById('mobileSearchBar');
+  var mi=document.getElementById('mobileSearchInput');
+  if(mi) mi.addEventListener('keydown',function(e){if(e.key==='Enter')doMobileSearch();});
+  if(bar && window.innerWidth<=640){
+    window.addEventListener('scroll',function(){
+      bar.style.display = window.pageYOffset > window.innerHeight*0.65 ? 'flex' : 'none';
+    });
+  }
+})();
+
+/* ══════════════════════════════════════════════
+   DEPT STAT BAR ANIMATION
+══════════════════════════════════════════════ */
+var deptObs = new IntersectionObserver(function(entries){
+  entries.forEach(function(e){
+    if(e.isIntersecting){
+      e.target.querySelectorAll('.stat-bar-fill').forEach(function(f){
+        f.style.width=(f.dataset.w||'0')+'%';
+      });
+      deptObs.unobserve(e.target);
+    }
+  });
+},{threshold:0.4});
+document.querySelectorAll('.dept-card').forEach(function(c){ deptObs.observe(c); });
+
 </script>
 </body>
 </html>
