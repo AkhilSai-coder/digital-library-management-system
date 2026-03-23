@@ -159,18 +159,6 @@
 .arrival-author{font-size:12px;color:var(--muted);}
 .arrival-badge{display:inline-block;margin-top:10px;padding:3px 10px;background:rgba(8,28,58,0.07);border-radius:20px;font-size:10.5px;font-weight:600;color:var(--navy);}
 
-/* PHOTO GALLERY (BITS-style) */
-.gallery-section{background:#fff;padding:88px 0;}
-.gallery-grid{display:grid;grid-template-columns:repeat(3,1fr);grid-template-rows:220px 220px;gap:14px;margin-top:48px;}
-.gallery-item{border-radius:14px;overflow:hidden;position:relative;cursor:pointer;}
-.gallery-item img{width:100%;height:100%;object-fit:cover;display:block;transition:transform 0.5s ease;}
-.gallery-item:hover img{transform:scale(1.06);}
-.gallery-item.featured{grid-column:span 2;}
-.gallery-overlay{position:absolute;inset:0;background:rgba(6,18,40,0.0);transition:0.3s;}
-.gallery-item:hover .gallery-overlay{background:rgba(6,18,40,0.35);}
-.gallery-label{position:absolute;bottom:14px;left:14px;color:#fff;font-size:13px;font-weight:600;opacity:0;transition:0.3s;}
-.gallery-item:hover .gallery-label{opacity:1;}
-
 /* STAFF */
 .staff-section{background:linear-gradient(180deg,#f8f9fb,#fff);padding:88px 0;}
 .staff-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;margin-top:48px;}
@@ -281,8 +269,6 @@
     <a href="#collection" class="about-nav-link">Collection</a>
     <a href="#hours" class="about-nav-link">Library Hours</a>
     <a href="#rules" class="about-nav-link">Rules &amp; Regulations</a>
-    <a href="#gallery" class="about-nav-link">Photo Gallery</a>
-    <a href="#arrivals" class="about-nav-link">New Arrivals</a>
     <a href="#team" class="about-nav-link">Library Team</a>
     <a href="#promoters" class="about-nav-link">Leadership</a>
   </div>
@@ -422,39 +408,6 @@
   </div>
 </div></section>
 
-<!-- PHOTO GALLERY (BITS-style) -->
-<section class="gallery-section" id="gallery"><div class="container">
-  <div class="reveal" style="text-align:center">
-    <div class="eyebrow">Photo Gallery</div>
-    <div class="display-title">Library <em>Spaces</em></div>
-    <p class="lead">Explore our state-of-the-art reading areas, digital zones and research facilities.</p>
-  </div>
-  <div class="gallery-grid reveal">
-    <div class="gallery-item featured"><img src="image/lib1.jpeg" alt="Reading Hall" loading="lazy"><div class="gallery-overlay"></div><div class="gallery-label">Main Reading Hall</div></div>
-    <div class="gallery-item"><img src="image/infra2.jpeg" alt="Circulation" loading="lazy"><div class="gallery-overlay"></div><div class="gallery-label">Circulation Counter</div></div>
-    <div class="gallery-item"><img src="image/lib3.jpeg" alt="Journals" loading="lazy"><div class="gallery-overlay"></div><div class="gallery-label">Journals Section</div></div>
-    <div class="gallery-item"><img src="image/infra 3 sub.jpeg" alt="Reference" loading="lazy"><div class="gallery-overlay"></div><div class="gallery-label">Reference Section</div></div>
-    <div class="gallery-item"><img src="image/lib4.jpeg" alt="Cubicles" loading="lazy"><div class="gallery-overlay"></div><div class="gallery-label">Study Cubicles</div></div>
-  </div>
-</div></section>
-
-<!-- NEW ARRIVALS (BITS-inspired) -->
-<section class="arrivals-section" id="arrivals"><div class="container">
-  <div class="reveal" style="text-align:center">
-    <div class="eyebrow">Recently Added</div>
-    <div class="display-title">New <em>Arrivals</em></div>
-    <p class="lead">Latest additions to the  collection &mdash; browse and request from the portal.</p>
-  </div>
-  <div class="arrivals-track reveal">
-    <div class="arrival-card"><div class="arrival-cover-placeholder" style="background:linear-gradient(135deg,#081c3a,#0d2a57)">&#128218;</div><div class="arrival-body"><div class="arrival-dept">CSE / AI</div><div class="arrival-title">Deep Learning with Python</div><div class="arrival-author">Chollet</div><div class="arrival-badge">New</div></div></div>
-    <div class="arrival-card"><div class="arrival-cover-placeholder" style="background:linear-gradient(135deg,#1a3a2a,#2d6a4f)">&#128218;</div><div class="arrival-body"><div class="arrival-dept">ECE</div><div class="arrival-title">Digital Signal Processing</div><div class="arrival-author">Proakis &amp; Manolakis</div><div class="arrival-badge">New</div></div></div>
-    <div class="arrival-card"><div class="arrival-cover-placeholder" style="background:linear-gradient(135deg,#3a1a0d,#7a3a1a)">&#128218;</div><div class="arrival-body"><div class="arrival-dept">MECH</div><div class="arrival-title">Thermodynamics</div><div class="arrival-author">Cengel &amp; Boles</div><div class="arrival-badge">New</div></div></div>
-    <div class="arrival-card"><div class="arrival-cover-placeholder" style="background:linear-gradient(135deg,#1a0d3a,#3a1a6b)">&#128218;</div><div class="arrival-body"><div class="arrival-dept">EEE</div><div class="arrival-title">Power Systems Analysis</div><div class="arrival-author">Glover &amp; Sarma</div><div class="arrival-badge">New</div></div></div>
-    <div class="arrival-card"><div class="arrival-cover-placeholder" style="background:linear-gradient(135deg,#0d2a3a,#1a5a6b)">&#128218;</div><div class="arrival-body"><div class="arrival-dept">CIVIL</div><div class="arrival-title">Structural Analysis</div><div class="arrival-author">Hibbeler</div><div class="arrival-badge">New</div></div></div>
-    <div class="arrival-card"><div class="arrival-cover-placeholder" style="background:linear-gradient(135deg,#2a1a0d,#6b3a1a)">&#128218;</div><div class="arrival-body"><div class="arrival-dept">AI &amp; ML</div><div class="arrival-title">Pattern Recognition</div><div class="arrival-author">Bishop</div><div class="arrival-badge">New</div></div></div>
-    <div class="arrival-card"><div class="arrival-cover-placeholder" style="background:linear-gradient(135deg,#081c3a,#163060)">&#128218;</div><div class="arrival-body"><div class="arrival-dept">CSE</div><div class="arrival-title">Operating Systems</div><div class="arrival-author">Silberschatz</div><div class="arrival-badge">New</div></div></div>
-  </div>
-</div></section>
 
 <!-- LIBRARY TEAM (BITS-style) -->
 <section class="section staff-section" id="team"><div class="container reveal">
