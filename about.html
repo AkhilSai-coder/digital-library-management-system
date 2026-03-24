@@ -93,6 +93,81 @@
 .promoter-body h3{font-family:"Cormorant Garamond",serif;font-size:22px;color:var(--navy);font-weight:700;margin-bottom:10px;}
 .promoter-body p{font-size:13px;color:var(--muted);line-height:1.75;}
 
+.library-footer {
+  background: #0f172a;
+  color: #fff;
+  padding: 50px 20px 20px;
+  font-family: 'Poppins', sans-serif;
+}
+
+.footer-title {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.footer-title h2 {
+  font-size: 28px;
+  font-weight: 600;
+}
+
+.footer-title span {
+  color: #38bdf8;
+}
+
+.footer-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 25px;
+}
+
+.footer-col h4 {
+  margin-bottom: 15px;
+  color: #38bdf8;
+}
+
+.footer-col ul {
+  list-style: none;
+  padding: 0;
+}
+
+.footer-col ul li {
+  margin-bottom: 10px;
+}
+
+.footer-col ul li a {
+  color: #cbd5f5;
+  text-decoration: none;
+  font-size: 14px;
+  transition: 0.3s;
+}
+
+.footer-col ul li a:hover {
+  color: #ffffff;
+  padding-left: 5px;
+}
+
+.footer-bottom {
+  text-align: center;
+  margin-top: 30px;
+  border-top: 1px solid #1e293b;
+  padding-top: 15px;
+  font-size: 14px;
+  color: #94a3b8;
+}
+
+/* Responsive */
+@media (max-width: 992px) {
+  .footer-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 600px) {
+  .footer-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
 /* VISION MISSION */
 .vm-section{background:#fff;}
 .vm-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:24px;}
@@ -448,7 +523,75 @@
   </div>
 </div></section>
 
-<footer class="site-footer">&copy; 2026 <em>GRIET Central Library</em> &middot; Gokaraju Rangaraju Institute of Engineering &amp; Technology &middot; All Rights Reserved</footer>
+<footer class="library-footer">
+  <div class="container">
+    
+    <div class="footer-title">
+      <h2>Library <span>Quick Reference</span></h2>
+    </div>
+
+    <div class="footer-grid">
+
+      <!-- Library Docs -->
+      <div class="footer-col">
+        <h4>Library Docs</h4>
+        <ul>
+          <li><a href="https://www.griet.ac.in/2025/Lib Committee 2025-26.pdf" target="_blank">Library Committee 2025-26</a></li>
+          <li><a href="https://www.griet.ac.in/2025/Lib Comm Meeting.pdf" target="_blank">Library MoM 2025-26</a></li>
+          <li><a href="https://www.griet.ac.in/2023/Library MoM Library Committee Meeting Year 2023-24.pdf" target="_blank">Library MoM 2023-24</a></li>
+          <li><a href="https://www.griet.ac.in/2024/Printed Library 2023-24.pdf" target="_blank">Printed Journals</a></li>
+          <li><a href="https://www.griet.ac.in/2024/Printed textBooks bills 2023-24.pdf" target="_blank">Printed Textbooks</a></li>
+          <li><a href="https://www.griet.ac.in/images2/AICTE_rec_books.pdf" target="_blank">AICTE Books</a></li>
+        </ul>
+      </div>
+
+      <!-- E-Resources -->
+      <div class="footer-col">
+        <h4>E-Resources</h4>
+        <ul>
+          <li><a href="https://www.griet.ac.in/library_eresources.php" target="_blank">E-Resources Portal</a></li>
+          <li><a href="https://www.griet.ac.in/library_eresourcesdoc.php" target="_blank">Docs</a></li>
+          <li><a href="https://griet.knimbus.com/user#/home" target="_blank">Knimbus</a></li>
+          <li><a href="https://www.griet.ac.in/library_ebooks.php" target="_blank">E-Books</a></li>
+          <li><a href="https://www.griet.ac.in/rarebooks.php" target="_blank">Rare Books</a></li>
+          <li><a href="https://www.griet.ac.in/online_databases.php" target="_blank">Databases</a></li>
+        </ul>
+      </div>
+
+      <!-- Services -->
+      <div class="footer-col">
+        <h4>Services</h4>
+        <ul>
+          <li><a href="https://www.griet.ac.in/automation.php" target="_blank">Automation</a></li>
+          <li><a href="https://www.griet.ac.in/Inter_Library_Network.php" target="_blank">Inter-Library</a></li>
+          <li><a href="https://www.griet.ac.in/other_facilities.php" target="_blank">Facilities</a></li>
+          <li><a href="https://www.griet.ac.in/lib_Staff_Committee.php" target="_blank">Staff</a></li>
+          <li><a href="https://www.griet.ac.in/lib_rules.php" target="_blank">Rules</a></li>
+          <li><a href="https://www.griet.ac.in/library_statistics.php" target="_blank">Statistics</a></li>
+        </ul>
+      </div>
+
+      <!-- R&D -->
+      <div class="footer-col">
+        <h4>R & D</h4>
+        <ul>
+          <li><a href="https://www.griet.ac.in/journals.php" target="_blank">Journals</a></li>
+          <li><a href="https://www.griet.ac.in/staff_publications.php" target="_blank">Publications</a></li>
+          <li><a href="https://www.griet.ac.in/Patents.php" target="_blank">Patents</a></li>
+          <li><a href="https://www.griet.ac.in/phd_faculty.php" target="_blank">PhDs</a></li>
+          <li><a href="https://griet.irins.org/" target="_blank">IRINS</a></li>
+          <li><a href="https://www.griet.ac.in/conferences.php" target="_blank">Conferences</a></li>
+        </ul>
+      </div>
+
+    </div>
+
+    <div class="footer-bottom">
+      <p>© 2026 GRIET Library | All Rights Reserved</p>
+    </div>
+
+  </div>
+</footer>
 <button id="topBtn" onclick="window.scrollTo({top:0,behavior:'smooth'})">&#8593;</button>
 
 <script>
